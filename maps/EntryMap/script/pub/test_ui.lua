@@ -85,15 +85,20 @@ local function add_input(parent, x, y, width, height)
 end
 
 local function safe_action(name, action)
-    local ok, err = xpcall(action, function(message)
+    local ok, action_ok, action_err = xpcall(action, function(message)
         return tostring(message)
     end)
-    if ok then
-        runtime.notice = name .. '：请求已发送'
-    else
-        runtime.notice = name .. '：' .. tostring(err)
+    if not ok then
+        runtime.notice = name .. '：' .. tostring(action_ok)
         log.error('[BobTestUI] ' .. runtime.notice)
+        return false
     end
+    if action_ok == false then
+        runtime.notice = name .. '：' .. tostring(action_err or '操作失败')
+        return false
+    end
+    runtime.notice = name .. '：请求已发送'
+    return true
 end
 
 local function bob_ready()
@@ -238,13 +243,13 @@ local function build(player)
             refresh()
             return
         end
-        safe_action('队伍聊天', function()
-            local ok, err = BOB:send_chat(message)
-            if not ok then
-                error(err or '消息发送失败')
-            end
-            runtime.chat_input:set_text('')
+        local sent = safe_action('队伍聊天', function()
+            return BOB:send_chat(message)
         end)
+        if sent then
+            runtime.chat_input:set_text('')
+        end
+        refresh()
     end)
     add_button(panel, 619, 246, 137, 42, '世界聊天', function()
         local message = runtime.chat_input:get_input_field_content()
@@ -253,13 +258,13 @@ local function build(player)
             refresh()
             return
         end
-        safe_action('世界聊天', function()
-            local ok, err = BOB:send_world_chat(message)
-            if not ok then
-                error(err or '消息发送失败')
-            end
-            runtime.chat_input:set_text('')
+        local sent = safe_action('世界聊天', function()
+            return BOB:send_world_chat(message)
         end)
+        if sent then
+            runtime.chat_input:set_text('')
+        end
+        refresh()
     end)
 
     runtime.notice_text = add_text(panel, 40, 194, 716, 36, '', 16, { 111, 207, 151, 255 }, '左', '中')
