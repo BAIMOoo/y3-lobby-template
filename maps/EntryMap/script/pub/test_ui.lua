@@ -239,7 +239,10 @@ local function build(player)
             return
         end
         safe_action('队伍聊天', function()
-            BOB:send_chat(message)
+            local ok, err = BOB:send_chat(message)
+            if not ok then
+                error(err or '消息发送失败')
+            end
             runtime.chat_input:set_text('')
         end)
     end)
@@ -251,7 +254,10 @@ local function build(player)
             return
         end
         safe_action('世界聊天', function()
-            BOB:send_world_chat(message)
+            local ok, err = BOB:send_world_chat(message)
+            if not ok then
+                error(err or '消息发送失败')
+            end
             runtime.chat_input:set_text('')
         end)
     end)

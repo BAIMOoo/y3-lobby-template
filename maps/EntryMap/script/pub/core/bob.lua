@@ -812,22 +812,27 @@ end
 
 --发送聊天消息
 ---@param message string
+---@return boolean, string|nil
 function M:send_chat(message)
     log.debug('【BOB】发送聊天消息', message)
-    self.client:ApiRouter_SendChatMsg(
+    if not self.team_info or not self.team_info.team_id or self.team_info.team_id == 0 then
+        return false, '当前不在队伍中'
+    end
+    return self.client:ApiRouter_SendChatMsg(
         self.aid
         , message
         , 4
-        , self.team_info and self.team_info.team_id or 0
+        , self.team_info.team_id
         , 0
     )
 end
 
 --发送世界聊天消息
 ---@param message string
+---@return boolean, string|nil
 function M:send_world_chat(message)
     log.debug('【BOB】发送世界聊天消息', message)
-    self.client:ApiRouter_SendChatMsg(
+    return self.client:ApiRouter_SendChatMsg(
         self.aid
         , message
         , 5
@@ -913,9 +918,9 @@ end
 ---@field chat_type integer # 信息类型
 
 ---@private
-function M:notify_chat(data)
-    ---@type Bob.ChatData
-    local chat_data = data.arg1
+---@param chat_data Bob.ChatData
+---@return Bob.ChatInfo
+function M:record_chat(chat_data)
     local message_info = {
         mode    = '聊天',
         message = chat_data.chat_message,
@@ -924,8 +929,36 @@ function M:notify_chat(data)
         chat    = chat_data,
     }
     self.message_history[#self.message_history + 1] = message_info
-    log.debug('【BOB】收到<聊天>消息', y3.inspect(message_info))
+    log.debug('【BOB】记录<聊天>消息', y3.inspect(message_info))
     self:event_notify('收到消息', message_info)
+    return message_info
+end
+
+---@private
+---@param message string
+---@param chat_type integer
+function M:display_local_chat(message, chat_type)
+    self:record_chat({
+        sender = {
+            aid = self.aid,
+            nickname = self.name,
+            head_icon = self.icon,
+        },
+        chat_message = message,
+        chat_time = os.time(),
+        chat_type = chat_type,
+    })
+end
+
+---@private
+function M:notify_chat(data)
+    ---@type Bob.ChatData
+    local chat_data = data.arg1
+    if chat_data.sender and chat_data.sender.aid == self.aid then
+        log.debug('【BOB】忽略已由成功回包显示的自身聊天消息', y3.inspect(chat_data))
+        return
+    end
+    self:record_chat(chat_data)
 end
 
 ---@private
@@ -1054,6 +1087,14 @@ end
 
 ---@private
 function M:notify_ret(method_name, errid, arg, ret)
+    if method_name == 'Chat_SendChatMsg' then
+        local ret1 = ret and ret.ret1
+        local business_error = type(ret1) == 'table'
+            and ((ret1.errnu and ret1.errnu ~= 0) or (ret1.error_code and ret1.error_code ~= 0))
+        if errid == 1 and not business_error then
+            self:display_local_chat(arg.arg2, arg.arg3)
+        end
+    end
     local handler = self.request_handlers[method_name]
     if handler then
         handler.callback(errid, ret, arg)
