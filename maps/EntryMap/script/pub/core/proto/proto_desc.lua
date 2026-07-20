@@ -30,6 +30,16 @@ local proto_desc = {
       ["service_name"] = "ClientPush",
       ["method_index"] = 6,
     },
+    ["protocol.ClientPush_NotifyWorldChat_args"] = {
+      ["service_uuid"] = 3847458462905599201,
+      ["service_name"] = "ClientPush",
+      ["method_index"] = 8,
+    },
+    ["protocol.ClientPush_NotifyMultiChat_args"] = {
+      ["service_uuid"] = 3847458462905599201,
+      ["service_name"] = "ClientPush",
+      ["method_index"] = 9,
+    },
     ["protocol.Client_NotifyMultiChat_args"] = {
       ["service_uuid"] = 4187951293632162083,
       ["service_name"] = "Client",
@@ -220,6 +230,14 @@ local proto_desc = {
         ["args_pb_name"] = "protocol.ClientPush_NotifyBattleInfo_args",
         ["ret_pb_name"] = "protocol.ClientPush_NotifyBattleInfo_ret",
       },
+      [8] = {
+        ["method_name"] = "NotifyWorldChat",
+        ["args_pb_name"] = "protocol.ClientPush_NotifyWorldChat_args",
+      },
+      [9] = {
+        ["method_name"] = "NotifyPushMultiChat",
+        ["args_pb_name"] = "protocol.ClientPush_NotifyMultiChat_args",
+      },
     },
     [4187951293632162083] = {
       [1] = {
@@ -380,6 +398,8 @@ local proto_desc = {
     ["Client_NotifyBattleInfo"] = 1,
     ["ApiRouter_UpdateChannel"] = 1,
     ["ClientPush_NotifyPlayerInfo"] = 1,
+    ["ClientPush_NotifyWorldChat"] = 1,
+    ["ClientPush_NotifyMultiChat"] = 1,
     ["ApiRouter_SendChatMsg"] = 1,
     ["Team_CreateTeam"] = 1,
     ["Client_UpdateTeamInfo"] = 1,

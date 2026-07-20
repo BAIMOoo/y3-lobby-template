@@ -71,6 +71,7 @@ local fsm = require "pub.core.network.fsm"
 ----------------匹配相关----------------
 ----------------聊天相关----------------
 ---@field public ApiRouter_SendChatMsg fun(self: Client, sender: integer, chat_msg: string, channel_type: integer, dst_id: integer, flag: integer):boolean, string
+---@field public ApiRouter_UpdateChannel fun(self: Client, op_type: integer, channel_type: integer, channel_id: integer, members: integer[], game_play_id: integer):boolean, string
 ---comment '发送聊天消息'
 ---param sender 发送者玩家id
 ---param chat_msg 聊天信息
@@ -445,6 +446,13 @@ function M:ApiRouter_SendChatMsg_ret(error_id, request_data, response_data)
     self:notify_event_handler('ret', 'Chat_SendChatMsg', error_id, request_data, response_data)
 end
 
+function M:ApiRouter_UpdateChannel_ret(error_id, request_data, response_data)
+    if error_id ~= 1 then
+        log.warn("ApiRouter_UpdateChannel_ret failed", error_id)
+    end
+    self:notify_event_handler('ret', 'Chat_UpdateChannel', error_id, request_data, response_data)
+end
+
 ---注册客户端回包
 ---@param error_id integer 错误id
 ---@param request_data table 请求消息
@@ -510,15 +518,28 @@ function M:NotifyBattleInfo(data)
 end
 
 ---批量信息通知
+local function notify_chat_messages(self, messages, source)
+    if type(messages) ~= 'table' or messages[1] == nil then
+        log.warn(source .. " missing chat messages")
+        return
+    end
+    for _, value in ipairs(messages) do
+        self:notify_event_handler("chat", { arg1 = value })
+    end
+end
+
+function M:NotifyWorldChat(data)
+    notify_chat_messages(self, data.arg3, "NotifyWorldChat")
+end
+
 function M:NotifyMultiChat(data)
     print("notify_multi_chat ====================")
     printTable(data)
-    for _, value in ipairs(data.arg1) do
-        local chatValue = {
-            arg1 = value
-        }
-        self:notify_event_handler("chat", chatValue)
-    end
+    notify_chat_messages(self, data.arg1, "NotifyMultiChat")
+end
+
+function M:NotifyPushMultiChat(data)
+    notify_chat_messages(self, data.arg2, "NotifyPushMultiChat")
 end
 -------------------推送消息-------------------
 

@@ -53,6 +53,7 @@ end
 
 local function new_bob(send_ok, send_err, in_team)
     local sent
+    local channel_update
     local events = {}
     local team_info
     if in_team ~= false then
@@ -65,9 +66,13 @@ local function new_bob(send_ok, send_err, in_team)
         message_history = {},
         request_handlers = {},
         team_info = team_info,
+        game_play_id_num = 190356,
     }, { __index = Bob })
 
     bob.client = {
+        Team_Login = function()
+            return true
+        end,
         ApiRouter_SendChatMsg = function(_, sender, message, channel_type, dst_id, flag)
             sent = {
                 sender = sender,
@@ -78,13 +83,23 @@ local function new_bob(send_ok, send_err, in_team)
             }
             return send_ok, send_err
         end,
+        ApiRouter_UpdateChannel = function(_, op_type, channel_type, channel_id, members, game_play_id)
+            channel_update = {
+                op_type = op_type,
+                channel_type = channel_type,
+                channel_id = channel_id,
+                members = members,
+                game_play_id = game_play_id,
+            }
+            return true
+        end,
     }
     bob.event_notify = function(_, event, data)
         events[#events + 1] = { event = event, data = data }
     end
 
     return bob, function()
-        return sent, events
+        return sent, events, channel_update
     end
 end
 
@@ -96,6 +111,50 @@ local function complete_chat_request(bob, sent, errid, ret1)
         arg4 = sent.dst_id,
         arg5 = sent.flag,
     }, { ret1 = ret1 })
+end
+
+do
+    local bob, result = new_bob(true)
+    local callback_result
+    local callback_error
+
+    bob:subscribe_world_chat(function(value, err)
+        callback_result = value
+        callback_error = err
+    end)
+
+    local _, _, update = result()
+    assert_equal(update.op_type, 2, 'world subscription operation')
+    assert_equal(update.channel_type, 5, 'world subscription channel')
+    assert_equal(update.channel_id, 10000, 'world subscription id')
+    assert_equal(update.members[1], 101, 'world subscription member')
+    assert_equal(update.game_play_id, 190356, 'world subscription gameplay')
+
+    bob:notify_ret('Chat_UpdateChannel', 1, {}, { ret1 = 0 })
+    assert_equal(callback_result, 0, 'world subscription result')
+    assert_equal(callback_error, nil, 'world subscription error')
+end
+
+do
+    local bob, result = new_bob(true)
+    local login_result
+    local login_error
+
+    bob:request_login(function(value, err)
+        login_result = value
+        login_error = err
+    end)
+    local _, _, update_before_login = result()
+    assert_equal(update_before_login, nil, 'subscription waits for login response')
+
+    bob:notify_ret('Team_Login', 1, {}, { ret1 = 0 })
+    local _, _, update_after_login = result()
+    assert_equal(update_after_login.channel_type, 5, 'login triggers world subscription')
+    assert_equal(login_result, nil, 'login waits for subscription response')
+
+    bob:notify_ret('Chat_UpdateChannel', 1, {}, { ret1 = 0 })
+    assert_equal(login_result, 0, 'login result after subscription')
+    assert_equal(login_error, nil, 'login error after subscription')
 end
 
 do

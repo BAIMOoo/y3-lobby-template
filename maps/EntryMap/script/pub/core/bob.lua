@@ -45,6 +45,10 @@ local leave_reason = {
 ---@overload fun():Bob
 local M = Class 'Bob'
 
+local CHANNEL_OP_JOIN = 2
+local WORLD_CHANNEL_TYPE = 5
+local WORLD_CHANNEL_ID = 10000
+
 Extends('Bob', 'CustomEvent')
 Extends('Bob', 'GCHost')
 
@@ -385,7 +389,43 @@ function M:request_login(done)
         }
         log.debug('【BOB】Team_Login', y3.inspect(data))
         self.client:Team_Login(data)
-    end, done)
+    end, function(result, err)
+        if err then
+            done(nil, err)
+            return
+        end
+        self:subscribe_world_chat(function(_, subscribe_err)
+            if subscribe_err then
+                done(nil, subscribe_err)
+                return
+            end
+            done(result, nil)
+        end)
+    end)
+end
+
+---@private
+---@param done Bob.Receiver
+function M:subscribe_world_chat(done)
+    self:request('Chat_UpdateChannel', function()
+        self.client:ApiRouter_UpdateChannel(
+            CHANNEL_OP_JOIN,
+            WORLD_CHANNEL_TYPE,
+            WORLD_CHANNEL_ID,
+            { self.aid },
+            self.game_play_id_num
+        )
+    end, function(result, err)
+        if err then
+            done(nil, err)
+            return
+        end
+        if result ~= nil and result ~= 0 and result ~= 'default_ErrCode' then
+            done(nil, result)
+            return
+        end
+        done(result, nil)
+    end)
 end
 
 ---@private
@@ -835,8 +875,8 @@ function M:send_world_chat(message)
     return self.client:ApiRouter_SendChatMsg(
         self.aid
         , message
-        , 5
-        , 10000
+        , WORLD_CHANNEL_TYPE
+        , WORLD_CHANNEL_ID
         , 0
     )
 end
