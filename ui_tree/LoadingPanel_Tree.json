@@ -1,0 +1,27 @@
+{
+  "name": "LoadingPanel",
+  "uid": "aa7ea525-8c73-4585-a6b6-ac706cf0e2f6",
+  "type": 2,
+  "children": [
+    {
+      "name": "loading_background",
+      "uid": "e080b5db-a796-4669-8146-a20b99e99120",
+      "type": 4
+    },
+    {
+      "name": "loading_bar_percent",
+      "uid": "d499d639-48d1-43a5-b25c-a33920f95488",
+      "type": 5
+    },
+    {
+      "name": "label_percent",
+      "uid": "bc56ae59-3271-4729-beb8-28edcc544484",
+      "type": 3
+    },
+    {
+      "name": "loading...",
+      "uid": "dd9f4908-e838-489a-a24a-c39a2c7dba92",
+      "type": 3
+    }
+  ]
+}

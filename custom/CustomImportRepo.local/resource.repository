@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Repository>
+<Items>
+<Item><Type>Texture</Type><Flags>256</Flags><GUID>3e048319-f7fe-4bb2-ae79-41ff30d6bd4c</GUID><Package>ui</Package><Class>Texture2D</Class><Name>new_independ_billboard_batch_ui_0</Name><Annotation><SourcePath>D:/kk_.2576613/temp.png</SourcePath><CreationTime>1783913566</CreationTime><MD5>24fee839c31a7ae96985e24eaf8d16fa</MD5></Annotation></Item>
+</Items>
+</Repository>

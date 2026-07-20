@@ -1,0 +1,17 @@
+{
+  "name": "win",
+  "uid": "d4c01f64-7413-4c8e-b0e5-4297d4a59c7a",
+  "type": 2,
+  "children": [
+    {
+      "name": "image_8",
+      "uid": "cda48d2c-2946-4226-9022-90b64cb13609",
+      "type": 4
+    },
+    {
+      "name": "button_6",
+      "uid": "c0d8021a-a41c-4aad-a516-ecdf03e74cb9",
+      "type": 1
+    }
+  ]
+}

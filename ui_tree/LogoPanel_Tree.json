@@ -1,0 +1,12 @@
+{
+  "name": "LogoPanel",
+  "uid": "f09f15f5-e2d0-441e-be6f-325a88472a01",
+  "type": 2,
+  "children": [
+    {
+      "name": "kk_logo",
+      "uid": "812cfb14-5e0e-4607-8331-9110331a648e",
+      "type": 4
+    }
+  ]
+}

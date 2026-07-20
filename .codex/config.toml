@@ -1,0 +1,8 @@
+[mcp_servers.y3-helper]
+url = "http://127.0.0.1:8766/mcp"
+
+[mcp_servers.y3editor]
+url = "http://127.0.0.1:8765/mcp"
+
+[mcp_servers.y3runtime]
+url = "http://127.0.0.1:8767/mcp"

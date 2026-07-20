@@ -1,0 +1,70 @@
+[
+ {
+  "name": "code_ui_custom_panel_tree", 
+  "key": 2147483647, 
+  "group": [
+   {
+    "__tuple__": true, 
+    "items": [
+     "673ae1e9-3969-490d-921f-fb11dba703a6", 
+     "panel_1"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "e80799be-ab41-413a-a888-dd1767c8074e", 
+     "BobTestUI"
+    ]
+   }
+  ]
+ }, 
+ {
+  "name": "code_ui_preset_panel_tree", 
+  "key": 2147483646, 
+  "group": [
+   {
+    "__tuple__": true, 
+    "items": [
+     "33f0362d-5a70-45e2-850b-d89082015a64", 
+     "CommonTip"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "ba9bec29-6a9d-47f3-a343-e4fe081e58dc", 
+     "GameHUD"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "aa7ea525-8c73-4585-a6b6-ac706cf0e2f6", 
+     "LoadingPanel"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "f09f15f5-e2d0-441e-be6f-325a88472a01", 
+     "LogoPanel"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "f5e50920-7b3d-4076-b6a8-599b70783552", 
+     "loss"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "d4c01f64-7413-4c8e-b0e5-4297d4a59c7a", 
+     "win"
+    ]
+   }
+  ]
+ }
+]

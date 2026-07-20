@@ -1,0 +1,3 @@
+-- 游戏启动后会自动运行此文件
+-- 请到vscode插件商城下载"Y3开发助手"插件，内置详细lua开发教程及lua开发套件
+-- github地址：https://github.com/y3-editor/y3-lualib.git

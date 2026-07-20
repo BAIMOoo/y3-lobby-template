@@ -1,0 +1,14 @@
+{
+    "adapt_mode":  2,
+    "auto_create":  true,
+    "children":  [
+
+                 ],
+    "name":  "BobTestUI",
+    "opacity":  1.0,
+    "script_name":  "",
+    "type":  2,
+    "uid":  "e80799be-ab41-413a-a888-dd1767c8074e",
+    "visible":  true,
+    "zorder":  9999
+}

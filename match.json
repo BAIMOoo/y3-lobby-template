@@ -1,0 +1,18 @@
+[
+    {
+        "diffuse_time": [
+            2
+        ], 
+        "game_mode": 1002, 
+        "level_id": "172371058548994502264384971909138463342", 
+        "sections": [
+            {
+                "max_score": 6900, 
+                "min_player_num": 2
+            }
+        ], 
+        "teams": [
+            2
+        ]
+    }
+]
