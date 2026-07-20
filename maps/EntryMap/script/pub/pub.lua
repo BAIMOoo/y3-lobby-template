@@ -10,19 +10,7 @@ local DEFAULT_MAX_PLAYER = EXPECTED_MATCH_PLAYERS
 local join_team_id
 local pending_ready_actions = {}
 local flush_ready_actions
-
-local token_data = {
-    'abc7c554881e4bc6c63e9bfbb41b11ac443f465fc007dcdfa5fc237d1185a7576b91f8d4eb75aca71d90ef1a131e27a0',
-    'f88e5ea4c72cb2b8ff73af8180c19d01720ea4a85bf40d3637dcd9d324ebd11b9b7e50bbed7c2e4b2cbccc3c08c34474',
-    'a459c1d8830a205d7d2c24088853e56160f0a8fbb7dc69e3aeaef75f478fef3f2ff225a6b18ef3d69ff6297f3bc82e20',
-    'b66bff9b5503ec12db19b90cd1d336e0fbdf70894da9bc30e337fcc5cc8a5993010375bb078897b233e98bc5f42a8afe',
-    '13edda22230531b0709d65e4e424a20b4e38102efb45bf6a3fa8c9b7dc475e87dad1b9fc4170d114a4a25f419480fde9',
-    'ce423fcb81cd248889e797101a128ec956eb148693b167d7c868316b6ba2cd78bf69294c46f3bc4c6dbecc0ecbb94df3',
-    '4ca8df84a1b81d732a86232159053034d7e32059b46b33617d004d1e9629701e6b22a42742b7be00c2d867eb5acfe39e',
-    'd8052f14fd938c87c6880ccfa72bbb9173226ef4e0f3d80f3a0f9cf2f5d0333796216ad4d63cc88d9611a3a4f9513dc6',
-    '8897a17ea860ba57da7005087fdc8e4e5c99a0b536c169f64c25f955365817c4231c7e2f8d9db9d875bfb9f309a0839b',
-    '05337c7141257b34a05186ac52d1c6e19023d75fa1bf88a1f4721c8588811e03fe72fe8e4dfb88f4d0b80a4e5249b86f',
-}
+local runtime_token = require 'pub.runtime_token'
 
 local function get_dungeon_info()
     if GameAPI.get_dungeon_info then
@@ -157,6 +145,26 @@ local function configure_network(bob)
     log.debug('[MatchTest] match server:', env, bob.ip, bob.port)
 end
 
+local function configure_debug_identity(bob)
+    local local_player = y3.player.get_local()
+    local p_id = local_player:get_id()
+    bob.name = local_player:get_name()
+    bob.aid = math.tointeger(tostring(y3.hash(bob.name)) .. tostring(p_id))
+
+    local token, expires_at_or_error = runtime_token.generate(bob.aid, os.time())
+    if not token then
+        log.error('[MatchTest] runtime token generation failed:', expires_at_or_error)
+        return false
+    end
+
+    bob.token = token
+    match_log('[MatchTest] runtime token generated:',
+        'aid=', bob.aid,
+        'expires_at=', expires_at_or_error,
+        'token_length=', #token)
+    return true
+end
+
 local function create_bob(in_game)
     if BOB then
         Delete(BOB)
@@ -175,12 +183,8 @@ local function create_bob(in_game)
     end
     bob.game_play_id_num = game_play_id_num or bob.game_play_id_num
 
-    if y3.game.is_debug_mode(true) then
-        local local_player = y3.player.get_local()
-        local p_id = local_player:get_id()
-        bob.name = local_player:get_name()
-        bob.aid = math.tointeger(tostring(y3.hash(bob.name)) .. tostring(p_id))
-        bob.token = token_data[p_id] or bob.token
+    if y3.game.is_debug_mode(true) and not configure_debug_identity(bob) then
+        return bob
     end
 
     configure_network(bob)
