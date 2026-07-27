@@ -76,6 +76,27 @@ client:ApiRouter_UpdateChannel_ret(1, { arg3 = 10000 }, { ret1 = 0 })
 assert_equal(events[4][1], 'ret', 'subscription return event')
 assert_equal(events[4][2], 'Chat_UpdateChannel', 'subscription return method')
 
+local delete_request = { arg1 = 201 }
+local delete_response = { ret1 = 0 }
+client:Team_DelPlayerInfo_ret(1, delete_request, delete_response)
+assert_equal(events[5][1], 'ret', 'delete player return event')
+assert_equal(events[5][2], 'Team_DelPlayerInfo', 'delete player return method')
+assert_equal(events[5][4], delete_request, 'delete player request bridge')
+assert_equal(events[5][5], delete_response, 'delete player response bridge')
+
+local shutdown_count = 0
+client.message_handler = {
+    shutdown = function()
+        shutdown_count = shutdown_count + 1
+    end,
+}
+assert_equal(client:close('test exit'), true, 'client first close')
+assert_equal(client:close('test exit again'), false, 'client repeated close')
+assert_equal(shutdown_count, 1, 'client shutdown once')
+assert_equal(client:start(), false, 'closed client cannot restart')
+assert_equal(client:do_disconnect(), true, 'closed client accepts disconnect notification')
+assert_equal(shutdown_count, 1, 'disconnect notification does not reconnect or shutdown again')
+
 local proto_desc = dofile('maps/EntryMap/script/pub/core/proto/proto_desc.lua')
 local client_push = proto_desc.ret[3847458462905599201]
 assert_equal(client_push[8].method_name, 'NotifyWorldChat', 'world push method index')

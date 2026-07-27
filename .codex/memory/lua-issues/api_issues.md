@@ -317,3 +317,45 @@ local M = {}
 ---
 
 *最后更新: 2026-04-20*
+
+---
+
+## 11. 私人副本返回大厅不能只切关卡
+
+### 错误用法
+```lua
+y3.game.switch_level(LOBBY_LEVEL_ID)
+```
+
+### 正确用法
+```lua
+y3.player.with_local(function(local_player)
+    local_player.handle:request_create_private_dungeon(LOBBY_LEVEL_ID, 1001, 1)
+end)
+```
+
+**原因**：`switch_level` 只在当前私人副本实例内更换关卡数据，不会退出 `1003` 副本模式。返回大厅应参考正式项目的 `reset_game`，创建 `1001` 模式的单人大厅实例。当前项目大厅和副本使用不同关卡，因此目标必须显式传 `EntryMap` UUID。
+
+**参考实现**：`F:/release/maps/battle_ground001/script/util/dm37_eca_helper.lua:672`
+
+*补充时间: 2026-07-23*
+
+---
+
+## 12. 可补人私人副本不能按单人容量创建
+
+### 错误用法
+```lua
+local_player.handle:request_create_private_dungeon(level_id, game_mode, 1)
+```
+
+### 正确用法
+```lua
+local_player.handle:request_create_private_dungeon(level_id, game_mode, expected_players)
+```
+
+**原因**：`max_player` 是房间总容量。传 `1` 后创建者进入即占满房间，即使 `can_add_in_time` 仍在补人时间窗内，其他玩家也无法通过 `space_id` 加入。
+
+**来源**：`maps/EntryMap/script/y3/meta/role.lua:574-579`
+
+*补充时间: 2026-07-27*

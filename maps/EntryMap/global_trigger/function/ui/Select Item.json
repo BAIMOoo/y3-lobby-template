@@ -509,7 +509,7 @@
             }, 
             "trigger_id": 1872433179, 
             "trigger_name": "t1", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {
                     "ITEM_ENTITY": {}, 
@@ -633,7 +633,7 @@
     }, 
     "trigger_id": 671428624, 
     "trigger_name": "Select Item", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "DYNAMIC_TRIGGER_INSTANCE": {

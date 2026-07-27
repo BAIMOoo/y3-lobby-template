@@ -1289,7 +1289,7 @@
     "p_trigger_id": null, 
     "trigger_id": 718082063, 
     "trigger_name": "Bind Unit's Ability Button", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

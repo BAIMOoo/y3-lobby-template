@@ -830,7 +830,7 @@
             "p_trigger_id": 333193219, 
             "trigger_id": 1897074738, 
             "trigger_name": "minimap_btn2", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -884,7 +884,7 @@
             "p_trigger_id": 333193219, 
             "trigger_id": 1913552945, 
             "trigger_name": "minimap_btn1", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -1040,7 +1040,7 @@
             "p_trigger_id": 333193219, 
             "trigger_id": 2096021518, 
             "trigger_name": "Open Bag", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -1050,7 +1050,7 @@
     }, 
     "trigger_id": 333193219, 
     "trigger_name": "Init Main UI Event Handler", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "BOOLEAN": {

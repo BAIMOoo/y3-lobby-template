@@ -2220,7 +2220,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1425182768, 
     "trigger_name": "Refresh Shop Tab", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

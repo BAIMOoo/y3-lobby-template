@@ -1,21 +1,32 @@
 ﻿local LEVEL_ID = '50377054694119407947881484918402159964'
 local LOCAL_PRIVATE_LEVEL_ID = '25e6448f-7e73-11f1-88ae-03dc5a85955c'
+local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
 -- 上传平台后必须填写真实的玩法固定ID；不能使用Bob内核兜底的10000。
 local GAME_PLAY_ID_OVERRIDE = 190356
 -- pre环境测试时先强制走pre匹配服；验证完成后可改成 nil 恢复自动识别。
 local MATCH_ENV_OVERRIDE = 'pre'
-local DEFAULT_GAME_MODE = 1002
+local PLATFORM_LOBBY_GAME_MODE = 0
+local LOBBY_GAME_MODE = 1001
+local MATCH_GAME_MODE = 1002
+local PRIVATE_GAME_MODE = 1003
 local EXPECTED_MATCH_PLAYERS = 2
 local DEFAULT_MAX_PLAYER = EXPECTED_MATCH_PLAYERS
+-- DungeonPlayerField.version 是多人副本 RPC 的必填字段，当前协议版本固定为 2.0。
+local DUNGEON_PLAYER_VERSION = '2.0'
 local join_team_id
 local pending_ready_actions = {}
 local flush_ready_actions
+local exit_in_progress = false
 local runtime_token = require 'pub.runtime_token'
 
 local function get_dungeon_info()
     if GameAPI.get_dungeon_info then
         return GameAPI.get_dungeon_info()
     end
+end
+
+local function normalize_dungeon_token(token)
+    return tostring(token or ''):match('^%s*(.-)%s*$')
 end
 
 local function safe_inspect(value)
@@ -50,13 +61,20 @@ local function get_current_mode_id()
     return math.tointeger(mode) or mode or 0
 end
 
-local function get_mode_label(mode)
+local function is_lobby_mode(mode)
     mode = math.tointeger(mode) or mode
-    if mode == 1001 then
+    return mode == PLATFORM_LOBBY_GAME_MODE or mode == LOBBY_GAME_MODE
+end
+
+local function get_mode_label(mode)
+    if is_lobby_mode(mode) then
         return 'LOBBY MODE / 大厅模式'
     end
-    if mode == 1002 then
-        return 'BATTLE MODE / 对局模式'
+    if mode == MATCH_GAME_MODE then
+        return 'MATCH BATTLE / 匹配对局'
+    end
+    if mode == PRIVATE_GAME_MODE then
+        return 'PRIVATE DUNGEON / 私人副本'
     end
     return 'UNKNOWN MODE / 未知模式'
 end
@@ -247,8 +265,7 @@ end
 local function run_when_ready(name, action)
     local bob = ensure_bob(false)
     if is_bob_ready(bob) then
-        action(bob)
-        return
+        return action(bob)
     end
 
     match_log('[MatchTest]', name, 'waiting for BOB ready...')
@@ -256,6 +273,7 @@ local function run_when_ready(name, action)
         name = name,
         action = action,
     }
+    return true
 end
 
 flush_ready_actions = function()
@@ -320,6 +338,39 @@ function MatchTestSetJoinTeamId(team_id)
     match_log('[MatchTest] join team id set:', join_team_id or 0)
 end
 
+---获取当前副本口令。私人副本的 space_id 可传给大厅玩家用于中途加入。
+---@return string
+function MatchTestGetDungeonToken()
+    local info = get_dungeon_info()
+    return info and normalize_dungeon_token(info.space_id) or ''
+end
+
+---通过副本口令加入一个仍在补人时间窗内的私人副本。
+---@param token string
+---@return boolean, string?
+function MatchTestJoinPrivateDungeon(token)
+    token = normalize_dungeon_token(token)
+    if token == '' then
+        return false, '请输入副本口令'
+    end
+    if MatchTestIsBattleContext() then
+        return false, '当前已在副本中'
+    end
+
+    local requested = false
+    y3.player.with_local(function(local_player)
+        requested = true
+        match_log('[MatchTest] request join private dungeon:',
+            'player=', local_player:get_name(),
+            'token=', token)
+        local_player.handle:request_join_private_dungeon(token)
+    end)
+    if not requested then
+        return false, '未找到本地玩家'
+    end
+    return true
+end
+
 local function parse_team_command(message)
     message = tostring(message or '')
     local command, team_id = message:match('^%.(%S+)%s+(%d+)%s*$')
@@ -352,32 +403,173 @@ local function parse_action_command(message)
 end
 
 function MatchTestLeaveTeam()
-    run_when_ready('leave team', function(bob)
-        bob:leave_team()
+    return run_when_ready('leave team', function(bob)
+        return bob:leave_team()
+    end)
+end
+
+local function parse_dungeon_join_command(message)
+    message = tostring(message or '')
+    local command, token = message:match('^%.(%S+)%s+(%S+)%s*$')
+    if not command or not token then
+        return
+    end
+    command = string.lower(command)
+    if command ~= 'joinprivate' and command ~= 'joindungeon' then
+        return
+    end
+    return normalize_dungeon_token(token)
+end
+
+---真正退出游戏；切图和返回大厅不得调用此入口。
+function MatchTestExitGame()
+    if exit_in_progress then
+        return false, '正在退出游戏'
+    end
+
+    local has_local_player = false
+    y3.player.with_local(function(local_player)
+        has_local_player = true
+        exit_in_progress = true
+        local bob = BOB
+        if not bob or not IsValid(bob) then
+            match_log('[MatchTest] exit game: BOB unavailable, exit directly')
+            local_player:exit_game()
+            return
+        end
+
+        match_log('[MatchTest] exit game: cleanup started')
+        bob:cleanup_before_exit(function(ok, reason)
+            match_log('[MatchTest] exit game: cleanup finished:',
+                'ok=', tostring(ok),
+                'reason=', reason or 'nil')
+            if bob == BOB and IsValid(bob) then
+                Delete(bob)
+                BOB = nil
+            end
+            local_player:exit_game()
+        end)
+    end)
+
+    if not has_local_player then
+        return false, '未找到本地玩家'
+    end
+    return true
+end
+
+local function find_team_member(bob, target_aid)
+    target_aid = math.tointeger(target_aid)
+    if not target_aid or not bob.team_info then
+        return nil
+    end
+    for _, member in ipairs(bob.team_info.members or {}) do
+        if math.tointeger(member.aid) == target_aid then
+            return member
+        end
+    end
+end
+
+local function validate_team_management(bob, target_aid)
+    if not bob:is_in_team() then
+        return false, '当前不在队伍中'
+    end
+    if not bob:is_captain() then
+        return false, '只有队长可以执行该操作'
+    end
+    if bob:is_matching() or bob:is_launching() then
+        return false, '匹配或启动中不能管理队伍'
+    end
+    if target_aid == nil then
+        return true
+    end
+    target_aid = math.tointeger(target_aid)
+    if not target_aid then
+        return false, '请输入有效的成员 AID'
+    end
+    if target_aid == math.tointeger(bob.aid) then
+        return false, '不能对自己执行该操作'
+    end
+    if not find_team_member(bob, target_aid) then
+        return false, '目标玩家不在当前队伍中'
+    end
+    return true, nil, target_aid
+end
+
+function MatchTestDismissTeam()
+    return run_when_ready('dismiss team', function(bob)
+        local ok, reason = validate_team_management(bob)
+        if not ok then
+            match_log('[MatchTest] dismiss team skipped:', reason)
+            return false, reason
+        end
+        return bob:dismiss_team()
+    end)
+end
+
+function MatchTestChangeCaptain(target_aid)
+    return run_when_ready('change captain', function(bob)
+        local ok, reason, numeric_aid = validate_team_management(bob, target_aid)
+        if not ok then
+            match_log('[MatchTest] change captain skipped:', reason)
+            return false, reason
+        end
+        return bob:change_captain(numeric_aid)
+    end)
+end
+
+function MatchTestKickMember(target_aid)
+    return run_when_ready('kick member', function(bob)
+        local ok, reason, numeric_aid = validate_team_management(bob, target_aid)
+        if not ok then
+            match_log('[MatchTest] kick member skipped:', reason)
+            return false, reason
+        end
+        return bob:team_kick(numeric_aid)
     end)
 end
 
 function MatchTestStart(score)
     run_when_ready('start match', function(bob)
-        bob:start_match(DEFAULT_GAME_MODE, math.tointeger(score))
+        bob:start_match(MATCH_GAME_MODE, math.tointeger(score))
     end)
 end
 
 function MatchTestCancel()
-    run_when_ready('cancel match', function(bob)
-        bob:cancel_match()
+    return run_when_ready('cancel match', function(bob)
+        if not bob:is_matching() then
+            local reason = '当前未在匹配中'
+            match_log('[MatchTest] cancel match skipped:', reason)
+            return false, reason
+        end
+        if bob:is_in_team() and not bob:is_captain() then
+            local reason = '只有队长可以取消匹配'
+            match_log('[MatchTest] cancel match skipped:', reason)
+            return false, reason
+        end
+        return bob:cancel_match()
     end)
 end
 
 function MatchTestStartPrivate()
-    run_when_ready('rpc private dungeon', function(bob)
+    return run_when_ready('rpc private dungeon', function(bob)
+        if not bob:is_in_team() then
+            match_log('[MatchTest] F7 skipped: not in team')
+            return false, '请先创建或加入队伍'
+        end
+        if not bob:is_captain() then
+            match_log('[MatchTest] F7 skipped: only captain can start private dungeon:',
+                'team=', bob.team_info and bob.team_info.team_id or 0,
+                'captain=', bob.team_info and bob.team_info.captain or 0,
+                'requester=', bob.aid)
+            return false, '只有队长可以进入多人副本'
+        end
         if bob:is_launching() then
             match_log('[MatchTest] F7 skipped: launching')
-            return
+            return false, '游戏正在启动'
         end
         if bob:is_matching() then
             match_log('[MatchTest] F7 skipped: matching')
-            return
+            return false, '队伍正在匹配'
         end
 
         local team_count, max_count = bob:get_player_count()
@@ -386,8 +578,8 @@ function MatchTestStartPrivate()
                 'team=', bob.team_info and bob.team_info.team_id or 0,
                 'count=', tostring(team_count) .. '/' .. tostring(max_count),
                 'need=', EXPECTED_MATCH_PLAYERS,
-                'mode=', DEFAULT_GAME_MODE)
-            return
+                'mode=', PRIVATE_GAME_MODE)
+            return false, '队伍人数不足'
         end
 
         match_log('[MatchTest] F7 update player info before private dungeon')
@@ -398,48 +590,103 @@ function MatchTestStartPrivate()
                 return
             end
 
+            if not bob:is_in_team() or not bob:is_captain() then
+                match_log('[MatchTest] F7 skipped after update: requester is no longer captain')
+                return
+            end
+
             local refreshed_team_count, refreshed_max_count = bob:get_player_count()
             if refreshed_team_count < EXPECTED_MATCH_PLAYERS then
                 match_log('[MatchTest] F7 skipped after update: not enough players for private dungeon:',
                     'team=', bob.team_info and bob.team_info.team_id or 0,
                     'count=', tostring(refreshed_team_count) .. '/' .. tostring(refreshed_max_count),
                     'need=', EXPECTED_MATCH_PLAYERS,
-                    'mode=', DEFAULT_GAME_MODE)
+                    'mode=', PRIVATE_GAME_MODE)
                 return
             end
 
             local players = {}
             for _, player_info in pairs(bob.team_info.members) do
-                players[#players + 1] = { aid = tostring(player_info.aid) }
+                players[#players + 1] = {
+                    aid = tostring(player_info.aid),
+                    version = DUNGEON_PLAYER_VERSION,
+                }
             end
 
             local dungeon_info = {
                 game_map_id = bob.map_id,
                 level_id = bob.level_id,
-                game_mode = DEFAULT_GAME_MODE,
+                game_mode = PRIVATE_GAME_MODE,
             }
             match_log('[MatchTest] F7 request rpc private dungeon:',
                 'team=', bob.team_info and bob.team_info.team_id or 0,
                 'players=', tostring(#players) .. '/' .. tostring(refreshed_max_count),
                 'need=', EXPECTED_MATCH_PLAYERS,
+                'version=', DUNGEON_PLAYER_VERSION,
                 'map=', dungeon_info.game_map_id,
                 'level=', dungeon_info.level_id,
                 'mode=', dungeon_info.game_mode)
-            bob:start_privat_dungeon_game(dungeon_info, players)
+            local sent, reason = bob:start_privat_dungeon_game(dungeon_info, players)
+            if sent == false then
+                match_log('[MatchTest] F7 request rejected:', reason or 'unknown')
+            end
         end)
+        return true
     end)
 end
 
-function MatchTestLocalPrivate()
+function MatchTestIsBattleContext()
+    local mode = get_current_mode_id()
+    if is_lobby_mode(mode) then
+        return false
+    end
+    if mode == MATCH_GAME_MODE or mode == PRIVATE_GAME_MODE then
+        return true
+    end
+    if y3.game.get_level then
+        return tostring(y3.game.get_level()) ~= LOBBY_LEVEL_ID
+    end
+    return false
+end
+
+function MatchTestReturnLobby()
+    local requested = false
     y3.player.with_local(function(local_player)
-        match_log('[MatchTest] F6 request local private dungeon:',
-            'player=', local_player:get_name(),
-            'level=', LOCAL_PRIVATE_LEVEL_ID,
-            'mode=', DEFAULT_GAME_MODE,
+        requested = true
+        match_log('[MatchTest] request lobby instance:',
+            'level=', LOBBY_LEVEL_ID,
+            'mode=', LOBBY_GAME_MODE,
             'max_player=', 1)
         ---@diagnostic disable-next-line: param-type-mismatch
-        local_player.handle:request_create_private_dungeon(LOCAL_PRIVATE_LEVEL_ID, DEFAULT_GAME_MODE, 1)
+        local_player.handle:request_create_private_dungeon(LOBBY_LEVEL_ID, LOBBY_GAME_MODE, 1)
     end)
+    if not requested then
+        return false, '未找到本地玩家'
+    end
+    return true
+end
+
+---创建一个允许另一名玩家通过口令中途加入的私人副本。
+---@return boolean, string?
+function MatchTestLocalPrivate()
+    local requested = false
+    y3.player.with_local(function(local_player)
+        requested = true
+        match_log('[MatchTest] F6 request joinable private dungeon:',
+            'player=', local_player:get_name(),
+            'level=', LOCAL_PRIVATE_LEVEL_ID,
+            'mode=', PRIVATE_GAME_MODE,
+            'max_player=', DEFAULT_MAX_PLAYER)
+        ---@diagnostic disable-next-line: param-type-mismatch
+        local_player.handle:request_create_private_dungeon(
+            LOCAL_PRIVATE_LEVEL_ID,
+            PRIVATE_GAME_MODE,
+            DEFAULT_MAX_PLAYER)
+    end)
+    if not requested then
+        return false, '未找到本地玩家'
+    end
+    return true
 end
 
 local function print_status()
@@ -447,7 +694,7 @@ local function print_status()
     local team_id = bob.team_info and bob.team_info.team_id or 0
     local team_count, max_count = bob:get_player_count()
     local text = string.format(
-        '[MatchTest] state=%s ready=%s aid=%s team=%s count=%s/%s matching=%s launching=%s join_team_id=%s',
+        '[MatchTest] state=%s ready=%s aid=%s team=%s count=%s/%s matching=%s launching=%s join_team_id=%s dungeon_token=%s',
         tostring(bob.state),
         tostring(is_bob_ready(bob)),
         tostring(bob.aid),
@@ -456,7 +703,8 @@ local function print_status()
         tostring(max_count),
         tostring(bob:is_matching()),
         tostring(bob:is_launching()),
-        tostring(join_team_id or 0)
+        tostring(join_team_id or 0),
+        MatchTestGetDungeonToken()
     )
     match_log('[MatchTest] status',
         'state=', bob.state,
@@ -466,7 +714,8 @@ local function print_status()
         'count=', tostring(team_count) .. '/' .. tostring(max_count),
         'matching=', bob:is_matching(),
         'launching=', bob:is_launching(),
-        'join_team_id=', join_team_id or 0)
+        'join_team_id=', join_team_id or 0,
+        'dungeon_token=', MatchTestGetDungeonToken())
     match_log(text)
 end
 
@@ -540,7 +789,7 @@ local function bind_test_hotkeys()
     end)
 
     match_log('[MatchTest] hotkeys: F2 reload F3 create-team F4 match F5 cancel F6 local-private F7 rpc-private F8 leave F9 status F10 join-preset-team')
-    match_log('[MatchTest] chat command: .team 123456 sets F10 team id; .joinnow 123456 joins immediately; .f6 runs local 1-player private; .f7 runs 2-player rpc private; .mode shows current mode')
+    match_log('[MatchTest] chat command: .team 123456 sets F10 team id; .joinnow 123456 joins team; .joinprivate TOKEN joins a running private dungeon; .f6/.f7 starts a dungeon; .mode shows current mode')
 end
 
 function ConnectVSCode()
@@ -553,11 +802,34 @@ y3.game:event('玩家-加入游戏', function(_, data)
     y3.player.with_local(function(local_player)
         if data.player == local_player then
             show_mode_banner(local_player, 'player-join')
-            if get_current_mode_id() == 1002 then
+            local mode = get_current_mode_id()
+            if mode == MATCH_GAME_MODE or mode == PRIVATE_GAME_MODE then
                 CreateBobInGame()
             else
                 CreateBobInLobby()
             end
+        end
+    end)
+end)
+
+-- 系统退出无法阻塞引擎，只做尽力清理；受控退出请使用 MatchTestExitGame。
+y3.game:event('玩家-离开游戏', function(_, data)
+    y3.player.with_local(function(local_player)
+        if data.player ~= local_player then
+            return
+        end
+        if not exit_in_progress then
+            match_log('[MatchTest] player exit event ignored: not a controlled exit')
+            return
+        end
+        local bob = BOB
+        if bob and IsValid(bob) then
+            match_log('[MatchTest] player exit event: best-effort cleanup')
+            bob:cleanup_before_exit(function(ok, reason)
+                match_log('[MatchTest] player exit cleanup finished:',
+                    'ok=', tostring(ok),
+                    'reason=', reason or 'nil')
+            end, 1)
         end
     end)
 end)
@@ -572,6 +844,14 @@ y3.game:event('玩家-发送消息', function(_, data)
             MatchTestSetJoinTeamId(team_id)
             if command == 'joinnow' then
                 MatchTestJoinTeam(team_id)
+            end
+            return
+        end
+        local dungeon_token = parse_dungeon_join_command(data.str1)
+        if dungeon_token then
+            local ok, reason = MatchTestJoinPrivateDungeon(dungeon_token)
+            if not ok then
+                match_log('[MatchTest] join private dungeon rejected:', reason)
             end
             return
         end

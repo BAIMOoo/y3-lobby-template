@@ -8,5 +8,5 @@
     "name": "MapName001", 
     "publish_name": "", 
     "theme": 1, 
-    "trigger_lazy_load": false
+    "trigger_lazy_load": true
 }

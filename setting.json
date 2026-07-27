@@ -5,6 +5,6 @@
     "m_v": false, 
     "steam_app_id": 0, 
     "use_layout_comp": true, 
-    "use_main_level_trigger_and_object": false, 
-    "use_main_level_ui": false
+    "use_main_level_trigger_and_object": true, 
+    "use_main_level_ui": true
 }

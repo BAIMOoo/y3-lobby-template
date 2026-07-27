@@ -15,7 +15,7 @@
     "place_units": [], 
     "split_save_trigger": false, 
     "split_save_trigger_txt": false, 
-    "trigger_upgrade_tag": 0, 
+    "trigger_upgrade_tag": 1, 
     "trigger_version": "1.2", 
     "use_layout_comp": true
 }

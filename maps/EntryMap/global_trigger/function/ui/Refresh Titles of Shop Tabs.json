@@ -1158,7 +1158,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1325858865, 
     "trigger_name": "Refresh Titles of Shop Tabs", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

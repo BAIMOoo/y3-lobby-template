@@ -1,14 +1,24 @@
 {
-    "172371058548994502264384971909138463342": {
+    "50377054694119407947881484918402159964": {
         "game_modes": {
-            "1001": {
-                "can_add_in_time": 1200, 
+            "1002": {
+                "can_add_in_time": 120, 
                 "enable_private": 1, 
                 "enable_public": 0, 
                 "max_player_num": 8
             }, 
-            "1002": {
+            "1003": {
                 "can_add_in_time": 120, 
+                "enable_private": 1, 
+                "enable_public": 0, 
+                "max_player_num": 8
+            }
+        }
+    }, 
+    "172371058548994502264384971909138463342": {
+        "game_modes": {
+            "1001": {
+                "can_add_in_time": 1200, 
                 "enable_private": 1, 
                 "enable_public": 0, 
                 "max_player_num": 8

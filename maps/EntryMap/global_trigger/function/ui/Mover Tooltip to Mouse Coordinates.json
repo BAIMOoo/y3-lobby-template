@@ -756,7 +756,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1039151122, 
     "trigger_name": "Mover Tooltip to Mouse Coordinates", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "FLOAT": {

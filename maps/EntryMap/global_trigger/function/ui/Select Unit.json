@@ -883,7 +883,7 @@
     "p_trigger_id": null, 
     "trigger_id": 568463368, 
     "trigger_name": "Select Unit", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "NEW_TIMER": {

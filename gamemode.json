@@ -5,6 +5,9 @@
         }, 
         "1002": {
             "desc": "\u5339\u914d\u6d4b\u8bd5"
+        }, 
+        "1003": {
+            "desc": "\u79c1\u4eba\u526f\u672c\u6d4b\u8bd5"
         }
     }, 
     "lobby": 0

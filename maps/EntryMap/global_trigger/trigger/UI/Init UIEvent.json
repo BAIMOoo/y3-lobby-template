@@ -5102,7 +5102,7 @@
             "p_trigger_id": 1496309785, 
             "trigger_id": 990195764, 
             "trigger_name": "fresh_sell_list", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {
                     "INTEGER": {
@@ -7367,7 +7367,7 @@
             "p_trigger_id": 1496309785, 
             "trigger_id": 2010271789, 
             "trigger_name": "store_tab_click", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {
                     "FLOAT": {
@@ -7732,7 +7732,7 @@
     }, 
     "trigger_id": 1496309785, 
     "trigger_name": "Init UIEvent", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

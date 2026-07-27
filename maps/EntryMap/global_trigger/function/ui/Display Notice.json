@@ -334,7 +334,7 @@
     "p_trigger_id": null, 
     "trigger_id": 828813355, 
     "trigger_name": "Display Notice", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "FLOAT": {

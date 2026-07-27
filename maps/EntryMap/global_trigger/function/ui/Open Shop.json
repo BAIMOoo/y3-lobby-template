@@ -3438,7 +3438,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1585119271, 
     "trigger_name": "Open Shop", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

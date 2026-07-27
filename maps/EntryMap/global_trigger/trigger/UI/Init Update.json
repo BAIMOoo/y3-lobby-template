@@ -3677,7 +3677,7 @@
             "p_trigger_id": 786112514, 
             "trigger_id": 384389137, 
             "trigger_name": "MOUSE MOVE", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -5514,7 +5514,7 @@
             "p_trigger_id": 786112514, 
             "trigger_id": 1023295507, 
             "trigger_name": "on_hero_create", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -5757,7 +5757,7 @@
             "p_trigger_id": 786112514, 
             "trigger_id": 1878274124, 
             "trigger_name": "on_click_hero_list", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -7059,7 +7059,7 @@
             "p_trigger_id": 786112514, 
             "trigger_id": 2132029460, 
             "trigger_name": "on_hero_delete", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {}, 
                 {}, 
@@ -7069,7 +7069,7 @@
     }, 
     "trigger_id": 786112514, 
     "trigger_name": "Init Update", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "BOOLEAN": {

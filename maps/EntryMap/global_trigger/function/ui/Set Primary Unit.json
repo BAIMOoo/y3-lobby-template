@@ -2301,7 +2301,7 @@
     "p_trigger_id": null, 
     "trigger_id": 2079805465, 
     "trigger_name": "Set Primary Unit", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

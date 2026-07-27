@@ -3358,7 +3358,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1559846928, 
     "trigger_name": "Select Unit Group", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {

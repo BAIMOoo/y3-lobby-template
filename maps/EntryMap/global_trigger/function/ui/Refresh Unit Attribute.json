@@ -7271,7 +7271,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1270726670, 
     "trigger_name": "Refresh Unit Attribute", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "NEW_TIMER": {

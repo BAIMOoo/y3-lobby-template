@@ -552,7 +552,7 @@
             }, 
             "trigger_id": 503767069, 
             "trigger_name": "t1_2", 
-            "valid": true, 
+            "valid": false, 
             "var_data": [
                 {
                     "ITEM_ENTITY": {}, 
@@ -565,7 +565,7 @@
     }, 
     "trigger_id": 1393229841, 
     "trigger_name": "Select Destructible", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "DESTRUCTIBLE_ENTITY": {

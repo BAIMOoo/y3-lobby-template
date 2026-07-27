@@ -2513,7 +2513,7 @@
     "p_trigger_id": null, 
     "trigger_id": 734306311, 
     "trigger_name": "Init Data", 
-    "valid": true, 
+    "valid": false, 
     "var_data": [
         {
             "INTEGER": {
