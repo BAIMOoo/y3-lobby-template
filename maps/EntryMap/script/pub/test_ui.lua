@@ -8,7 +8,7 @@ local PRIVATE_GAME_MODE = 1003
 local EXPECTED_PRIVATE_PLAYERS = 2
 local MAX_MEMBER_ROWS = 4
 local MAX_CHAT_LINES = 5
-local UI_LAYOUT_VERSION = 13
+local UI_LAYOUT_VERSION = 15
 
 local COLOR_TEXT = { 244, 234, 213, 255 }
 local COLOR_MUTED = { 197, 185, 159, 255 }
@@ -16,10 +16,10 @@ local COLOR_SUCCESS = { 117, 170, 156, 255 }
 local COLOR_WARNING = { 214, 168, 78, 255 }
 local COLOR_DANGER = { 217, 119, 99, 255 }
 local COLOR_BORDER = { 224, 196, 132, 82 }
-local COLOR_PANEL = { 30, 25, 18, 232 }
-local COLOR_PANEL_SOFT = { 35, 29, 21, 220 }
-local COLOR_PANEL_DEEP = { 21, 18, 14, 240 }
-local COLOR_INPUT = { 21, 28, 24, 245 }
+local COLOR_PANEL = { 30, 25, 18, 236 }
+local COLOR_PANEL_SOFT = { 35, 29, 21, 226 }
+local COLOR_PANEL_DEEP = { 21, 18, 14, 244 }
+local COLOR_BACKDROP = { 12, 14, 12, 142 }
 
 local runtime = rawget(_G, '__BOB_TEST_UI_RUNTIME') or {}
 _G.__BOB_TEST_UI_RUNTIME = runtime
@@ -29,6 +29,7 @@ if runtime.layout_version ~= UI_LAYOUT_VERSION then
         pcall(function() runtime.refresh_timer:remove() end)
     end
     for _, ui in ipairs({
+        runtime.backdrop,
         runtime.full_panel,
         runtime.status_bg,
         runtime.status_text,
@@ -45,11 +46,32 @@ if runtime.layout_version ~= UI_LAYOUT_VERSION then
     runtime.layout_version = UI_LAYOUT_VERSION
 end
 
+local PANEL_IMAGES = {
+    panel = 134217729,
+    soft = 134217730,
+    deep = 134217731,
+    input = 134217732,
+}
+
 local BUTTON_IMAGES = {
-    normal = 107525,
-    hover = 107526,
-    pressed = 107527,
-    disabled = 107528,
+    normal = {
+        normal = 134217733,
+        hover = 134217734,
+        pressed = 134217735,
+        disabled = 134217736,
+    },
+    primary = {
+        normal = 134217737,
+        hover = 134217738,
+        pressed = 134217739,
+        disabled = 134217740,
+    },
+    danger = {
+        normal = 134217741,
+        hover = 134217742,
+        pressed = 134217743,
+        disabled = 134217744,
+    },
 }
 
 local BUTTON_STATUSES = { '常态', '悬浮', '按下', '禁用' }
@@ -105,11 +127,27 @@ local function add_image(parent, x, y, width, height, image, color)
     return ui
 end
 
+local function enable_nine_slice(ui, inset)
+    ui:set_ui_9_enable(true)
+    ui:set_ui_9(inset, inset, inset, inset)
+    return ui
+end
+
+local function panel_image(color)
+    if color == COLOR_PANEL_SOFT then
+        return PANEL_IMAGES.soft
+    end
+    if color == COLOR_PANEL_DEEP then
+        return PANEL_IMAGES.deep
+    end
+    return PANEL_IMAGES.panel
+end
+
 local function add_panel(parent, x, y, width, height, color, accent)
-    add_image(parent, x, y, width, height, 109589, COLOR_BORDER)
-    local surface = add_image(parent, x + 1, y + 1, width - 2, height - 2, 109589, color or COLOR_PANEL)
+    local surface = enable_nine_slice(
+        add_image(parent, x, y, width, height, panel_image(color or COLOR_PANEL)), 8)
     if accent then
-        add_image(parent, x + 1, y + height - 4, width - 2, 3, 109589, COLOR_WARNING)
+        add_image(parent, x + 3, y + height - 3, width - 6, 2, 109589, COLOR_WARNING)
     end
     return surface
 end
@@ -129,31 +167,35 @@ local function add_text(parent, x, y, width, height, text, size, color, h, v)
     return ui
 end
 
-local function add_button(parent, x, y, width, height, text, callback)
+local function add_button(parent, x, y, width, height, text, callback, variant)
     local ui = parent:create_child('按钮')
+    local images = BUTTON_IMAGES[variant or 'normal'] or BUTTON_IMAGES.normal
     ui:set_anchor(0, 0)
     ui:set_pos(x, y)
     ui:set_ui_size(width, height)
-    ui:set_font_size(17)
-    ui:set_text_color(242, 246, 250, 255)
+    ui:set_font_size(14)
+    ui:set_text_color(247, 239, 221, 255)
     set_button_text(ui, text)
-    ui:set_btn_status_image(y3.const.UIButtonStatus['常态'], BUTTON_IMAGES.normal)
-    ui:set_btn_status_image(y3.const.UIButtonStatus['悬浮'], BUTTON_IMAGES.hover)
-    ui:set_btn_status_image(y3.const.UIButtonStatus['按下'], BUTTON_IMAGES.pressed)
-    ui:set_btn_status_image(y3.const.UIButtonStatus['禁用'], BUTTON_IMAGES.disabled)
+    ui:set_btn_status_image(y3.const.UIButtonStatus['常态'], images.normal)
+    ui:set_btn_status_image(y3.const.UIButtonStatus['悬浮'], images.hover)
+    ui:set_btn_status_image(y3.const.UIButtonStatus['按下'], images.pressed)
+    ui:set_btn_status_image(y3.const.UIButtonStatus['禁用'], images.disabled)
+    for _, status in ipairs(BUTTON_STATUSES) do
+        GameAPI.set_ui_btn_status_cap_insets(
+            runtime.player.handle, ui.handle, y3.const.UIButtonStatus[status], 8, 8, 8, 8)
+    end
     ui:add_local_event('左键-点击', callback)
     return ui
 end
 
 local function add_input(parent, x, y, width, height)
-    add_image(parent, x, y, width, height, 109589, COLOR_BORDER)
-    add_image(parent, x + 1, y + 1, width - 2, height - 2, 109589, COLOR_INPUT)
+    enable_nine_slice(add_image(parent, x, y, width, height, PANEL_IMAGES.input), 8)
     local ui = parent:create_child('输入框')
     ui:set_anchor(0, 0)
     ui:set_pos(x + 8, y + 2)
     ui:set_ui_size(width - 16, height - 4)
     ui:set_font_size(17)
-    ui:set_text_color(238, 242, 247, 255)
+    ui:set_text_color(238, 230, 212, 255)
     ui:set_text('')
     return ui
 end
@@ -315,6 +357,17 @@ local function refresh()
     runtime.battle_world_button:set_button_enable(ready)
     runtime.battle_chat_text:set_text(chat_history_text())
     runtime.battle_notice_text:set_text(runtime.battle_notice or '等待消息')
+    if runtime.expedition_phase_text then
+        runtime.expedition_phase_text:set_text(
+            launching and '启动中' or (matching and '匹配中' or '准备阶段'))
+    end
+    if runtime.action_team_text then
+        runtime.action_team_text:set_text(string.format(
+            '队伍就绪  %s/%s    当前身份  %s',
+            tostring(team_count),
+            tostring(max_count),
+            is_captain and '队长' or (in_team and '队员' or '单人')))
+    end
 
     local match_text = '开始匹配'
     local match_enabled = false
@@ -356,6 +409,7 @@ local function build_chat_panel(parent, x, y, options)
     panel:set_z_order(options.z_order or 0)
 
     add_panel(panel, 0, 0, width, height, COLOR_PANEL, true)
+    add_image(panel, 3, 330, width - 6, 57, 109589, COLOR_PANEL_SOFT)
     add_image(panel, 1, 329, width - 2, 1, 109589, COLOR_BORDER)
     add_text(panel, 18, 354, 112, 22, options.context_label, 13, COLOR_MUTED)
 
@@ -424,16 +478,21 @@ local function build(player)
     runtime.game_hud = y3.ui.get_ui(player, 'GameHUD')
     runtime.player = player
 
+    runtime.backdrop = add_image(root, 0, 0, 1920, 1080, 109589, COLOR_BACKDROP)
+    runtime.backdrop:set_intercepts_operations(false)
+    runtime.backdrop:set_z_order(-3000)
+
     runtime.status_bg = root:create_child('空节点')
     runtime.status_bg:set_anchor(0, 0)
-    runtime.status_bg:set_pos(24, 906)
-    runtime.status_bg:set_ui_size(700, 150)
+    runtime.status_bg:set_pos(24, 856)
+    runtime.status_bg:set_ui_size(860, 200)
     runtime.status_bg:set_z_order(9000)
-    add_panel(runtime.status_bg, 0, 0, 700, 150, COLOR_PANEL, true)
-    add_text(runtime.status_bg, 18, 120, 360, 20, 'BOBTESTUI · 战斗上下文', 12, COLOR_MUTED)
+    add_panel(runtime.status_bg, 0, 0, 860, 200, COLOR_PANEL, true)
+    add_text(runtime.status_bg, 18, 170, 360, 18, 'BOBTestUI · 战斗上下文', 11, COLOR_MUTED)
+    add_text(runtime.status_bg, 18, 136, 420, 30, '匹配系统测试状态', 20, COLOR_TEXT)
     runtime.status_text = add_text(
-        runtime.status_bg, 18, 14, 500, 100, '', 16, COLOR_TEXT, '左', '上')
-    runtime.return_button = add_button(runtime.status_bg, 540, 90, 140, 48, '返回初始关卡', function()
+        runtime.status_bg, 18, 14, 640, 110, '', 15, COLOR_TEXT, '左', '上')
+    runtime.return_button = add_button(runtime.status_bg, 680, 136, 160, 48, '返回初始关卡', function()
         safe_action('返回初始关卡', MatchTestReturnLobby)
         runtime.battle_notice = runtime.notice
         refresh()
@@ -456,7 +515,7 @@ local function build(player)
 
     runtime.exit_button = add_button(root, 0, 0, 150, 48, '退出游戏', function()
         runtime.exit_confirm_overlay:set_visible(true)
-    end)
+    end, 'danger')
     runtime.exit_button:set_relative_parent_pos('顶部', 24)
     runtime.exit_button:set_relative_parent_pos('右侧', 240)
     runtime.exit_button:set_z_order(10000)
@@ -476,7 +535,7 @@ local function build(player)
     runtime.exit_confirm_button = add_button(exit_confirm_panel, 258, 36, 180, 52, '确认退出', function()
         runtime.exit_confirm_overlay:set_visible(false)
         safe_action('退出游戏', MatchTestExitGame)
-    end)
+    end, 'danger')
     runtime.exit_confirm_overlay:set_visible(false)
 
     local panel = root:create_child('空节点')
@@ -486,35 +545,38 @@ local function build(player)
     panel:set_z_order(-1000)
     runtime.full_panel = panel
 
-    add_panel(panel, 24, 936, 1450, 120, COLOR_PANEL, true)
+    add_panel(panel, 24, 936, 430, 120, COLOR_PANEL, true)
     add_text(panel, 42, 1022, 280, 18, '方案 B · 沉浸远征', 12, COLOR_WARNING)
-    add_text(panel, 42, 978, 280, 38, 'BOB 匹配测试系统', 24, COLOR_TEXT)
-    add_text(panel, 42, 952, 280, 22, '组队大厅 · 完整测试控制台', 13, COLOR_MUTED)
+    add_text(panel, 42, 978, 320, 38, 'BOB 匹配测试系统', 24, COLOR_TEXT)
+    add_text(panel, 42, 952, 320, 22, '组队大厅 · 完整测试控制台', 13, COLOR_MUTED)
+
+    add_panel(panel, 470, 936, 1004, 120, COLOR_PANEL, true)
     runtime.status_values = {}
     local status_specs = {
-        { 'mode', '模式', 340, 994, 210 },
-        { 'player', '玩家', 558, 994, 260 },
-        { 'bob', 'BOB', 826, 994, 130 },
-        { 'login', '登录', 964, 994, 130 },
-        { 'aid', 'AID', 1102, 994, 350 },
-        { 'team', '队伍', 340, 946, 230 },
-        { 'count', '人数', 578, 946, 110 },
-        { 'match', '匹配', 696, 946, 180 },
-        { 'launch', '启动', 884, 946, 180 },
+        { 'mode', '模式', 488, 994, 150 },
+        { 'player', '玩家', 646, 994, 210 },
+        { 'bob', 'BOB', 864, 994, 105 },
+        { 'login', '登录', 977, 994, 105 },
+        { 'aid', 'AID', 1090, 994, 366 },
+        { 'team', '队伍', 488, 946, 210 },
+        { 'count', '人数', 706, 946, 100 },
+        { 'match', '匹配', 814, 946, 150 },
+        { 'launch', '启动', 972, 946, 150 },
     }
     for _, spec in ipairs(status_specs) do
-        add_image(panel, spec[3], spec[4], spec[5], 42, 109589, COLOR_PANEL_SOFT)
+        enable_nine_slice(add_image(panel, spec[3], spec[4], spec[5], 42, PANEL_IMAGES.soft), 8)
         add_text(panel, spec[3] + 10, spec[4] + 23, spec[5] - 20, 15, spec[2], 11, COLOR_MUTED, '左', '中')
         runtime.status_values[spec[1]] = add_text(
             panel, spec[3] + 10, spec[4] + 3, spec[5] - 20, 20, '', 14, COLOR_TEXT, '左', '中')
     end
 
-    add_panel(panel, 24, 250, 700, 666, COLOR_PANEL, true)
-    add_text(panel, 42, 874, 240, 26, '远征小队', 19, COLOR_WARNING)
-    add_text(panel, 520, 874, 186, 26, '队伍管理与成员状态', 12, COLOR_MUTED, '右', '中')
-    add_text(panel, 42, 836, 120, 22, '队伍编号', 13, COLOR_MUTED)
-    runtime.team_input = add_input(panel, 42, 790, 210, 42)
-    add_button(panel, 264, 790, 132, 42, '加入队伍', function()
+    runtime.team_panel = add_panel(panel, 24, 426, 520, 494, COLOR_PANEL, true)
+    add_image(panel, 27, 856, 514, 61, 109589, COLOR_PANEL_SOFT)
+    add_text(panel, 42, 878, 210, 26, '远征小队', 19, COLOR_WARNING)
+    add_text(panel, 334, 878, 190, 26, '队伍管理与成员状态', 12, COLOR_MUTED, '右', '中')
+    add_text(panel, 42, 838, 120, 22, '队伍编号', 13, COLOR_MUTED)
+    runtime.team_input = add_input(panel, 42, 792, 184, 42)
+    add_button(panel, 236, 792, 92, 42, '加入', function()
         local team_id = math.tointeger(runtime.team_input:get_input_field_content())
         if not team_id then
             runtime.notice = '加入队伍：请输入有效数字编号'
@@ -526,63 +588,72 @@ local function build(player)
             MatchTestJoinTeam(team_id)
         end)
     end)
-    add_button(panel, 408, 790, 132, 42, '创建队伍', function()
+    add_button(panel, 338, 792, 96, 42, '创建队伍', function()
         safe_action('创建队伍', MatchTestCreateTeam)
     end)
-    runtime.leave_button = add_button(panel, 552, 790, 154, 42, '离开队伍', function()
+    runtime.leave_button = add_button(panel, 444, 792, 82, 42, '离队', function()
         safe_action('离开队伍', MatchTestLeaveTeam)
     end)
 
     add_text(panel, 42, 752, 180, 24, '队员列表', 16, COLOR_TEXT)
-    runtime.member_count_text = add_text(panel, 510, 752, 70, 24, '', 14, COLOR_MUTED, '右', '中')
-    runtime.dismiss_button = add_button(panel, 592, 744, 114, 42, '解散队伍', function()
+    runtime.member_count_text = add_text(panel, 326, 752, 70, 24, '', 14, COLOR_MUTED, '右', '中')
+    runtime.dismiss_button = add_button(panel, 408, 744, 118, 42, '解散队伍', function()
         safe_action('解散队伍', MatchTestDismissTeam)
-    end)
+    end, 'danger')
     add_text(panel, 54, 720, 38, 20, '序号', 11, COLOR_MUTED)
-    add_text(panel, 104, 720, 184, 20, '玩家', 11, COLOR_MUTED)
-    add_text(panel, 296, 720, 118, 20, 'AID', 11, COLOR_MUTED)
-    add_text(panel, 422, 720, 86, 20, '状态', 11, COLOR_MUTED)
-    add_text(panel, 596, 720, 110, 20, '操作', 11, COLOR_MUTED, '右', '中')
+    add_text(panel, 96, 720, 132, 20, '玩家', 11, COLOR_MUTED)
+    add_text(panel, 236, 720, 92, 20, 'AID', 11, COLOR_MUTED)
+    add_text(panel, 336, 720, 70, 20, '状态', 11, COLOR_MUTED)
+    add_text(panel, 424, 720, 102, 20, '操作', 11, COLOR_MUTED, '右', '中')
 
     runtime.member_rows = {}
     for index = 1, MAX_MEMBER_ROWS do
         local row = {}
         row.container = panel:create_child('空节点')
         row.container:set_anchor(0, 0)
-        row.container:set_pos(40, 652 - (index - 1) * 64)
-        row.container:set_ui_size(668, 56)
-        add_panel(row.container, 0, 0, 668, 56, COLOR_PANEL_SOFT)
-        row.index_text = add_text(row.container, 12, 0, 38, 56, '', 14, COLOR_TEXT)
-        row.name_text = add_text(row.container, 62, 0, 184, 56, '', 14, COLOR_TEXT)
-        row.aid_text = add_text(row.container, 254, 0, 118, 56, '', 13, COLOR_MUTED)
-        row.state_text = add_text(row.container, 380, 0, 86, 56, '', 13, COLOR_SUCCESS)
-        row.current_text = add_text(row.container, 476, 0, 178, 56, '当前玩家', 12, COLOR_MUTED, '右', '中')
-        row.transfer_button = add_button(row.container, 476, 7, 84, 42, '转队长', function()
+        row.container:set_pos(40, 650 - (index - 1) * 64)
+        row.container:set_ui_size(488, 56)
+        add_panel(row.container, 0, 0, 488, 56, COLOR_PANEL_SOFT)
+        row.index_text = add_text(row.container, 12, 0, 30, 56, '', 14, COLOR_TEXT)
+        row.name_text = add_text(row.container, 50, 0, 130, 56, '', 14, COLOR_TEXT)
+        row.aid_text = add_text(row.container, 188, 0, 100, 56, '', 13, COLOR_MUTED)
+        row.state_text = add_text(row.container, 296, 0, 66, 56, '', 13, COLOR_SUCCESS)
+        row.current_text = add_text(row.container, 368, 0, 106, 56, '当前玩家', 12, COLOR_MUTED, '右', '中')
+        row.transfer_button = add_button(row.container, 358, 7, 60, 42, '转让', function()
             if row.aid then
                 safe_action('转移队长', function() return MatchTestChangeCaptain(row.aid) end)
                 refresh()
             end
         end)
-        row.kick_button = add_button(row.container, 568, 7, 86, 42, '移出', function()
+        row.kick_button = add_button(row.container, 426, 7, 50, 42, '移出', function()
             if row.aid then
                 safe_action('移出队员', function() return MatchTestKickMember(row.aid) end)
                 refresh()
             end
-        end)
+        end, 'danger')
         runtime.member_rows[index] = row
     end
 
-    add_panel(panel, 40, 270, 668, 174, COLOR_PANEL_DEEP)
-    add_text(panel, 56, 406, 180, 24, '测试快捷键', 16, COLOR_WARNING)
-    add_text(panel, 56, 290, 636, 104,
-        'F2 重登    F3 创建    F4 匹配    F5 取消    F6 私人\n' ..
-        'F7 多人    F8 离队    F9 状态    F10 加入',
-        14, COLOR_MUTED, '左', '上')
+    runtime.expedition_panel = add_panel(panel, 650, 438, 620, 358, COLOR_PANEL, true)
+    add_text(panel, 676, 750, 180, 20, '当前远征', 12, COLOR_WARNING)
+    runtime.expedition_phase_text = add_text(
+        panel, 1050, 744, 194, 28, '准备阶段', 13, COLOR_SUCCESS, '右', '中')
+    add_panel(panel, 670, 472, 580, 250, COLOR_PANEL_SOFT)
+    add_text(panel, 696, 670, 180, 18, '本轮远征', 11, COLOR_WARNING)
+    add_text(panel, 696, 622, 360, 42, '暮潮遗迹', 28, COLOR_TEXT)
+    add_text(panel, 696, 580, 520, 36, '私人副本测试 · 匹配、口令与队伍状态验证', 13, COLOR_MUTED)
+    add_text(panel, 696, 526, 120, 18, '预计席位', 11, COLOR_MUTED)
+    add_text(panel, 696, 494, 120, 26, tostring(EXPECTED_PRIVATE_PLAYERS), 17, COLOR_TEXT)
+    add_text(panel, 854, 526, 120, 18, '队伍上限', 11, COLOR_MUTED)
+    add_text(panel, 854, 494, 120, 26, tostring(MAX_MEMBER_ROWS), 17, COLOR_TEXT)
+    add_text(panel, 1012, 526, 160, 18, '启动方式', 11, COLOR_MUTED)
+    add_text(panel, 1012, 494, 190, 26, '匹配 / 口令', 17, COLOR_TEXT)
 
-    add_panel(panel, 1196, 646, 700, 270, COLOR_PANEL, true)
-    add_text(panel, 1214, 874, 260, 26, '匹配与副本', 19, COLOR_WARNING)
-    add_text(panel, 1680, 874, 198, 26, '当前队伍的测试操作', 12, COLOR_MUTED, '右', '中')
-    runtime.match_button = add_button(panel, 1214, 800, 174, 42, '开始匹配', function()
+    runtime.action_panel = add_panel(panel, 1340, 24, 556, 390, COLOR_PANEL, true)
+    add_image(panel, 1343, 350, 550, 61, 109589, COLOR_PANEL_SOFT)
+    add_text(panel, 1358, 372, 260, 26, '匹配与副本', 19, COLOR_WARNING)
+    add_text(panel, 1690, 372, 186, 26, '队长权限', 12, COLOR_MUTED, '右', '中')
+    runtime.match_button = add_button(panel, 1358, 294, 174, 42, '开始匹配', function()
         if BOB and IsValid(BOB) and BOB:is_matching() then
             safe_action('取消匹配', MatchTestCancel)
         else
@@ -590,16 +661,21 @@ local function build(player)
         end
         refresh()
     end)
-    add_button(panel, 1400, 800, 160, 42, '私人副本', function()
+    add_button(panel, 1544, 294, 160, 42, '私人副本', function()
         safe_action('创建私人副本', MatchTestLocalPrivate)
     end)
-    runtime.private_button = add_button(panel, 1572, 800, 160, 42, 'RPC 多人', function()
+    runtime.private_button = add_button(panel, 1716, 294, 160, 42, 'RPC 多人', function()
         safe_action('RPC 多人副本', MatchTestStartPrivate)
-    end)
-    add_text(panel, 1214, 762, 160, 22, '副本口令', 13, COLOR_MUTED)
-    runtime.dungeon_input = add_input(panel, 1214, 710, 420, 42)
-    runtime.dungeon_join_button = add_button(panel, 1646, 710, 232, 42, '加入副本', function()
+    end, 'primary')
+    add_text(panel, 1358, 256, 160, 22, '副本口令', 13, COLOR_MUTED)
+    runtime.dungeon_input = add_input(panel, 1358, 206, 340, 42)
+    runtime.dungeon_join_button = add_button(panel, 1710, 206, 166, 42, '加入副本', function()
         local token = runtime.dungeon_input:get_input_field_content()
+        if token == '' or token:match('^%s*$') then
+            runtime.notice = '加入副本：请输入副本口令'
+            refresh()
+            return
+        end
         local sent = safe_action('加入副本', function()
             return MatchTestJoinPrivateDungeon(token)
         end)
@@ -608,10 +684,11 @@ local function build(player)
         end
         refresh()
     end)
-    add_text(panel, 1214, 670, 664, 24,
-        '匹配、私人副本与口令加入均沿用当前 BOB 测试流程。', 12, COLOR_MUTED)
+    runtime.action_team_text = add_text(panel, 1358, 150, 518, 30, '', 14, COLOR_TEXT)
+    add_text(panel, 1358, 104, 518, 34,
+        '匹配、私人副本与口令加入沿用当前 BOB 测试流程。', 12, COLOR_MUTED)
 
-    local lobby_chat = build_chat_panel(panel, 1196, 24, {
+    local lobby_chat = build_chat_panel(panel, 24, 24, {
         context_label = '聊天上下文',
         context_value = '组队大厅',
         notice_key = 'notice',

@@ -15,6 +15,7 @@ local function new_ui(kind)
         enabled = true,
         visible = true,
         relative_parent_pos = {},
+        status_images = {},
     }
 
     function ui:create_child(child_kind)
@@ -34,9 +35,13 @@ local function new_ui(kind)
     end
     function ui:set_font_size() end
     function ui:set_text_color() end
-    function ui:set_btn_status_image() end
+    function ui:set_btn_status_image(status, image) self.status_images[status] = image end
     function ui:set_image() end
     function ui:set_image_color() end
+    function ui:set_ui_9_enable(enabled) self.nine_slice_enabled = enabled end
+    function ui:set_ui_9(left, right, top, bottom)
+        self.nine_slice = { left, right, top, bottom }
+    end
     function ui:set_text_alignment() end
     function ui:set_relative_parent_pos(direction, offset)
         self.relative_parent_pos[direction] = offset
@@ -104,6 +109,7 @@ local function run_case(path)
             copied_role = role
             copied_ui_handle = ui_handle
         end,
+        set_ui_btn_status_cap_insets = function() end,
     }
     y3 = {
         const = {
@@ -232,6 +238,13 @@ local function run_case(path)
         path .. ' lobby control panel stays below platform dialogs')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.full_panel.width, 1920, path .. ' lobby uses full design width')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.full_panel.height, 1080, path .. ' lobby uses full design height')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.width, 1920, path .. ' backdrop uses full design width')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.height, 1080, path .. ' backdrop uses full design height')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.z_order, -3000, path .. ' backdrop stays behind product UI')
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.backdrop.intercepts_operations,
+        false,
+        path .. ' backdrop never blocks test controls')
     assert_equal(game_hud.visible, true, path .. ' default HUD remains visible in lobby')
     assert_equal(exit_button.width, 150, path .. ' exit button width')
     assert_equal(exit_button.height, 48, path .. ' exit button height')
@@ -255,6 +268,13 @@ local function run_case(path)
     local dungeon_join_button = assert(
         _G.__BOB_TEST_UI_RUNTIME.dungeon_join_button,
         path .. ' must create dungeon join button')
+    assert_equal(dungeon_input:get_input_field_content(), '', path .. ' dungeon input starts empty')
+    dungeon_join_button:click()
+    assert_equal(dungeon_join_count, 0, path .. ' empty dungeon token does not send a request')
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.notice_text.text,
+        '加入副本：请输入副本口令',
+        path .. ' empty dungeon token shows actionable feedback')
     dungeon_input:set_text('space/token+1=')
     dungeon_join_button:click()
     assert_equal(dungeon_join_count, 1, path .. ' dungeon join button request count')
@@ -282,9 +302,14 @@ local function run_case(path)
     assert_equal(battle_panel.z_order, 9000, path .. ' battle chat z order')
     assert_equal(lobby_chat_panel.width, battle_panel.width, path .. ' chat panels share width')
     assert_equal(lobby_chat_panel.height, battle_panel.height, path .. ' chat panels share height')
-    assert_equal(lobby_chat_panel.x, 1196, path .. ' lobby chat stays on the right edge')
+    assert_equal(lobby_chat_panel.x, 24, path .. ' lobby chat stays on the lower-left edge')
+    assert_equal(lobby_chat_panel.y, 24, path .. ' lobby chat keeps bottom safe margin')
     assert_equal(battle_panel.x, 24, path .. ' battle chat stays on the left edge')
     assert_equal(battle_panel.y, 24, path .. ' battle chat keeps bottom safe margin')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.team_panel.x, 24, path .. ' team panel stays on the left edge')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.team_panel.y, 426, path .. ' team panel clears lobby chat')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.expedition_panel.x, 650, path .. ' expedition summary anchors centrally')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.action_panel.x, 1340, path .. ' action panel stays on the right edge')
 
     current_mode = 1003
     dungeon_token = 'space/token+1='
@@ -309,6 +334,11 @@ local function run_case(path)
     local battle_chat_input = assert(
         _G.__BOB_TEST_UI_RUNTIME.battle_chat_input,
         path .. ' must create battle chat input')
+    assert_equal(battle_chat_input:get_input_field_content(), '', path .. ' battle chat input starts empty')
+    _G.__BOB_TEST_UI_RUNTIME.battle_team_button:click()
+    _G.__BOB_TEST_UI_RUNTIME.battle_world_button:click()
+    assert_equal(team_chat_message, nil, path .. ' empty team chat does not send')
+    assert_equal(world_chat_message, nil, path .. ' empty world chat does not send')
     battle_chat_input:set_text('队伍消息')
     _G.__BOB_TEST_UI_RUNTIME.battle_team_button:click()
     assert_equal(team_chat_message, '队伍消息', path .. ' battle team chat message')
@@ -370,6 +400,14 @@ local function run_case(path)
     local button = buttons[1]
 
     assert_equal(button.width, 174, path .. ' match button uses normal width')
+    assert_equal(button.status_images['常态'], 134217733, path .. ' uses Scheme B normal button texture')
+    assert_equal(button.status_images['悬浮'], 134217734, path .. ' uses Scheme B hover button texture')
+    assert_equal(button.status_images['按下'], 134217735, path .. ' uses Scheme B pressed button texture')
+    assert_equal(button.status_images['禁用'], 134217736, path .. ' uses Scheme B disabled button texture')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.private_button.status_images['常态'], 134217737,
+        path .. ' uses Scheme B primary button texture')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.exit_button.status_images['常态'], 134217741,
+        path .. ' uses Scheme B danger button texture')
     assert_equal(button.text, '开始匹配', path .. ' solo idle label')
     assert_equal(button.enabled, true, path .. ' solo idle enabled')
     button:click()
@@ -396,6 +434,10 @@ local function run_case(path)
     refresh_callback()
     assert_equal(button.text, '取消匹配', path .. ' matching label')
     assert_equal(button.enabled, true, path .. ' captain can cancel matching')
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.expedition_phase_text.text,
+        '匹配中',
+        path .. ' expedition summary follows matching state')
     button:click()
     assert_equal(cancel_count, 1, path .. ' matching click cancels matching')
 

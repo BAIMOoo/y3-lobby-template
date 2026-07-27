@@ -1,0 +1,34 @@
+{
+  "scope": "y3-scheme-b",
+  "iteration": 3,
+  "viewport": "1920x1080",
+  "reference": ".omx/artifacts/visual-ralph/y3-scheme-b/reference.md",
+  "captures": {
+    "web_lobby": ".omx/artifacts/visual-ralph/y3-scheme-b/web-lobby-full.jpg",
+    "web_battle": ".omx/artifacts/visual-ralph/y3-scheme-b/web-battle-full.jpg",
+    "lobby": ".omx/artifacts/visual-ralph/y3-scheme-b/y3-lobby.png",
+    "battle": ".omx/artifacts/visual-ralph/y3-scheme-b/y3-battle.png"
+  },
+  "verdict": {
+    "score": 93,
+    "verdict": "pass",
+    "category_match": {
+      "palette": true,
+      "component_states": true,
+      "information_density": true,
+      "lobby_composition": true,
+      "battle_scope": true,
+      "chat_consistency": true
+    },
+    "differences": [
+      "The runtime intentionally shows the real Y3 world instead of the browser's illustrative dungeon map.",
+      "Y3 text rendering does not reproduce browser font weight, blur, or shadow exactly.",
+      "Editor performance counters remain a debug overlay and are not product UI nodes."
+    ],
+    "suggestions": [
+      "Keep resource IDs 134217729 through 134217744 reserved for this Scheme B skin.",
+      "Use a cold game launch after replacing fixed-ID textures so the runtime cache is refreshed."
+    ],
+    "reasoning": "The runtime now matches the approved Scheme B composition and warm-black/gold hierarchy while retaining every test-system field and action. The remaining visible differences come from the real game world, Y3 renderer constraints, and editor-only overlays."
+  }
+}
