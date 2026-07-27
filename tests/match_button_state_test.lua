@@ -24,7 +24,10 @@ local function new_ui(kind)
     end
 
     function ui:set_anchor() end
-    function ui:set_pos() end
+    function ui:set_pos(x, y)
+        self.x = x
+        self.y = y
+    end
     function ui:set_ui_size(width, height)
         self.width = width
         self.height = height
@@ -73,15 +76,18 @@ local function run_case(path)
     local start_count = 0
     local cancel_count = 0
     local exit_count = 0
+    local return_count = 0
     local dungeon_join_count = 0
     local dungeon_join_token
     local copied_role
     local copied_ui_handle
     local team_chat_message
     local world_chat_message
+    local throw_team_chat = false
     local current_mode = 1001
     local dungeon_token = ''
     local root = new_ui('根节点')
+    local game_hud = new_ui('根节点')
     local player = {
         handle = 'player-handle',
         get_name = function() return '测试玩家' end,
@@ -121,7 +127,13 @@ local function run_case(path)
             with_local = function(callback) callback(player) end,
         },
         ui = {
-            get_ui = function() return root end,
+            get_ui = function(_, ui_name)
+                local roots = {
+                    BobTestUI = root,
+                    GameHUD = game_hud,
+                }
+                return roots[ui_name]
+            end,
         },
         ltimer = {
             wait_frame = function(_, callback) callback() end,
@@ -133,7 +145,10 @@ local function run_case(path)
     }
     IsValid = function() return true end
     MatchTestIsBattleContext = function() return current_mode ~= 1001 end
-    MatchTestReturnLobby = function() return true end
+    MatchTestReturnLobby = function()
+        return_count = return_count + 1
+        return true
+    end
     MatchTestExitGame = function()
         exit_count = exit_count + 1
         return true
@@ -192,6 +207,9 @@ local function run_case(path)
         end,
         format_message = function(_, item) return item.message end,
         send_chat = function(_, message)
+            if throw_team_chat then
+                error('模拟聊天发送异常')
+            end
             team_chat_message = message
             return true
         end,
@@ -212,6 +230,9 @@ local function run_case(path)
         _G.__BOB_TEST_UI_RUNTIME.full_panel.z_order,
         -1000,
         path .. ' lobby control panel stays below platform dialogs')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.full_panel.width, 1920, path .. ' lobby uses full design width')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.full_panel.height, 1080, path .. ' lobby uses full design height')
+    assert_equal(game_hud.visible, true, path .. ' default HUD remains visible in lobby')
     assert_equal(exit_button.width, 150, path .. ' exit button width')
     assert_equal(exit_button.height, 48, path .. ' exit button height')
     assert_equal(exit_button.relative_parent_pos['顶部'], 24, path .. ' exit button top safe margin')
@@ -248,6 +269,9 @@ local function run_case(path)
         path .. ' dungeon join request feedback')
 
     local battle_panel = assert(_G.__BOB_TEST_UI_RUNTIME.battle_chat_panel, path .. ' must create battle chat panel')
+    local lobby_chat_panel = assert(
+        _G.__BOB_TEST_UI_RUNTIME.chat_panel,
+        path .. ' must create lobby chat panel')
     local battle_token_text = assert(
         _G.__BOB_TEST_UI_RUNTIME.battle_token_text,
         path .. ' must create battle token text')
@@ -256,6 +280,11 @@ local function run_case(path)
         path .. ' must create battle token copy button')
     assert_equal(battle_panel.visible, false, path .. ' battle chat hidden in lobby')
     assert_equal(battle_panel.z_order, 9000, path .. ' battle chat z order')
+    assert_equal(lobby_chat_panel.width, battle_panel.width, path .. ' chat panels share width')
+    assert_equal(lobby_chat_panel.height, battle_panel.height, path .. ' chat panels share height')
+    assert_equal(lobby_chat_panel.x, 1196, path .. ' lobby chat stays on the right edge')
+    assert_equal(battle_panel.x, 24, path .. ' battle chat stays on the left edge')
+    assert_equal(battle_panel.y, 24, path .. ' battle chat keeps bottom safe margin')
 
     current_mode = 1003
     dungeon_token = 'space/token+1='
@@ -265,10 +294,17 @@ local function run_case(path)
     }
     refresh_callback()
     assert_equal(battle_panel.visible, true, path .. ' battle chat visible in dungeon')
+    assert_equal(game_hud.visible, false, path .. ' default HUD hidden in dungeon')
     assert_equal(battle_token_text.text, dungeon_token, path .. ' battle token text')
     battle_copy_button:click()
     assert_equal(copied_role, player.handle, path .. ' clipboard role handle')
     assert_equal(copied_ui_handle, battle_token_text.handle, path .. ' clipboard text handle')
+    _G.__BOB_TEST_UI_RUNTIME.return_button:click()
+    assert_equal(return_count, 1, path .. ' return button request count')
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.battle_notice_text.text,
+        '返回初始关卡：请求已发送',
+        path .. ' return button feedback stays visible in battle')
 
     local battle_chat_input = assert(
         _G.__BOB_TEST_UI_RUNTIME.battle_chat_input,
@@ -281,11 +317,41 @@ local function run_case(path)
     _G.__BOB_TEST_UI_RUNTIME.battle_world_button:click()
     assert_equal(world_chat_message, '世界消息', path .. ' battle world chat message')
     assert_equal(battle_chat_input:get_input_field_content(), '', path .. ' battle world input clears')
+    throw_team_chat = true
+    battle_chat_input:set_text('异常消息')
+    _G.__BOB_TEST_UI_RUNTIME.battle_team_button:click()
+    assert_equal(
+        battle_chat_input:get_input_field_content(),
+        '异常消息',
+        path .. ' failed battle chat keeps input for retry')
+    assert(
+        string.find(_G.__BOB_TEST_UI_RUNTIME.battle_notice_text.text, '模拟聊天发送异常', 1, true),
+        path .. ' failed battle chat reports the exception')
+    throw_team_chat = false
 
     current_mode = 1001
     dungeon_token = ''
     BOB.team_info = nil
+    BOB.message_history = {
+        { message = '消息1' },
+        { message = '消息2' },
+        { message = '消息3' },
+        { message = '消息4' },
+        { message = '消息5' },
+        { message = '消息6' },
+        { message = '消息7' },
+    }
     refresh_callback()
+    assert_equal(game_hud.visible, true, path .. ' default HUD restored in lobby')
+    local expected_history = '消息3\n消息4\n消息5\n消息6\n消息7'
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.chat_text.text,
+        expected_history,
+        path .. ' lobby chat keeps exactly five latest messages')
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.battle_chat_text.text,
+        expected_history,
+        path .. ' battle chat keeps exactly five latest messages')
 
     exit_button:click()
     assert_equal(exit_overlay.visible, true, path .. ' exit button opens confirmation')
