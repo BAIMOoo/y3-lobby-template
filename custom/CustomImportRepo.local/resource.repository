@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Repository>
 <Items>
+<Item><Type>Texture</Type><Flags>256</Flags><GUID>2b41643b-82bd-42a7-a435-63b1d4f173cf</GUID><Package>ui</Package><Class>Texture2D</Class><Name>134217745</Name><Annotation><SourcePath>D:/kk_.6477594/temp.png</SourcePath><CreationTime>1785206934</CreationTime><MD5>faf5031c2f39cc3ed67505386cadb107</MD5></Annotation></Item>
 <Item><Type>Texture</Type><Flags>256</Flags><GUID>357d499e-df1b-4f6e-938f-bc37b01bbb00</GUID><Package>ui</Package><Class>Texture2D</Class><Name>134217733</Name><Annotation><SourcePath>D:/kk_.8316286/temp.png</SourcePath><CreationTime>1785149302</CreationTime><MD5>826358115bcd6b1ae5ff5c4d8349acbe</MD5></Annotation></Item>
 <Item><Type>Texture</Type><Flags>256</Flags><GUID>3e048319-f7fe-4bb2-ae79-41ff30d6bd4c</GUID><Package>ui</Package><Class>Texture2D</Class><Name>new_independ_billboard_batch_ui_0</Name><Annotation><SourcePath>D:/kk_.2576613/temp.png</SourcePath><CreationTime>1783913566</CreationTime><MD5>24fee839c31a7ae96985e24eaf8d16fa</MD5></Annotation></Item>
 <Item><Type>Texture</Type><Flags>256</Flags><GUID>5928bdd9-26f2-43e1-a558-7cd72ae59ec1</GUID><Package>ui</Package><Class>Texture2D</Class><Name>134217735</Name><Annotation><SourcePath>D:/kk_.7903771/temp.png</SourcePath><CreationTime>1785149306</CreationTime><MD5>990472fc119a223c46e289e285c9ecb0</MD5></Annotation></Item>

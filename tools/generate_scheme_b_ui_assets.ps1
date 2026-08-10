@@ -116,4 +116,9 @@ Write-ButtonTexture 'scheme_b_danger_hover%ID134217742.png' '#754744' '#593535' 
 Write-ButtonTexture 'scheme_b_danger_pressed%ID134217743.png' '#4c2e2e' '#3c2525' '#aa625e'
 Write-ButtonTexture 'scheme_b_danger_disabled%ID134217744.png' '#433334' '#35292a' '#5c4546' 180
 
+$backdropPath = Join-Path $resolvedOutput 'scheme_b_backdrop%ID134217745.png'
+if (-not (Test-Path -LiteralPath $backdropPath)) {
+    throw "Missing GPT Image backdrop: $backdropPath"
+}
+
 Write-Host "Generated Scheme B UI assets in $resolvedOutput"

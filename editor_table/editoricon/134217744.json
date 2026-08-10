@@ -1,13 +1,13 @@
 {
-    "custom_editor_type": "custom_editor_icon",
-    "describe": "",
-    "has_upload": false,
-    "key": 134217744,
-    "name": "scheme_b_danger_disabled%ID134217744_1",
-    "path": "ui/134217744",
-    "res_name": "scheme_b_danger_disabled%ID134217744.png",
-    "size": "128X48",
-    "sub_type": "icon",
-    "uid": "134217744",
+    "custom_editor_type": "custom_editor_icon", 
+    "describe": "", 
+    "has_upload": false, 
+    "key": 134217744, 
+    "name": "scheme_b_danger_disabled%ID134217744_1", 
+    "path": "ui/134217744", 
+    "res_name": "scheme_b_danger_disabled%ID134217744.png", 
+    "size": "128X48", 
+    "sub_type": "icon", 
+    "uid": "134217744", 
     "version": 1
 }

@@ -2,7 +2,7 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $assetDirectory = Join-Path $repoRoot 'assets\ui\scheme_b'
-$expectedIds = 134217729..134217744
+$expectedIds = 134217729..134217745
 $files = Get-ChildItem -LiteralPath $assetDirectory -File -Filter '*.png'
 
 if ($files.Count -ne $expectedIds.Count) {
