@@ -53,6 +53,16 @@ local function current_mode()
     return diagnostic_value(y3.game.get_current_game_mode)
 end
 
+local function lobby_connection_status()
+    if not y3.lobby or type(y3.lobby.get_connection_status) ~= 'function' then
+        return '<unavailable>'
+    end
+    return diagnostic_value(function()
+        local result = y3.lobby.get_connection_status()
+        return result.result_data and result.result_data.status or result.code
+    end)
+end
+
 local function log_all_players(reason)
     if not y3.player_group or type(y3.player_group.get_all_players) ~= 'function' then
         log.info(string.format(
@@ -136,13 +146,14 @@ local main_load_id = lifecycle.main_load_count
 
 -- MapName001 是匹配、单人副本和多人副本的目标关卡，需要独立加载测试逻辑。
 log.info(string.format(
-    '[MapName001][EventDiag] main loaded: main_load=%s mode=%s level_id=%s game_mode=%s space_id=%s start_game_time=%s',
+    '[MapName001][EventDiag] main loaded: main_load=%s mode=%s level_id=%s game_mode=%s space_id=%s start_game_time=%s lobby_status=%s',
     tostring(main_load_id),
     current_mode(),
     dungeon_value('level_id'),
     dungeon_value('game_mode'),
     dungeon_value('space_id'),
-    dungeon_value('start_game_time')))
+    dungeon_value('start_game_time'),
+    lobby_connection_status()))
 
 lifecycle.next_listener_id = lifecycle.next_listener_id + 1
 local game_init_listener_id = lifecycle.next_listener_id
@@ -202,9 +213,6 @@ log.info(string.format(
     tostring(main_load_id),
     tostring(player_join_listener_id),
     tostring(player_join_trigger)))
-
-include 'pub.init'
-log.info('[MapName001] pub.init loaded')
 
 include 'dungeon_unit_spawn'
 log.info('[MapName001] dungeon_unit_spawn loaded')

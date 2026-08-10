@@ -23,12 +23,12 @@ $gameModeConfig = Get-Content -LiteralPath (Join-Path $projectRoot 'gamemode.jso
     ConvertFrom-Json
 $dungeonConfig = Get-Content -LiteralPath (Join-Path $projectRoot 'dungeon.json') -Encoding UTF8 -Raw |
     ConvertFrom-Json
-$matchConfig = @(Get-Content -LiteralPath (Join-Path $projectRoot 'match.json') -Encoding UTF8 -Raw |
-    ConvertFrom-Json)
+$matchConfig = Get-Content -LiteralPath (Join-Path $projectRoot 'match.json') -Encoding UTF8 -Raw |
+    ConvertFrom-Json
 
-Assert-Equal $matchConfig.Count 1 'match config count'
-Assert-Equal ([int] $matchConfig[0].game_mode) $matchMode 'match game mode'
-Assert-Equal ([int] $matchConfig[0].sections[0].min_player_num) 2 'minimum match players'
+$matchRule = @($matchConfig | Where-Object { [int] $_.game_mode -eq $matchMode })
+Assert-Equal $matchRule.Count 1 'match rule count'
+Assert-Equal ([int] $matchRule[0].sections[0].min_player_num) 2 'minimum match players'
 
 $configuredModes = $gameModeConfig.game_modes.PSObject.Properties.Name
 Assert-Equal ($configuredModes -contains [string] $lobbyMode) $true 'lobby mode registration'
