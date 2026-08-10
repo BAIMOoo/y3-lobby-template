@@ -1,0 +1,532 @@
+{
+    "map": "EntryMap",
+    "triggers": [
+        {
+            "name": "大厅服务 - 建立连接测试",
+            "id": 1931000001,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 33]],
+            "condition": [],
+            "action": [
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 建立连接；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "2a405018f61e54659d17a44122db0379",
+                        "name": "大厅服务 - 建立连接",
+                        "args": [10190356],
+                        "returns": [{"var": "建立连接立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "建立连接立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "建立连接立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 建立连接完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "建立连接请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 建立连接完成回调",
+                    "id": 1931000101,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "建立连接立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "建立连接完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 创建队伍测试",
+            "id": 1931000002,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 34]],
+            "condition": [],
+            "action": [
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 创建队伍；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "c4c20f402758558687a6ee8ef68aca42",
+                        "name": "大厅服务 - 创建队伍",
+                        "args": [4],
+                        "returns": [{"var": "创建队伍立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "创建队伍立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "创建队伍立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 创建队伍完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "创建队伍请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 创建队伍完成回调",
+                    "id": 1931000102,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "创建队伍立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "创建队伍完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 开始匹配测试",
+            "id": 1931000003,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 35]],
+            "condition": [],
+            "action": [
+                ["SET_VARIABLE", {"var": "开始匹配参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "开始匹配参数", "type": "TABLE"}, "level_id", "your_level_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "开始匹配参数", "type": "TABLE"}, "game_mode", 20001],
+                ["SET_TABLE_VALUE_1D", {"var": "开始匹配参数", "type": "TABLE"}, "score", 1000],
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 开始匹配；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "98f2d6a6a7195c03baa1606d67537034",
+                        "name": "大厅服务 - 开始匹配",
+                        "args": [{"var": "开始匹配参数", "type": "TABLE"}],
+                        "returns": [{"var": "开始匹配立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "开始匹配立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "开始匹配立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 开始匹配完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "开始匹配请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 开始匹配完成回调",
+                    "id": 1931000103,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "开始匹配立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "开始匹配完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 同房分流测试",
+            "id": 1931000004,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 36]],
+            "condition": [],
+            "action": [
+                ["SET_VARIABLE", {"var": "同房分流参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "level_id", "your_level_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "game_mode", 20002],
+                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "max_player", 4],
+                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "custom_param", "optional_custom_param"],
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 同房分流；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
+                        "name": "大厅服务 - 同房分流",
+                        "args": [{"var": "同房分流参数", "type": "TABLE"}],
+                        "returns": [{"var": "同房分流立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "同房分流立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "同房分流立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 同房分流完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "同房分流请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 同房分流完成回调",
+                    "id": 1931000104,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "同房分流立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "同房分流完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 跨房合流测试",
+            "id": 1931000005,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 37]],
+            "condition": [],
+            "action": [
+                ["SET_VARIABLE", {"var": "跨房合流参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "game_map_id", "your_game_map_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "level_id", "your_level_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "game_mode", 20003],
+                ["SET_VARIABLE", {"var": "跨房合流玩家列表", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_VARIABLE", {"var": "跨房合流玩家1", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "跨房合流玩家1", "type": "TABLE"}, "aid", 10001],
+                ["INSERT_TABLE_VALUE", {"var": "跨房合流玩家列表", "type": "TABLE"}, {"var": "跨房合流玩家1", "type": "TABLE"}],
+                ["SET_VARIABLE", {"var": "跨房合流玩家2", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "跨房合流玩家2", "type": "TABLE"}, "aid", 10002],
+                ["INSERT_TABLE_VALUE", {"var": "跨房合流玩家列表", "type": "TABLE"}, {"var": "跨房合流玩家2", "type": "TABLE"}],
+                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "players", {"var": "跨房合流玩家列表", "type": "TABLE"}],
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 跨房合流；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "bee3695399f4531dafa069092b573eca",
+                        "name": "大厅服务 - 跨房合流",
+                        "args": [{"var": "跨房合流参数", "type": "TABLE"}],
+                        "returns": [{"var": "跨房合流立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "跨房合流立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "跨房合流立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 跨房合流完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "跨房合流请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 跨房合流完成回调",
+                    "id": 1931000105,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "跨房合流立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "跨房合流完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 返回大厅测试",
+            "id": 1931000006,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 38]],
+            "condition": [],
+            "action": [
+                ["SET_VARIABLE", {"var": "返回大厅参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "返回大厅参数", "type": "TABLE"}, "level_id", "your_lobby_level_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "返回大厅参数", "type": "TABLE"}, "game_mode", 20000],
+                ["SET_TABLE_VALUE_1D", {"var": "返回大厅参数", "type": "TABLE"}, "max_player", 8],
+                ["SET_TABLE_VALUE_1D", {"var": "返回大厅参数", "type": "TABLE"}, "custom_param", "optional_custom_param"],
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 返回大厅；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "1fec80e8afe657b88e0fdd00a336fe05",
+                        "name": "大厅服务 - 返回大厅",
+                        "args": [{"var": "返回大厅参数", "type": "TABLE"}],
+                        "returns": [{"var": "返回大厅立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "返回大厅立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "返回大厅立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 返回大厅完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "返回大厅请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 返回大厅完成回调",
+                    "id": 1931000106,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "返回大厅立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "返回大厅完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 退出游戏测试",
+            "id": 1931000007,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 39]],
+            "condition": [],
+            "action": [
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 退出游戏；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "f384a7cfa22959a09b7ea36e9ddbff86",
+                        "name": "大厅服务 - 退出游戏",
+                        "args": [],
+                        "returns": [{"var": "退出游戏立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "退出游戏立即结果", "type": "TABLE"}],
+                [
+                    "IF_THEN_ELSE",
+                    [
+                        [
+                            "STRING_COMPARE",
+                            [
+                                "GET_STRING_TABLE_VAR_1D",
+                                {"var": "退出游戏立即结果", "type": "TABLE"},
+                                "request_id"
+                            ],
+                            "!=",
+                            ""
+                        ]
+                    ],
+                    [{"register_sub_trigger": "大厅服务 - 退出游戏完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "退出游戏请求未受理，请查看立即结果"]]
+                ]
+            ],
+            "sub_triggers": [
+                {
+                    "name": "大厅服务 - 退出游戏完成回调",
+                    "id": 1931000107,
+                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
+                    "action": [
+                        [
+                            "IF_THEN_ELSE",
+                            [
+                                [
+                                    "STRING_COMPARE",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
+                                        "request_id"
+                                    ],
+                                    "==",
+                                    [
+                                        "GET_STRING_TABLE_VAR_1D",
+                                        {"var": "退出游戏立即结果", "type": "TABLE"},
+                                        "request_id"
+                                    ]
+                                ]
+                            ],
+                            [
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "退出游戏完成回调如下"],
+                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
+                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
+                            ],
+                            []
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "大厅服务 - 获取状态快照测试",
+            "id": 1931000008,
+            "event": [["KEYBOARD_KEY_DOWN_EVENT", 40]],
+            "condition": [],
+            "action": [
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 获取状态快照；立即结果如下"],
+                {
+                    "call_function": {
+                        "func_id": "06baf266d22b5844b236f6a8dea1828e",
+                        "name": "大厅服务 - 获取状态快照",
+                        "args": [],
+                        "returns": [{"var": "状态快照立即结果", "type": "TABLE"}]
+                    }
+                },
+                ["DUMP_TABLE", {"var": "状态快照立即结果", "type": "TABLE"}]
+            ]
+        }
+    ]
+}
