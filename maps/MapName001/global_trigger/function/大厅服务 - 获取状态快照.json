@@ -1,0 +1,115 @@
+{
+    "action": [
+        {
+            "action_type": "SET_VARIABLE",
+            "args_list": [
+                {
+                    "arg_type": 100030,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": 1
+                },
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                "Bind['大厅服务 - 获取状态快照']()"
+                            ],
+                            "sub_type": 1
+                        }
+                    ],
+                    "op_arg": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "op_arg_enable": [
+                        false,
+                        false,
+                        false,
+                        false,
+                        false
+                    ],
+                    "sub_type": "Eval_Lua_TABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 250486703000002,
+            "enable": true
+        },
+        {
+            "action_type": 400342,
+            "args_list": [
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": "VARIABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 250486703000003,
+            "enable": true
+        }
+    ],
+    "call_enabled": true,
+    "condition": [],
+    "enabled": true,
+    "event": [],
+    "func_category": "t_function",
+    "func_comment": "",
+    "func_des": "请求获取大厅、连接、队伍、匹配、聊天、同房分流和跨房合流状态快照",
+    "func_id": "06baf266d22b5844b236f6a8dea1828e",
+    "func_name": "大厅服务 - 获取状态快照",
+    "group_id": 0,
+    "is_func": true,
+    "is_official_func": false,
+    "p_trigger_id": null,
+    "trigger_id": 250486703,
+    "trigger_name": "大厅服务 - 获取状态快照",
+    "valid": true,
+    "var_data": [
+        {
+            "NEW_TIMER": {},
+            "TABLE": {
+                "t": null
+            }
+        },
+        {
+            "t": 0
+        },
+        [
+            "t"
+        ]
+    ],
+    "func_return": true,
+    "func_rtv_name_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "result",
+                "TABLE"
+            ]
+        }
+    ]
+}

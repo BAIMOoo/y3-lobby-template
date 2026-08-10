@@ -1,0 +1,142 @@
+{
+    "action": [
+        {
+            "action_type": "SET_VARIABLE",
+            "args_list": [
+                {
+                    "arg_type": 100030,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": 1
+                },
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                "Bind['大厅服务 - 获取队伍成员项'](args[1])"
+                            ],
+                            "sub_type": 1
+                        }
+                    ],
+                    "op_arg": [
+                        {
+                            "arg_type": 100002,
+                            "args_list": [
+                                {
+                                    "__tuple__": true,
+                                    "items": [
+                                        "INTEGER",
+                                        "序号",
+                                        "local"
+                                    ]
+                                }
+                            ],
+                            "sub_type": 6
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "op_arg_enable": [
+                        true,
+                        false,
+                        false,
+                        false,
+                        false
+                    ],
+                    "sub_type": "Eval_Lua_TABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 1841190046000002,
+            "enable": true
+        },
+        {
+            "action_type": 400342,
+            "args_list": [
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": "VARIABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 1841190046000003,
+            "enable": true
+        }
+    ],
+    "call_enabled": true,
+    "condition": [],
+    "enabled": true,
+    "event": [],
+    "func_category": "t_function",
+    "func_comment": "",
+    "func_des": "同步获取当前队伍中的第{序号}个成员；序号从 1 开始",
+    "func_id": "ff8d602fd5235532934fcc588f045d96",
+    "func_name": "大厅服务 - 获取队伍成员项",
+    "group_id": 0,
+    "is_func": true,
+    "is_official_func": false,
+    "p_trigger_id": null,
+    "trigger_id": 1841190046,
+    "trigger_name": "大厅服务 - 获取队伍成员项",
+    "valid": true,
+    "var_data": [
+        {
+            "NEW_TIMER": {},
+            "INTEGER": {
+                "序号": 0
+            },
+            "TABLE": {
+                "t": null
+            }
+        },
+        {
+            "序号": 0,
+            "t": 0
+        },
+        [
+            "序号",
+            "t"
+        ]
+    ],
+    "func_param_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "序号",
+                true
+            ]
+        }
+    ],
+    "func_return": true,
+    "func_rtv_name_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "result",
+                "TABLE"
+            ]
+        }
+    ]
+}

@@ -1,0 +1,142 @@
+{
+    "action": [
+        {
+            "action_type": "SET_VARIABLE",
+            "args_list": [
+                {
+                    "arg_type": 100030,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": 1
+                },
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                "Bind['大厅服务 - 加入口令'](args[1])"
+                            ],
+                            "sub_type": 1
+                        }
+                    ],
+                    "op_arg": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                {
+                                    "__tuple__": true,
+                                    "items": [
+                                        "STRING",
+                                        "口令",
+                                        "local"
+                                    ]
+                                }
+                            ],
+                            "sub_type": 2
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "op_arg_enable": [
+                        true,
+                        false,
+                        false,
+                        false,
+                        false
+                    ],
+                    "sub_type": "Eval_Lua_TABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 1986219635000002,
+            "enable": true
+        },
+        {
+            "action_type": 400342,
+            "args_list": [
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": "VARIABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 1986219635000003,
+            "enable": true
+        }
+    ],
+    "call_enabled": true,
+    "condition": [],
+    "enabled": true,
+    "event": [],
+    "func_category": "t_function",
+    "func_comment": "",
+    "func_des": "通过口令 token {口令}加入指定关卡",
+    "func_id": "74f227e953815cc8992ed2935dbe600e",
+    "func_name": "大厅服务 - 加入口令",
+    "group_id": 0,
+    "is_func": true,
+    "is_official_func": false,
+    "p_trigger_id": null,
+    "trigger_id": 1986219635,
+    "trigger_name": "大厅服务 - 加入口令",
+    "valid": true,
+    "var_data": [
+        {
+            "NEW_TIMER": {},
+            "STRING": {
+                "口令": ""
+            },
+            "TABLE": {
+                "t": null
+            }
+        },
+        {
+            "口令": 0,
+            "t": 0
+        },
+        [
+            "口令",
+            "t"
+        ]
+    ],
+    "func_param_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "口令",
+                true
+            ]
+        }
+    ],
+    "func_return": true,
+    "func_rtv_name_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "result",
+                "TABLE"
+            ]
+        }
+    ]
+}

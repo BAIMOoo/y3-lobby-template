@@ -1,0 +1,115 @@
+{
+    "action": [
+        {
+            "action_type": "SET_VARIABLE",
+            "args_list": [
+                {
+                    "arg_type": 100030,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": 1
+                },
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                "Bind['大厅服务 - 退出游戏']()"
+                            ],
+                            "sub_type": 1
+                        }
+                    ],
+                    "op_arg": [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "op_arg_enable": [
+                        false,
+                        false,
+                        false,
+                        false,
+                        false
+                    ],
+                    "sub_type": "Eval_Lua_TABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 444494645000002,
+            "enable": true
+        },
+        {
+            "action_type": 400342,
+            "args_list": [
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": "VARIABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 444494645000003,
+            "enable": true
+        }
+    ],
+    "call_enabled": true,
+    "condition": [],
+    "enabled": true,
+    "event": [],
+    "func_category": "t_function",
+    "func_comment": "",
+    "func_des": "无需预先连接；已有连接时先完成必要清理，再退出游戏并返回请求受理结果",
+    "func_id": "f384a7cfa22959a09b7ea36e9ddbff86",
+    "func_name": "大厅服务 - 退出游戏",
+    "group_id": 0,
+    "is_func": true,
+    "is_official_func": false,
+    "p_trigger_id": null,
+    "trigger_id": 444494645,
+    "trigger_name": "大厅服务 - 退出游戏",
+    "valid": true,
+    "var_data": [
+        {
+            "NEW_TIMER": {},
+            "TABLE": {
+                "t": null
+            }
+        },
+        {
+            "t": 0
+        },
+        [
+            "t"
+        ]
+    ],
+    "func_return": true,
+    "func_rtv_name_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "result",
+                "TABLE"
+            ]
+        }
+    ]
+}

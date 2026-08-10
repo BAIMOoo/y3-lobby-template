@@ -1,0 +1,142 @@
+{
+    "action": [
+        {
+            "action_type": "SET_VARIABLE", 
+            "args_list": [
+                {
+                    "arg_type": 100030, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "t", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "Bind['大厅服务 - 获取队伍信息'](args[1])"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "op_arg": [
+                        {
+                            "arg_type": 100002, 
+                            "args_list": [
+                                {
+                                    "__tuple__": true, 
+                                    "items": [
+                                        "INTEGER", 
+                                        "目标AID", 
+                                        "local"
+                                    ]
+                                }
+                            ], 
+                            "sub_type": 6
+                        }, 
+                        null, 
+                        null, 
+                        null, 
+                        null
+                    ], 
+                    "op_arg_enable": [
+                        true, 
+                        false, 
+                        false, 
+                        false, 
+                        false
+                    ], 
+                    "sub_type": "Eval_Lua_TABLE"
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1561347159000002, 
+            "enable": true
+        }, 
+        {
+            "action_type": 400342, 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "t", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1561347159000003, 
+            "enable": true
+        }
+    ], 
+    "call_enabled": true, 
+    "condition": [], 
+    "enabled": true, 
+    "event": [], 
+    "func_category": "t_function", 
+    "func_comment": "", 
+    "func_des": "异步查询{目标AID}对应玩家的队伍信息；目标AID可不填，完成结果通过大厅服务请求完成事件返回", 
+    "func_id": "6f30cca1e4ca5988a85a195b2987e7cc", 
+    "func_name": "大厅服务 - 获取队伍信息", 
+    "func_param_list": [
+        {
+            "__tuple__": true, 
+            "items": [
+                "目标AID", 
+                false
+            ]
+        }
+    ], 
+    "func_return": true, 
+    "func_rtv_name_list": [
+        {
+            "__tuple__": true, 
+            "items": [
+                "result", 
+                "TABLE"
+            ]
+        }
+    ], 
+    "group_id": 0, 
+    "is_func": true, 
+    "is_official_func": false, 
+    "p_trigger_id": null, 
+    "trigger_id": 1561347159, 
+    "trigger_name": "大厅服务 - 获取队伍信息", 
+    "valid": true, 
+    "var_data": [
+        {
+            "INTEGER": {
+                "目标AID": 0
+            }, 
+            "NEW_TIMER": {}, 
+            "TABLE": {
+                "t": null
+            }
+        }, 
+        {
+            "t": 0, 
+            "目标AID": 0
+        }, 
+        [
+            "目标AID", 
+            "t"
+        ]
+    ]
+}

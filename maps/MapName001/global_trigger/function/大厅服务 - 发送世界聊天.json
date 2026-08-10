@@ -1,0 +1,142 @@
+{
+    "action": [
+        {
+            "action_type": "SET_VARIABLE",
+            "args_list": [
+                {
+                    "arg_type": 100030,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": 1
+                },
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                "Bind['大厅服务 - 发送世界聊天'](args[1])"
+                            ],
+                            "sub_type": 1
+                        }
+                    ],
+                    "op_arg": [
+                        {
+                            "arg_type": 100003,
+                            "args_list": [
+                                {
+                                    "__tuple__": true,
+                                    "items": [
+                                        "STRING",
+                                        "消息",
+                                        "local"
+                                    ]
+                                }
+                            ],
+                            "sub_type": 2
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "op_arg_enable": [
+                        true,
+                        false,
+                        false,
+                        false,
+                        false
+                    ],
+                    "sub_type": "Eval_Lua_TABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 689268873000002,
+            "enable": true
+        },
+        {
+            "action_type": 400342,
+            "args_list": [
+                {
+                    "arg_type": 100011,
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "t",
+                                "local"
+                            ]
+                        }
+                    ],
+                    "sub_type": "VARIABLE"
+                }
+            ],
+            "bp": false,
+            "element_id": 689268873000003,
+            "enable": true
+        }
+    ],
+    "call_enabled": true,
+    "condition": [],
+    "enabled": true,
+    "event": [],
+    "func_category": "t_function",
+    "func_comment": "",
+    "func_des": "向世界频道发送聊天消息{消息}，返回请求受理结果",
+    "func_id": "45f48cac073155d38ca8dc7edc934517",
+    "func_name": "大厅服务 - 发送世界聊天",
+    "group_id": 0,
+    "is_func": true,
+    "is_official_func": false,
+    "p_trigger_id": null,
+    "trigger_id": 689268873,
+    "trigger_name": "大厅服务 - 发送世界聊天",
+    "valid": true,
+    "var_data": [
+        {
+            "NEW_TIMER": {},
+            "STRING": {
+                "消息": ""
+            },
+            "TABLE": {
+                "t": null
+            }
+        },
+        {
+            "消息": 0,
+            "t": 0
+        },
+        [
+            "消息",
+            "t"
+        ]
+    ],
+    "func_param_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "消息",
+                true
+            ]
+        }
+    ],
+    "func_return": true,
+    "func_rtv_name_list": [
+        {
+            "__tuple__": true,
+            "items": [
+                "result",
+                "TABLE"
+            ]
+        }
+    ]
+}
