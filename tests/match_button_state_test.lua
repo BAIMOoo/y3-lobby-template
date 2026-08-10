@@ -4,6 +4,32 @@ local function assert_equal(actual, expected, message)
     end
 end
 
+local function assert_log_contains(entries, level, fragments, message)
+    for _, entry in ipairs(entries) do
+        if entry.level == level then
+            local matched = true
+            for _, fragment in ipairs(fragments) do
+                if not string.find(entry.message, fragment, 1, true) then
+                    matched = false
+                    break
+                end
+            end
+            if matched then
+                return
+            end
+        end
+    end
+    error(message .. ': expected ' .. level .. ' log containing ' .. table.concat(fragments, ', '))
+end
+
+local function assert_log_excludes(entries, fragment, message)
+    for _, entry in ipairs(entries) do
+        if string.find(entry.message, fragment, 1, true) then
+            error(message .. ': unexpected log content ' .. fragment)
+        end
+    end
+end
+
 local next_ui_handle = 0
 
 local function new_ui(kind)
@@ -80,6 +106,8 @@ end
 local function run_case(path)
     local join_callback
     local refresh_callback
+    local complete_callback
+    local event_callback
     local refresh_loop_count = 0
     local start_count = 0
     local cancel_count = 0
@@ -87,12 +115,15 @@ local function run_case(path)
     local return_count = 0
     local dungeon_join_count = 0
     local dungeon_join_token
+    local join_by_token_error = false
     local copied_role
     local copied_ui_handle
     local team_chat_message
     local world_chat_message
     local throw_team_chat = false
     local same_room_params
+    local same_room_result
+    local same_room_error
     local cross_room_params
     local start_match_params
     local return_lobby_params
@@ -100,6 +131,7 @@ local function run_case(path)
     local dungeon_token = ''
     local root = new_ui('根节点')
     local game_hud = new_ui('根节点')
+    local log_entries = {}
     local player = {
         handle = 'player-handle',
         get_name = function() return '测试玩家' end,
@@ -130,9 +162,20 @@ local function run_case(path)
         }
     end
 
+    local function capture_log(level, ...)
+        local values = table.pack(...)
+        for index = 1, values.n do
+            values[index] = tostring(values[index])
+        end
+        log_entries[#log_entries + 1] = {
+            level = level,
+            message = table.concat(values, '\t', 1, values.n),
+        }
+    end
     log = {
-        info = function() end,
-        error = function(message) error(message) end,
+        info = function(...) capture_log('info', ...) end,
+        warn = function(...) capture_log('warn', ...) end,
+        error = function(...) capture_log('error', ...) end,
     }
     GameAPI = {
         api_get_current_game_mode = function() return current_mode end,
@@ -182,10 +225,24 @@ local function run_case(path)
         },
         lobby = {
             on_complete = function(callback)
-                return { remove = function() callback = nil end }
+                complete_callback = callback
+                return {
+                    remove = function()
+                        if complete_callback == callback then
+                            complete_callback = nil
+                        end
+                    end,
+                }
             end,
             on_event = function(callback)
-                return { remove = function() callback = nil end }
+                event_callback = callback
+                return {
+                    remove = function()
+                        if event_callback == callback then
+                            event_callback = nil
+                        end
+                    end,
+                }
             end,
             get_state = function()
                 local team_info = BOB.team_info
@@ -217,7 +274,7 @@ local function run_case(path)
             end,
             send_team_chat = function(message)
                 if throw_team_chat then
-                    error('模拟聊天发送异常')
+                    error('模拟聊天发送异常：' .. message)
                 end
                 team_chat_message = message
                 return accepted('发送队伍聊天')
@@ -243,13 +300,19 @@ local function run_case(path)
             end,
             same_room_split = function(params)
                 same_room_params = params
-                return accepted('同房分流')
+                if same_room_error then
+                    error(same_room_error)
+                end
+                return same_room_result or accepted('同房分流')
             end,
             cross_room_merge = function(params)
                 cross_room_params = params
                 return accepted('跨房合流')
             end,
             join_by_token = function(token)
+                if join_by_token_error then
+                    error('模拟口令异常：' .. token)
+                end
                 dungeon_join_count = dungeon_join_count + 1
                 dungeon_join_token = token
                 return accepted('加入口令')
@@ -273,9 +336,92 @@ local function run_case(path)
     assert(join_callback, path .. ' must bind player join event')
     join_callback(nil, { player = player })
     assert(refresh_callback, path .. ' must create refresh timer')
+    assert(complete_callback, path .. ' must listen for async completion')
+    assert(event_callback, path .. ' must listen for lobby state events')
     assert_equal(refresh_loop_count, 1, path .. ' creates one refresh timer')
     join_callback(nil, { player = player })
     assert_equal(refresh_loop_count, 1, path .. ' reuses the existing refresh timer')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 按钮不可用',
+        'action=跨房合流',
+        'code=disabled',
+        'reason=当前未加入队伍',
+    }, path .. ' logs the initial cross-room disabled reason')
+
+    event_callback({
+        event = 'team_changed',
+        status = 'connected',
+        code = 'ok',
+        reason = '队伍信息已更新',
+        sequence = 7,
+    })
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 状态事件',
+        'action=team_changed',
+        'code=ok',
+        'reason=队伍信息已更新',
+        'sequence=7',
+    }, path .. ' logs lobby state events')
+    event_callback({
+        event = 'connection_changed',
+        status = 'failed',
+        code = 'connect_failed',
+        reason = 'token=event-connection-secret',
+        sequence = 8,
+    })
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 状态事件',
+        'action=connection_changed',
+        'code=connect_failed',
+        'reason=敏感详情已省略',
+        'sequence=8',
+    }, path .. ' redacts connection state event details')
+    assert_log_excludes(log_entries, 'event-connection-secret',
+        path .. ' does not log connection state tokens')
+
+    complete_callback({
+        request_id = 'request-success',
+        action = '开始匹配',
+        success = true,
+        code = 'ok',
+        reason = '匹配已完成',
+    })
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 异步完成',
+        'action=开始匹配',
+        'success=true',
+        'request_id=request-success',
+        'reason=匹配已完成',
+    }, path .. ' logs async success')
+    complete_callback({
+        request_id = 'request-failure',
+        action = '跨房合流',
+        success = false,
+        code = 'room_missing',
+        reason = '目标房间不存在',
+    })
+    assert_log_contains(log_entries, 'error', {
+        '[LobbyTestUI] 异步失败',
+        'action=跨房合流',
+        'success=false',
+        'request_id=request-failure',
+        'code=room_missing',
+        'reason=目标房间不存在',
+    }, path .. ' logs async failure')
+    complete_callback({
+        request_id = 'request-connect-failure',
+        action = '建立连接',
+        success = false,
+        code = 'connect_failed',
+        reason = 'token=connection-secret',
+    })
+    assert_log_contains(log_entries, 'error', {
+        '[LobbyTestUI] 异步失败',
+        'action=建立连接',
+        'code=connect_failed',
+        'reason=敏感详情已省略',
+    }, path .. ' redacts connection failure details')
+    assert_log_excludes(log_entries, 'connection-secret', path .. ' does not log connection tokens')
 
     local exit_button = assert(_G.__BOB_TEST_UI_RUNTIME.exit_button, path .. ' must create exit button')
     assert_equal(
@@ -326,6 +472,12 @@ local function run_case(path)
         _G.__BOB_TEST_UI_RUNTIME.notice_text.text,
         '加入口令：请输入关卡口令',
         path .. ' empty dungeon token shows actionable feedback')
+    assert_log_contains(log_entries, 'warn', {
+        '[LobbyTestUI] 操作拒绝',
+        'action=加入口令',
+        'code=invalid_input',
+        'reason=请输入关卡口令',
+    }, path .. ' logs empty dungeon token rejection')
     dungeon_input:set_text('space/token+1=')
     dungeon_join_button:click()
     assert_equal(dungeon_join_count, 1, path .. ' dungeon join button request count')
@@ -338,6 +490,15 @@ local function run_case(path)
         _G.__BOB_TEST_UI_RUNTIME.notice_text.text,
         '加入口令请求已受理；目标房间需允许中途加入',
         path .. ' dungeon join request feedback')
+    join_by_token_error = true
+    dungeon_join_button:click()
+    assert_log_contains(log_entries, 'error', {
+        '[LobbyTestUI] 操作异常',
+        'action=加入口令',
+        'code=lua_exception',
+        'reason=敏感详情已省略',
+    }, path .. ' redacts dungeon token exceptions')
+    join_by_token_error = false
 
     _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
     assert(same_room_params, path .. ' same-room split button sends a request')
@@ -347,6 +508,54 @@ local function run_case(path)
         path .. ' same-room split target level')
     assert_equal(same_room_params.game_mode, 1003, path .. ' same-room split target mode')
     assert_equal(same_room_params.max_player, 2, path .. ' same-room split player limit')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 操作发起',
+        'action=同房分流',
+    }, path .. ' logs same-room action start')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 请求已受理',
+        'action=同房分流',
+        'accepted=true',
+        'request_id=test-request',
+    }, path .. ' logs same-room acceptance')
+
+    same_room_result = {
+        accepted = false,
+        action = '同房分流',
+        request_id = '',
+        reason = '大厅服务未连接',
+        code = 'not_connected',
+        sync = true,
+        result_data = {},
+    }
+    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
+    assert_log_contains(log_entries, 'warn', {
+        '[LobbyTestUI] 操作拒绝',
+        'action=同房分流',
+        'accepted=false',
+        'code=not_connected',
+        'reason=大厅服务未连接',
+    }, path .. ' logs synchronous rejection')
+
+    same_room_result = accepted('同房分流', {}, true)
+    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 同步完成',
+        'action=同房分流',
+        'accepted=true',
+        'sync=true',
+    }, path .. ' logs synchronous success')
+
+    same_room_result = nil
+    same_room_error = '模拟同房分流异常'
+    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
+    assert_log_contains(log_entries, 'error', {
+        '[LobbyTestUI] 操作异常',
+        'action=同房分流',
+        'code=lua_exception',
+        '模拟同房分流异常',
+    }, path .. ' logs synchronous exceptions')
+    same_room_error = nil
 
     local battle_panel = assert(_G.__BOB_TEST_UI_RUNTIME.battle_chat_panel, path .. ' must create battle chat panel')
     local lobby_chat_panel = assert(
@@ -378,6 +587,11 @@ local function run_case(path)
         members = { { aid = BOB.aid, name = '测试玩家', state = '游戏中' } },
     }
     refresh_callback()
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 按钮不可用',
+        'action=跨房合流',
+        'reason=队伍人数不足（1/2）',
+    }, path .. ' logs insufficient cross-room member count')
     assert_equal(battle_panel.visible, true, path .. ' battle chat visible in dungeon')
     assert_equal(game_hud.visible, false, path .. ' default HUD hidden in dungeon')
     assert_equal(battle_token_text.text, dungeon_token, path .. ' battle token text')
@@ -405,10 +619,21 @@ local function run_case(path)
     _G.__BOB_TEST_UI_RUNTIME.battle_world_button:click()
     assert_equal(team_chat_message, nil, path .. ' empty team chat does not send')
     assert_equal(world_chat_message, nil, path .. ' empty world chat does not send')
+    assert_log_contains(log_entries, 'warn', {
+        '[LobbyTestUI] 操作拒绝',
+        'action=队伍聊天',
+        'code=empty_message',
+        'reason=消息为空',
+    }, path .. ' logs empty chat rejection')
     battle_chat_input:set_text('队伍消息')
     _G.__BOB_TEST_UI_RUNTIME.battle_team_button:click()
     assert_equal(team_chat_message, '队伍消息', path .. ' battle team chat message')
     assert_equal(battle_chat_input:get_input_field_content(), '', path .. ' battle team input clears')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 请求已受理',
+        'action=队伍聊天',
+        'accepted=true',
+    }, path .. ' logs chat acceptance')
     battle_chat_input:set_text('世界消息')
     _G.__BOB_TEST_UI_RUNTIME.battle_world_button:click()
     assert_equal(world_chat_message, '世界消息', path .. ' battle world chat message')
@@ -423,7 +648,17 @@ local function run_case(path)
     assert(
         string.find(_G.__BOB_TEST_UI_RUNTIME.battle_notice_text.text, '模拟聊天发送异常', 1, true),
         path .. ' failed battle chat reports the exception')
+    assert_log_contains(log_entries, 'error', {
+        '[LobbyTestUI] 操作异常',
+        'action=队伍聊天',
+        'code=lua_exception',
+        'reason=敏感详情已省略',
+    }, path .. ' logs chat exceptions')
     throw_team_chat = false
+    assert_log_excludes(log_entries, '队伍消息', path .. ' does not log chat content')
+    assert_log_excludes(log_entries, '世界消息', path .. ' does not log chat content')
+    assert_log_excludes(log_entries, '异常消息', path .. ' does not log failed chat content')
+    assert_log_excludes(log_entries, 'space/token+1=', path .. ' does not log dungeon tokens')
 
     current_mode = 1001
     dungeon_token = ''
@@ -495,6 +730,11 @@ local function run_case(path)
     refresh_callback()
     assert_equal(button.text, '开始匹配', path .. ' member idle label')
     assert_equal(button.enabled, false, path .. ' member cannot start matching')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 按钮不可用',
+        'action=跨房合流',
+        'reason=当前玩家不是队长',
+    }, path .. ' logs non-captain cross-room restriction')
     button:click()
     assert_equal(start_count, 1, path .. ' disabled member click is ignored')
 
@@ -503,6 +743,12 @@ local function run_case(path)
     assert_equal(button.enabled, true, path .. ' captain can start matching')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.cross_room_button.enabled, true,
         path .. ' captain with enough members can start cross-room merge')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 按钮可用',
+        'action=跨房合流',
+        'code=enabled',
+        'reason=条件已满足',
+    }, path .. ' logs cross-room availability')
     _G.__BOB_TEST_UI_RUNTIME.cross_room_button:click()
     assert(cross_room_params, path .. ' cross-room merge button sends a request')
     assert_equal(cross_room_params.game_map_id, 'test-game-map-id', path .. ' cross-room target map')
@@ -521,6 +767,11 @@ local function run_case(path)
         _G.__BOB_TEST_UI_RUNTIME.expedition_phase_text.text,
         '匹配中',
         path .. ' expedition summary follows matching state')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 按钮不可用',
+        'action=跨房合流',
+        'reason=队伍正在匹配',
+    }, path .. ' logs matching cross-room restriction')
     button:click()
     assert_equal(cancel_count, 1, path .. ' matching click cancels matching')
 

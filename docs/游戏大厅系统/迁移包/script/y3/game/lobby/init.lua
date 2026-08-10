@@ -8,6 +8,7 @@ local M = {}
 local PLAYER_VERSION = '2.0'
 local REQUEST_TIMEOUT = 10
 local EXIT_CLEANUP_WATCHDOG_TIMEOUT = 8
+local CROSS_MAP_TRANSITION_LOCK = 'cross_map_transition'
 
 local listeners = {}
 local LOCAL_REJECTION = {}
@@ -52,6 +53,28 @@ local function state_conflict_code(reason)
         return 'not_connected'
     end
     return 'state_conflict'
+end
+
+local function caught_error_handler(action, redact_error)
+    return function(err)
+        local reason = tostring(err)
+        if redact_error then
+            pcall(log.warn, '[Lobby] 调用异常 | action=' .. action .. ' | error=敏感详情已省略')
+            return '平台调用异常，敏感详情已省略'
+        end
+        pcall(log.error, '[Lobby] 调用异常 | action=' .. action .. ' | error=' .. reason)
+        return reason
+    end
+end
+
+local function reject_if_cross_map_pending(action)
+    local pending_request_id = state.runtime.locks[CROSS_MAP_TRANSITION_LOCK]
+    if not pending_request_id then
+        return nil
+    end
+    return result.rejected(action, 'cross_map_pending', '关卡切换请求已发出，请等待目标关卡加载', {
+        pending_request_id = pending_request_id,
+    })
 end
 
 local function remove_resource(resource)
@@ -283,9 +306,7 @@ local function run_async(action, lock, starter, options)
 
     local ok, sent, send_failure = xpcall(function()
         return starter(options.client, request, done)
-    end, function(err)
-        return tostring(err)
-    end)
+    end, caught_error_handler(action, options.redact_error))
     if not ok then
         reject_request(request)
         return result.rejected(action, 'request_error', sent)
@@ -402,9 +423,7 @@ local function run_terminal_async(action, starter)
 
     local ok, sent, send_reason = xpcall(function()
         return starter(ready_client, request, done)
-    end, function(err)
-        return tostring(err)
-    end)
+    end, caught_error_handler(action))
     if not ok then
         client_api.release_for_terminal()
         finish_terminal_request(request, false, 'request_error', sent, state.snapshot(), 'idle')
@@ -800,7 +819,9 @@ function M.send_team_chat(message)
             return false, 'client method send_chat missing'
         end
         return client:send_chat(message, rpc_done(done, '队伍聊天已发送', { message = message }))
-    end)
+    end, {
+        redact_error = true,
+    })
 end
 
 function M.send_world_chat(message)
@@ -818,7 +839,9 @@ function M.send_world_chat(message)
             return false, 'client method send_world_chat missing'
         end
         return client:send_world_chat(message, rpc_done(done, '世界聊天已发送', { message = message }))
-    end)
+    end, {
+        redact_error = true,
+    })
 end
 
 function M.get_chat_history(channel)
@@ -928,6 +951,10 @@ function M.same_room_split(params)
             end
         end
     end
+    local pending = reject_if_cross_map_pending(action)
+    if pending then
+        return pending
+    end
     local request_data = {
         level_id = level_id,
         game_mode = game_mode,
@@ -935,8 +962,9 @@ function M.same_room_split(params)
         platform_requested = false,
         entered_target = 'unknown',
         confirm_by = 'platform_request_sent',
+        transition_pending = false,
     }
-    return run_async(action, 'operation', function(_, _, done)
+    return run_async(action, 'operation', function(_, request, done)
         if not local_player or not local_player.handle then
             return local_rejection('local_player_missing', 'local player not found', request_data)
         end
@@ -946,7 +974,9 @@ function M.same_room_split(params)
             max_player,
             params.custom_param)
         request_data.platform_requested = true
-        done(true, 'ok', 'same room split requested', request_data)
+        request_data.transition_pending = true
+        state.runtime.locks[CROSS_MAP_TRANSITION_LOCK] = request.id
+        done(true, 'ok', '同房分流请求已提交，等待关卡切换', request_data)
         return true
     end, {
         require_connected = false,
@@ -1044,6 +1074,7 @@ function M.join_by_token(token)
     end, {
         require_connected = false,
         accepted_result_data = request_data,
+        redact_error = true,
     })
 end
 
@@ -1105,9 +1136,7 @@ local function run_exit_cleanup_before(client, after_cleanup, defer_sync_cleanup
             local code = cleanup_ok and 'ok' or 'cleanup_failed'
             finish(cleanup_diagnostic(code, cleanup_ok == true, true, cleanup_reason))
         end)
-    end, function(err)
-        return tostring(err)
-    end)
+    end, caught_error_handler('退出前清理'))
     if not ok then
         finish(cleanup_diagnostic('cleanup_exception', false, true, call_result))
         return
@@ -1284,9 +1313,7 @@ function M.return_lobby(params)
                     game_mode,
                     max_player,
                     params.custom_param)
-            end, function(err)
-                return tostring(err)
-            end)
+            end, caught_error_handler(action))
             if not requested then
                 done(false, 'request_error', request_error, data)
                 return

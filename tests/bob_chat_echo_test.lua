@@ -159,7 +159,12 @@ end
 
 do
     local bob, result = new_bob(true)
-    local ok, err = bob:send_chat('team message')
+    local callback_result
+    local callback_error
+    local ok, err = bob:send_chat('team message', function(value, request_error)
+        callback_result = value
+        callback_error = request_error
+    end)
     local sent, events = result()
 
     assert_equal(ok, true, 'team send result')
@@ -169,6 +174,8 @@ do
     assert_equal(#bob.message_history, 0, 'team message waits for server response')
 
     complete_chat_request(bob, sent, 1, { errnu = 0 })
+    assert_equal(callback_result.errnu, 0, 'team callback result')
+    assert_equal(callback_error, nil, 'team callback error')
     assert_equal(#bob.message_history, 1, 'team response echo count')
     assert_equal(bob.message_history[1].message, 'team message', 'team response echo text')
     assert_equal(bob.message_history[1].chat.sender.aid, 101, 'team local sender')
@@ -177,6 +184,34 @@ do
     bob:notify_chat({ arg1 = bob.message_history[1].chat })
     assert_equal(#bob.message_history, 1, 'self push deduplication')
     assert_equal(#events, 1, 'self push event deduplication')
+end
+
+do
+    local bob, result = new_bob(true)
+    local first_result
+    local first_error
+    local second_result
+    local second_error
+
+    local first_ok = bob:send_world_chat('first pending', function(value, request_error)
+        first_result = value
+        first_error = request_error
+    end)
+    local sent = result()
+    local second_ok, second_reason = bob:send_world_chat('must reject', function(value, request_error)
+        second_result = value
+        second_error = request_error
+    end)
+
+    assert_equal(first_ok, true, 'first serialized chat accepted')
+    assert_equal(second_ok, false, 'second serialized chat rejected')
+    assert_equal(second_reason, '请求不能重入', 'second serialized chat reason')
+    assert_equal(second_result, nil, 'second serialized chat callback result')
+    assert_equal(second_error, '请求不能重入', 'second serialized chat callback error')
+
+    complete_chat_request(bob, sent, 1, { errnu = 0 })
+    assert_equal(first_result.errnu, 0, 'first serialized chat callback result')
+    assert_equal(first_error, nil, 'first serialized chat callback error')
 end
 
 do
@@ -208,11 +243,18 @@ end
 
 do
     local bob, result = new_bob(false, 'network is not running')
-    local ok, err = bob:send_world_chat('not queued')
+    local callback_result
+    local callback_error
+    local ok, err = bob:send_world_chat('not queued', function(value, request_error)
+        callback_result = value
+        callback_error = request_error
+    end)
     local sent = result()
 
     assert_equal(ok, false, 'network failure result')
     assert_equal(err, 'network is not running', 'network failure error')
+    assert_equal(callback_result, nil, 'network failure callback result')
+    assert_equal(callback_error, 'network is not running', 'network failure callback error')
     assert_equal(sent.message, 'not queued', 'network failure request attempt')
     assert_equal(#bob.message_history, 0, 'network failure must not echo')
 end

@@ -757,7 +757,7 @@ function M:cleanup_before_exit(done, step_timeout)
 end
 
 --创建队伍
----@param done? fun() # 创建完成后调用
+---@param done? fun(result: any?, err: any?) # 创建完成后调用
 ---@param member_limit? integer # 队伍人数限制，默认8人
 function M:create_team(done, member_limit)
     log.debug('【BOB】尝试创建队伍')
@@ -765,16 +765,14 @@ function M:create_team(done, member_limit)
     self:check_update(function(need_update)
         if need_update then
             log.debug('【BOB】创建队伍失败：客户端需要更新')
-            if done then done() end
+            if done then done(nil, '客户端需要更新') end
         else
             self:request('Team_CreateTeam', function()
                 log.debug('【BOB】Team_CreateTeam', self.aid)
                 self.client:Team_CreateTeam(self.aid, member_limit)
             end, function(result, err)
                 log.debug('【BOB】创建队伍回包', y3.inspect({ result = result, err = err }))
-                if done then
-                    done()
-                end
+                if done then done(result, err) end
             end)
         end
     end)
@@ -805,27 +803,26 @@ end
 
 --加入队伍
 ---@param team_id integer
----@param done? fun() # 加入完成后调用
+---@param done? fun(result: any?, err: any?) # 加入完成后调用
 function M:join_team(team_id, done)
     log.debug('【BOB】尝试加入队伍', team_id)
     if self:is_matching() or self:is_launching() then
-        log.debug('【BOB】加入队伍失败：正在匹配中或启动中')
-        if done then done() end
-        return
+        local reason = '正在匹配中或启动中'
+        log.debug('【BOB】加入队伍失败：' .. reason)
+        if done then done(nil, reason) end
+        return false, reason
     end
     self:check_update(function(need_update)
         if need_update then
             log.debug('【BOB】加入队伍失败：客户端需要更新')
-            if done then done() end
+            if done then done(nil, '客户端需要更新') end
         else
             self:request('Team_JoinTeam', function()
                 log.debug('【BOB】Team_JoinTeam', self.aid, team_id)
                 self.client:Team_JoinTeam(self.aid, team_id)
             end, function(result, err)
                 log.debug('【BOB】加入队伍回包', y3.inspect({ result = result, err = err }))
-                if done then
-                    done()
-                end
+                if done then done(result, err) end
             end)
         end
     end)
@@ -1127,7 +1124,7 @@ end
 ---@private
 ---@param game_mode integer # 匹配成功后进入的游戏模式
 ---@param score integer? # 匹配分数，默认使用平均分
----@param done? fun()
+---@param done? fun(result: any?, err: any?)
 function M:_start_match(game_mode, score, done)
     ---@private
     self:update_matching_state()
@@ -1159,29 +1156,32 @@ function M:_start_match(game_mode, score, done)
         end
     end, function(result, err)
         log.debug('【BOB】开始匹配回包', y3.inspect({ result = result, err = err }))
-        if done then done() end
+        if done then done(result, err) end
     end)
 end
 
 --开始匹配
 ---@param game_mode integer # 匹配成功后进入的游戏模式
 ---@param score integer? # 匹配分数，默认使用平均分
----@param done? fun()
+---@param done? fun(result: any?, err: any?)
+---@return boolean, string?
 function M:start_match(game_mode, score, done)
     log.debug('【BOB】尝试开始匹配', game_mode, score)
-    if not self:can_match() then
-        log.debug('【BOB】开始匹配失败：', self:can_match())
-        if done then done() end
-        return
+    local can_match, reason = self:can_match()
+    if not can_match then
+        log.debug('【BOB】开始匹配失败：', reason)
+        if done then done(nil, reason) end
+        return false, reason
     end
     self:check_update(function(need_update)
         if need_update then
             log.debug('【BOB】开始匹配失败：客户端需要更新')
-            if done then done() end
+            if done then done(nil, '客户端需要更新') end
         else
             self:_start_match(game_mode, score, done)
         end
     end)
+    return true
 end
 
 --取消匹配
@@ -1200,41 +1200,60 @@ function M:cancel_match(done)
     end)
 end
 
+---@private
+---@param message string
+---@param chat_type integer
+---@param channel_id integer
+---@param done? fun(result: any?, err: any?)
+---@return boolean, string?
+function M:send_chat_to_channel(message, chat_type, channel_id, done)
+    local send_ok, send_err
+    local accepted = self:request('Chat_SendChatMsg', function()
+        send_ok, send_err = self.client:ApiRouter_SendChatMsg(
+            self.aid,
+            message,
+            chat_type,
+            channel_id,
+            0)
+    end, done or function()
+    end)
+    if not accepted then
+        return false, '请求不能重入'
+    end
+    if send_ok == false then
+        self:get_request_handler('Chat_SendChatMsg').last_receiver = nil
+        if done then done(nil, send_err) end
+        return false, send_err
+    end
+    return true
+end
+
 --发送聊天消息
 ---@param message string
----@return boolean, string|nil
-function M:send_chat(message)
+---@param done? fun(result: any?, err: any?)
+---@return boolean, string?
+function M:send_chat(message, done)
     log.debug('【BOB】发送聊天消息', message)
     if not self.team_info or not self.team_info.team_id or self.team_info.team_id == 0 then
         return false, '当前不在队伍中'
     end
-    return self.client:ApiRouter_SendChatMsg(
-        self.aid
-        , message
-        , 4
-        , self.team_info.team_id
-        , 0
-    )
+    return self:send_chat_to_channel(message, 4, self.team_info.team_id, done)
 end
 
 --发送世界聊天消息
 ---@param message string
----@return boolean, string|nil
-function M:send_world_chat(message)
+---@param done? fun(result: any?, err: any?)
+---@return boolean, string?
+function M:send_world_chat(message, done)
     log.debug('【BOB】发送世界聊天消息', message)
-    return self.client:ApiRouter_SendChatMsg(
-        self.aid
-        , message
-        , WORLD_CHANNEL_TYPE
-        , WORLD_CHANNEL_ID
-        , 0
-    )
+    return self:send_chat_to_channel(message, WORLD_CHANNEL_TYPE, WORLD_CHANNEL_ID, done)
 end
 
 --多人切换副本
 ---@param dungeon_info DungeonSpaceField
 ---@param players DungeonPlayerField[] 每项必须包含 aid 和 version，version 当前固定传 '2.0'
-function M:start_privat_dungeon_game(dungeon_info, players)
+---@param done? fun(result: any?, err: any?)
+function M:start_privat_dungeon_game(dungeon_info, players, done)
     if not self:is_in_team() then
         return false, '当前不在队伍中'
     end
@@ -1246,7 +1265,19 @@ function M:start_privat_dungeon_game(dungeon_info, players)
         return false, reason
     end
     log.debug('【BOB】发送私人副本消息', dungeon_info, players)
-    self.client:DungeonManager_StartMatchPrivateDungeonGame(dungeon_info, players)
+    local send_ok, send_err
+    local accepted = self:request('DungeonManager_StartMatchPrivateDungeonGame', function()
+        send_ok, send_err = self.client:DungeonManager_StartMatchPrivateDungeonGame(dungeon_info, players)
+    end, done or function()
+    end)
+    if not accepted then
+        return false, '请求不能重入'
+    end
+    if send_ok == false then
+        self:get_request_handler('DungeonManager_StartMatchPrivateDungeonGame').last_receiver = nil
+        if done then done(nil, send_err) end
+        return false, send_err
+    end
     return true
 end
 

@@ -209,32 +209,112 @@ local function add_input(parent, x, y, width, height)
     return ui
 end
 
+local function log_field(value)
+    if value == nil or value == '' then
+        return '-'
+    end
+    return tostring(value)
+end
+
+local function write_log(level, message)
+    local writer = log and (log[level] or log.info)
+    if writer then
+        pcall(writer, message)
+    end
+end
+
+local SENSITIVE_REASON_ACTIONS = {
+    ['加入口令'] = true,
+    ['队伍聊天'] = true,
+    ['世界聊天'] = true,
+    ['发送队伍聊天'] = true,
+    ['发送世界聊天'] = true,
+    ['建立连接'] = true,
+    connection_changed = true,
+}
+
+local SAFE_REASON_CODES = {
+    empty_message = true,
+    invalid_input = true,
+    ok = true,
+}
+
+local function log_reason(action, data)
+    local reason = data.reason
+    if reason == nil or reason == '' then
+        return '-'
+    end
+    local code = tostring(data.code or '')
+    if SENSITIVE_REASON_ACTIONS[tostring(action or data.action or '')]
+        and not SAFE_REASON_CODES[code]
+    then
+        return '敏感详情已省略'
+    end
+    return tostring(reason)
+end
+
+local function log_operation(level, phase, action, data)
+    data = type(data) == 'table' and data or {}
+    write_log(level, string.format(
+        '[LobbyTestUI] %s | action=%s | accepted=%s | success=%s | sync=%s'
+            .. ' | request_id=%s | code=%s | reason=%s | sequence=%s',
+        tostring(phase),
+        log_field(action or data.action),
+        log_field(data.accepted),
+        log_field(data.success),
+        log_field(data.sync),
+        log_field(data.request_id),
+        log_field(data.code),
+        log_reason(action, data),
+        log_field(data.sequence)))
+end
+
 local function safe_action(name, action)
+    log_operation('info', '操作发起', name)
     local ok, action_result, action_err = xpcall(action, function(message)
         return tostring(message)
     end)
     if not ok then
         runtime.notice = name .. '：' .. tostring(action_result)
-        log.error('[LobbyTestUI] ' .. runtime.notice)
+        log_operation('error', '操作异常', name, {
+            accepted = false,
+            sync = true,
+            code = 'lua_exception',
+            reason = action_result,
+        })
         return false
     end
 
     if type(action_result) == 'table' and action_result.accepted ~= nil then
         if not action_result.accepted then
             runtime.notice = name .. '：' .. tostring(action_result.reason or action_result.code or '操作失败')
+            log_operation('warn', '操作拒绝', name, action_result)
             return false
         end
         runtime.notice = name .. '：' .. tostring(action_result.sync
             and (action_result.reason or '操作完成')
             or '请求已受理')
+        log_operation('info', action_result.sync and '同步完成' or '请求已受理', name, action_result)
         return true
     end
 
     if action_result == false then
         runtime.notice = name .. '：' .. tostring(action_err or '操作失败')
+        log_operation('warn', '操作拒绝', name, {
+            accepted = false,
+            sync = true,
+            code = 'request_failed',
+            reason = action_err or '操作失败',
+        })
         return false
     end
     runtime.notice = name .. '：请求已发送'
+    log_operation('info', '请求已发送', name, {
+        accepted = true,
+        sync = false,
+        code = 'ok',
+        reason = '请求已发送',
+    })
     return true
 end
 
@@ -317,7 +397,12 @@ end
 local function send_chat_from_input(channel, input)
     local message = input:get_input_field_content()
     if message == '' then
-        return false, '消息为空'
+        return false, '消息为空', {
+            accepted = false,
+            sync = true,
+            code = 'empty_message',
+            reason = '消息为空',
+        }
     end
     local send_result
     if channel == '队伍' then
@@ -327,22 +412,69 @@ local function send_chat_from_input(channel, input)
     end
     if send_result and send_result.accepted then
         input:set_text('')
-        return true
+        return true, nil, send_result
     end
-    return false, send_result and (send_result.reason or send_result.code) or '请求未发出'
+    return false,
+        send_result and (send_result.reason or send_result.code) or '请求未发出',
+        send_result
 end
 
 local function safe_send_chat(channel, input)
-    local ok, sent, reason = xpcall(function()
+    local action = channel .. '聊天'
+    log_operation('info', '操作发起', action)
+    local ok, sent, reason, send_result = xpcall(function()
         return send_chat_from_input(channel, input)
     end, function(message)
         return tostring(message)
     end)
     if not ok then
-        pcall(log.error, '[LobbyTestUI] ' .. channel .. '聊天：' .. tostring(sent))
+        log_operation('error', '操作异常', action, {
+            accepted = false,
+            sync = true,
+            code = 'lua_exception',
+            reason = sent,
+        })
         return false, sent
     end
+    if sent then
+        log_operation('info', send_result and send_result.sync and '同步完成' or '请求已受理', action,
+            send_result or {
+                accepted = true,
+                sync = false,
+                code = 'ok',
+                reason = '请求已受理',
+            })
+    else
+        log_operation('warn', '操作拒绝', action, send_result or {
+            accepted = false,
+            sync = true,
+            code = 'request_failed',
+            reason = reason or '请求未发出',
+        })
+    end
     return sent, reason
+end
+
+local function cross_room_unavailable_reason(ready, in_team, is_captain, matching, launching, team_count)
+    if not ready then
+        return '大厅服务未连接'
+    end
+    if not in_team then
+        return '当前未加入队伍'
+    end
+    if not is_captain then
+        return '当前玩家不是队长'
+    end
+    if matching then
+        return '队伍正在匹配'
+    end
+    if launching then
+        return '队伍正在启动关卡'
+    end
+    if team_count < EXPECTED_PRIVATE_PLAYERS then
+        return string.format('队伍人数不足（%d/%d）', team_count, EXPECTED_PRIVATE_PLAYERS)
+    end
+    return nil
 end
 
 local function refresh()
@@ -388,8 +520,18 @@ local function refresh()
         dungeon_token ~= '' and dungeon_token or '-'))
 
     runtime.leave_button:set_button_enable(in_team and not team_busy)
-    runtime.private_button:set_button_enable(
-        ready and is_captain and not team_busy and team_count >= EXPECTED_PRIVATE_PLAYERS)
+    local cross_room_reason = cross_room_unavailable_reason(
+        ready, in_team, is_captain, matching, launching, team_count)
+    local cross_room_enabled = cross_room_reason == nil
+    runtime.private_button:set_button_enable(cross_room_enabled)
+    local cross_room_log_state = cross_room_enabled and 'available' or cross_room_reason
+    if runtime.cross_room_log_state ~= cross_room_log_state then
+        runtime.cross_room_log_state = cross_room_log_state
+        log_operation('info', cross_room_enabled and '按钮可用' or '按钮不可用', '跨房合流', {
+            code = cross_room_enabled and 'enabled' or 'disabled',
+            reason = cross_room_enabled and '条件已满足' or cross_room_reason,
+        })
+    end
     runtime.dismiss_button:set_button_enable(is_captain and not team_busy)
     runtime.battle_token_text:set_text(dungeon_token ~= '' and dungeon_token or '-')
     runtime.battle_copy_button:set_button_enable(dungeon_token ~= '')
@@ -441,15 +583,22 @@ local function refresh()
 end
 
 runtime.complete_listener = y3.lobby.on_complete(function(payload)
+    payload = type(payload) == 'table' and payload or {}
     local message = tostring(payload.action or '大厅服务') .. '：'
         .. tostring(payload.success and (payload.reason ~= '' and payload.reason or '操作完成')
             or payload.reason or payload.code or '操作失败')
     runtime.notice = message
     runtime.battle_notice = message
+    log_operation(payload.success and 'info' or 'error',
+        payload.success and '异步完成' or '异步失败',
+        payload.action or '大厅服务',
+        payload)
     refresh()
 end)
 
-runtime.event_listener = y3.lobby.on_event(function()
+runtime.event_listener = y3.lobby.on_event(function(payload)
+    payload = type(payload) == 'table' and payload or {}
+    log_operation('info', '状态事件', payload.event or '大厅状态', payload)
     refresh()
 end)
 
@@ -639,6 +788,12 @@ local function build(player)
         local team_id = math.tointeger(runtime.team_input:get_input_field_content())
         if not team_id then
             runtime.notice = '加入队伍：请输入有效数字编号'
+            log_operation('warn', '操作拒绝', '加入队伍', {
+                accepted = false,
+                sync = true,
+                code = 'invalid_input',
+                reason = '请输入有效数字编号',
+            })
             refresh()
             return
         end
@@ -758,6 +913,12 @@ local function build(player)
         local token = runtime.dungeon_input:get_input_field_content()
         if token == '' or token:match('^%s*$') then
             runtime.notice = '加入口令：请输入关卡口令'
+            log_operation('warn', '操作拒绝', '加入口令', {
+                accepted = false,
+                sync = true,
+                code = 'invalid_input',
+                reason = '请输入关卡口令',
+            })
             refresh()
             return
         end

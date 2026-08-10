@@ -1,58 +1,47 @@
 {
-  "active": false,
-  "current_phase": "completed",
+  "active": true,
+  "current_phase": "deep-interview",
   "state": {
-    "interview_id": "simple-match-test-ui-20260716T070431Z",
+    "interview_id": "4eb0b8b4-d6d8-4507-a134-175d18ba53f7",
     "profile": "standard",
     "type": "brownfield",
-    "initial_idea": "参考 F:\\release 的完整 UI，在当前项目补充用于测试匹配功能的简易 UI",
-    "rounds": [
-      {
-        "round": 1,
-        "target": "scope",
-        "question": "第一版简易 UI 必须覆盖哪些操作？",
-        "answer": "创建队伍、输入队伍编号加入、离队、开始/取消匹配、本地单人副本、RPC 多人副本、状态展示、队员列表、聊天全部需要",
-        "source": "from-user"
-      },
-      {
-        "round": 2,
-        "target": "non-goals",
-        "question": "是否接受纯测试工具风格，不复刻正式大厅，也不引入正式业务依赖？",
-        "answer": "是",
-        "source": "from-user",
-        "pressure_pass": "确认全部功能仅要求测试闭环，不等于完整移植正式 UI"
-      },
-      {
-        "round": 3,
-        "target": "success-criteria",
-        "question": "聊天测试是否需要队伍/世界频道切换、发送和接收显示的完整闭环？",
-        "answer": "需要",
-        "source": "from-user"
-      },
-      {
-        "round": 4,
-        "target": "decision-boundaries",
-        "question": "简易测试面板应当只在 1001 显示，还是在 1002 也保留状态面板？",
-        "answer": "1002 对局后也保留状态面板，用于确认模式切换、玩家身份和 BOB 登录状态",
-        "source": "from-user"
-      },
-      {
-        "round": 5,
-        "target": "closure",
-        "question": "是否授权自行决定 UI 内部设计并保留快捷键？",
-        "answer": "可以",
-        "source": "from-user"
-      }
-    ],
-    "current_ambiguity": 0.12,
+    "initial_idea": "以 F:\\release 的 PB 加载方式为准，修正官方 y3-lualib 中的 lobby 框架",
+    "rounds": [],
+    "current_ambiguity": 0.24,
     "threshold": 0.20,
     "max_rounds": 12,
-    "challenge_modes_used": ["contrarian"],
+    "challenge_modes_used": [],
+    "codebase_context": {
+      "reference": "F:\\release",
+      "superseded_reference": "F:\\DM28\\local_release",
+      "reference_loading": "无条件且仅调用一次 pb.loadCustomProtocol；不加载 service.pb",
+      "current_loading": "先 pb.load(service_pb.lua 内嵌描述)，再 pb.loadCustomProtocol；首次连接重复初始化两次",
+      "schema_boundary": "参考项目与当前框架都使用 arg1/arg2/ret1/ctx",
+      "protocol_comparison": "两份 custom protocol.pb 类型集合相同，仅 DungeonPlayerField 定义不同",
+      "invalid_type_refs": "两边 proto_desc 都引用 17 个 PB 中不存在的类型",
+      "prior_spec": ".omx/specs/deep-interview-official-y3-lualib-lobby-module.md"
+    },
+    "clarity": {
+      "intent": 0.92,
+      "outcome": 0.78,
+      "scope": 0.55,
+      "constraints": 0.75,
+      "success": 0.50,
+      "context": 0.98
+    },
+    "readiness": {
+      "non_goals_explicit": false,
+      "decision_boundaries_explicit": false,
+      "pressure_pass_complete": false,
+      "closure_audit_passed": false
+    },
     "current_stage": "intent-first",
-    "current_focus": "completed",
-    "completed_at": "2026-07-16T07:50:04Z",
-    "transcript_path": ".omx/interviews/simple-match-test-ui-20260716T075004Z.md",
-    "spec_path": ".omx/specs/deep-interview-simple-match-test-ui.md",
-    "context_snapshot_path": ".omx/context/simple-match-test-ui-20260716T070431Z.md"
+    "current_focus": "scope",
+    "pending_question": "除对齐单次 loadCustomProtocol 外，是否同时修正参考项目也存在的 17 个无效 PB 类型引用？",
+    "current_question": 1,
+    "context_snapshot_path": ".omx/context/release-pb-lobby-loader-20260810T091001Z.md",
+    "initial_context_summary_status": "not_needed",
+    "started_at": "2026-08-10T09:01:14Z",
+    "reference_corrected_at": "2026-08-10T09:10:01Z"
   }
 }

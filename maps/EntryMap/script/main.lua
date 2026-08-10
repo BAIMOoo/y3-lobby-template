@@ -4,7 +4,7 @@
 y3.config.log.toGame = false
 y3.config.log.level  = 'debug'
 
-local GAME_PLAY_ID = 10190356
+local GAME_PLAY_ID = 190356
 
 y3.game:event('游戏-初始化', function (trg, data)
     print('Hello, Y3!')

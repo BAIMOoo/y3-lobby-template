@@ -2,7 +2,7 @@
 -- 请到vscode插件商城下载"Y3开发助手"插件，内置详细lua开发教程及lua开发套件
 -- github地址：https://github.com/y3-editor/y3-lualib.git
 
-local GAME_PLAY_ID = 10190356
+local GAME_PLAY_ID = 190356
 
 local function diagnostic_value(getter)
     local ok, value = pcall(getter)

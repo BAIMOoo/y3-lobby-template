@@ -359,3 +359,36 @@ local_player.handle:request_create_private_dungeon(level_id, game_mode, expected
 **来源**：`maps/EntryMap/script/y3/meta/role.lua:574-579`
 
 *补充时间: 2026-07-27*
+
+---
+
+## 13. ECA `Eval_Lua_TABLE` 返回值不能预先包装为 `py.Dict`
+
+### 错误用法
+```lua
+local result = y3.helper.py_dict({ accepted = true })
+y3.eca.def('示例')
+    :with_return('结果', 'py.Dict')
+    :call(function()
+        return result
+    end)
+```
+
+### 正确用法
+```lua
+y3.eca.def('示例')
+    :with_return('结果', 'table')
+    :call(function()
+        return { accepted = true }
+    end)
+```
+
+**现象**：Lua 函数和业务请求正常执行，且没有 Trace，但 ECA 的 `Eval_Lua_TABLE` / “执行 Lua 代码”得到空表。
+
+**根因**：`y3.helper.py_dict` 返回 Python 字典对象；ECA 的 TABLE 表达式桥接需要原生 Lua `table`，提前包装会在桥接阶段静默丢失内容。
+
+**终态事件**：自定义事件的 TABLE 参数同样可直接传原生 Lua 表；编辑器生成的 `customEvents.lua` 会原样把 TABLE 参数放入 `send_custom_event` 参数表。
+
+**预防建议**：ECA 可见的同步返回值声明为 `table` 并直接返回 Lua 表；只在明确要求 Python 对象的底层 API 边界使用 `py.Dict`。合同测试应让 `y3.helper.py_dict` 抛错，以防公开返回路径重新引入包装。
+
+*补充时间: 2026-07-30*

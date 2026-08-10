@@ -1,10 +1,11 @@
 ﻿local pb = require("pb")
 
+local service_protocol = require 'y3.game.lobby.proto.service_pb'
+
 ---@class LobbyProtoHelper
 local M = Class 'LobbyProtoHelper'
 
 local loaded = false
-local SERVICE_PROTOCOL_RELATIVE_PATH = 'game/lobby/proto/service.pb'
 
 local function read_file(path)
     local file, open_err = io.open(path, 'rb')
@@ -16,24 +17,8 @@ local function read_file(path)
     return content
 end
 
-local function get_current_dir()
-    local source = debug.getinfo(1, 'S').source
-    if source:sub(1, 1) == '@' then
-        source = source:sub(2)
-    end
-    return source:match('^(.*)[/\\]')
-end
-
 local function load_service_protocol()
-    local dir = get_current_dir()
-    if not dir then
-        return false, 'cannot resolve lobby proto directory'
-    end
-    local content, read_err = read_file(dir .. '/' .. SERVICE_PROTOCOL_RELATIVE_PATH:match('([^/]+)$'))
-    if not content then
-        return false, read_err
-    end
-    local result, load_err = pb.load(content)
+    local result, load_err = pb.load(service_protocol)
     if not result then
         return false, load_err
     end

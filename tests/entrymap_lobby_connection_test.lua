@@ -50,7 +50,7 @@ assert_equal(#connect_calls, 0, 'other player does not start a connection')
 
 callbacks['玩家-加入游戏'](nil, { player = local_player })
 assert_equal(#connect_calls, 1, 'local player starts one connection')
-assert_equal(connect_calls[1].game_play_id, 10190356, 'required game play id')
+assert_equal(connect_calls[1].game_play_id, 190356, 'required game play id')
 assert_equal(connect_calls[1].in_game, nil, 'entry map connects as lobby')
 
 callbacks['玩家-加入游戏'](nil, { player = other_player })

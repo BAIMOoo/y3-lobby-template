@@ -12,7 +12,7 @@
                     "call_function": {
                         "func_id": "2a405018f61e54659d17a44122db0379",
                         "name": "大厅服务 - 建立连接",
-                        "args": [10190356],
+                        "args": [190356],
                         "returns": [{"var": "建立连接立即结果", "type": "TABLE"}]
                     }
                 },

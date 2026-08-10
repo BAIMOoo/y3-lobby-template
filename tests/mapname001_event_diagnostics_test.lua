@@ -165,7 +165,7 @@ callbacks['玩家-加入游戏'](triggers[2], { player = player, is_middle_join 
 callbacks['玩家-加入游戏'](triggers[2], { player = computer_player, is_middle_join = true })
 
 assert_equal(#connect_calls, 1, 'only local player starts a lobby connection')
-assert_equal(connect_calls[1].game_play_id, 10190356, 'target level game play id')
+assert_equal(connect_calls[1].game_play_id, 190356, 'target level game play id')
 assert_equal(connect_calls[1].in_game, true, 'target level connects as in-game')
 
 assert_contains(find_log('event received: event=游戏-初始化 main_load=1'), 'event_seq=1', 'game init sequence')

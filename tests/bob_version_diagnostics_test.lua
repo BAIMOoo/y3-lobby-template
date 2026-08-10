@@ -39,6 +39,9 @@ log = {
 }
 
 y3 = {
+    inspect = function()
+        return ''
+    end,
     player = {
         get_local = function()
             return {}
@@ -132,6 +135,7 @@ assert_log_contains('result=version-match', 'matching-version result')
 local private_request_count = 0
 local bob = setmetatable({
     aid = 1001,
+    request_handlers = {},
     team_info = {
         captain = 2002,
         member_limit = 2,
@@ -160,7 +164,15 @@ bob.team_info.captain = bob.aid
 bob.can_match = function()
     return true
 end
-assert_equal(bob:start_privat_dungeon_game({}, {}), true, 'captain private dungeon request')
+local private_callback_result
+local private_callback_error
+assert_equal(bob:start_privat_dungeon_game({}, {}, function(result, err)
+    private_callback_result = result
+    private_callback_error = err
+end), true, 'captain private dungeon request')
 assert_equal(private_request_count, 1, 'captain private dungeon request count')
+bob:notify_ret('DungeonManager_StartMatchPrivateDungeonGame', 1, {}, { ret1 = { started = true } })
+assert_equal(private_callback_result.started, true, 'private dungeon callback result')
+assert_equal(private_callback_error, nil, 'private dungeon callback error')
 
 print('bob_version_diagnostics_test: PASS')

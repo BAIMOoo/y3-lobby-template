@@ -18,7 +18,7 @@ assert(root, 'lobby module root not found; set Y3_LUALIB_ROOT to a y3-lualib che
 
 package.path = root .. '/?.lua;' .. root .. '/?/init.lua;' .. root .. '/game/?.lua;' .. root .. '/game/?/init.lua;' .. package.path
 
-TEST_GAME_PLAY_ID = 10190356
+TEST_GAME_PLAY_ID = 190356
 
 local expected_eca_names = {
     '大厅服务 - 建立连接',
@@ -151,6 +151,7 @@ assert_true(file_exists(root .. '/game/lobby/result.lua'), 'official lobby resul
 assert_true(file_exists(root .. '/game/lobby/state.lua'), 'official lobby state module must exist')
 assert_true(file_exists(root .. '/game/lobby/client.lua'), 'official lobby client module must exist')
 assert_true(file_exists(root .. '/game/lobby/proto/service.pb'), 'official lobby service.pb must exist')
+assert_true(file_exists(root .. '/game/lobby/proto/service_pb.lua'), 'official embedded service protocol module must exist')
 
 local root_init_source = read_file(root .. '/init.lua')
 local eca_init_pos = root_init_source:find('eca', 1, true) or 0
@@ -446,7 +447,8 @@ assert_true(lobby_source:find('failed_events', 1, true), 'failed_events must be 
 
 local proto_source = read_file(root .. '/game/lobby/proto/proto_helper.lua')
 assert_true(proto_source:find('custom/protocol/protocol.pb', 1, true), 'project protocol.pb must be loaded only by connect-time protocol helper')
-assert_true(proto_source:find('game/lobby/proto/service.pb', 1, true), 'service.pb must be explicitly loaded as an internal module resource')
+assert_true(proto_source:find('y3.game.lobby.proto.service_pb', 1, true), 'service protocol must be loaded from a publishable Lua module')
+assert_true(not proto_source:find('service.pb', 1, true), 'runtime protocol helper must not read unpackaged service.pb')
 
 local official_lobby_source = ''
 for _, path in ipairs({
@@ -1725,8 +1727,128 @@ assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'leve
 assert_equal(split_included.result_data.platform_requested, true, 'same_room_split reports platform request sent')
 assert_equal(split_included.result_data.entered_target, 'unknown', 'same_room_split does not claim target entry synchronously')
 assert_equal(split_included.result_data.confirm_by, 'platform_request_sent', 'same_room_split confirmation source')
+assert_equal(split_included.result_data.transition_pending, true, 'same_room_split reports pending cross-map transition')
 frame_callbacks[#frame_callbacks]()
 assert_equal(completion_payloads[#completion_payloads].request_id, split_included.request_id, 'same_room_split completion request_id')
+do
+    local requests_before_split_repeat = #private_dungeon_requests
+    local split_repeat = y3.lobby.same_room_split({
+        level_id = 'level-repeat',
+        game_mode = 801,
+        max_player = 2,
+        players = { { aid = latest_client.aid } },
+    })
+    assert_equal(split_repeat.accepted, false, 'same_room_split should reject while previous cross-map transition is pending')
+    assert_equal(split_repeat.code, 'cross_map_pending', 'same_room_split duplicate transition code')
+    assert_equal(#private_dungeon_requests, requests_before_split_repeat, 'same_room_split duplicate must not call platform again')
+    state_api.runtime.locks.cross_map_transition = nil
+end
+
+do
+local previous_player_api = y3.player
+local previous_log_error = log.error
+local previous_log_warn = log.warn
+local previous_python = rawget(_G, 'python')
+local exception_logs = {}
+local sensitive_exception_logs = {}
+local python_traceback_reads = 0
+python = {
+    get_exc_info = function()
+        python_traceback_reads = python_traceback_reads + 1
+        return 'PYTHON_STACK_SENTINEL'
+    end,
+}
+log.error = function(message)
+    exception_logs[#exception_logs + 1] = tostring(python.get_exc_info()) .. '\n' .. tostring(message)
+end
+log.warn = function(message)
+    sensitive_exception_logs[#sensitive_exception_logs + 1] = tostring(message)
+end
+---@diagnostic disable-next-line: missing-fields
+y3.player = {
+    with_local = function(callback)
+        callback({
+            handle = {
+                request_create_private_dungeon = function()
+                    error(setmetatable({}, {
+                        __tostring = function()
+                            return 'error during Python call: KeyError: 1'
+                        end,
+                    }), 0)
+                end,
+                request_join_private_dungeon = function(_, token)
+                    error('token=' .. tostring(token), 0)
+                end,
+            },
+        })
+    end,
+}
+
+local split_python_error = y3.lobby.same_room_split({
+    level_id = 'python-error-level',
+    game_mode = 803,
+    max_player = 2,
+    players = {},
+})
+assert_result_shape(split_python_error, split_python_error.action)
+assert_equal(split_python_error.accepted, false, 'same_room_split Python exception should reject')
+assert_equal(split_python_error.sync, true, 'same_room_split Python exception should reject synchronously')
+assert_equal(split_python_error.code, 'request_error', 'same_room_split Python exception code')
+assert_equal(split_python_error.reason, 'error during Python call: KeyError: 1', 'same_room_split keeps concise Python error')
+assert_equal(state_api.runtime.locks.cross_map_transition, nil, 'same_room_split platform exception must not leave transition lock')
+assert_true(not split_python_error.reason:find('PYTHON_STACK_SENTINEL', 1, true), 'Python traceback must not enter public reason')
+assert_equal(python_traceback_reads, 1, 'same_room_split exception should capture Python traceback while active')
+assert_equal(#exception_logs, 1, 'same_room_split exception should emit one error log')
+assert_true(exception_logs[1]:find('PYTHON_STACK_SENTINEL', 1, true) ~= nil, 'same_room_split error log should contain Python traceback')
+assert_true(exception_logs[1]:find('action=同房分流', 1, true) ~= nil, 'same_room_split error log should identify action')
+
+local secret_token = 'secret-token-must-not-be-logged'
+local token_python_error = y3.lobby.join_by_token(secret_token)
+assert_equal(token_python_error.accepted, false, 'join_by_token Python exception should reject')
+assert_equal(token_python_error.code, 'request_error', 'join_by_token Python exception code')
+assert_equal(token_python_error.reason, '平台调用异常，敏感详情已省略', 'join_by_token should redact public reason')
+assert_true(not token_python_error.reason:find(secret_token, 1, true), 'join_by_token public reason must not contain token')
+
+local chat_test = {
+    previous_team_info = latest_client.team_info,
+    previous_send_chat = latest_client.send_chat,
+    previous_send_world_chat = latest_client.send_world_chat,
+    team_secret = 'team-message-must-not-be-logged',
+    world_secret = 'world-message-must-not-be-logged',
+}
+latest_client.team_info = latest_client.team_info or { captain = latest_client.aid, members = {} }
+latest_client.send_chat = function(_, message)
+    error('message=' .. tostring(message), 0)
+end
+latest_client.send_world_chat = function(_, message)
+    error('message=' .. tostring(message), 0)
+end
+chat_test.team_result = y3.lobby.send_team_chat(chat_test.team_secret)
+chat_test.world_result = y3.lobby.send_world_chat(chat_test.world_secret)
+assert_equal(chat_test.team_result.code, 'request_error', 'send_team_chat Python exception code')
+assert_equal(chat_test.team_result.reason, '平台调用异常，敏感详情已省略', 'send_team_chat should redact public reason')
+assert_equal(chat_test.world_result.code, 'request_error', 'send_world_chat Python exception code')
+assert_equal(chat_test.world_result.reason, '平台调用异常，敏感详情已省略', 'send_world_chat should redact public reason')
+assert_true(not chat_test.team_result.reason:find(chat_test.team_secret, 1, true), 'send_team_chat public reason must not contain message')
+assert_true(not chat_test.world_result.reason:find(chat_test.world_secret, 1, true), 'send_world_chat public reason must not contain message')
+latest_client.team_info = chat_test.previous_team_info
+latest_client.send_chat = chat_test.previous_send_chat
+latest_client.send_world_chat = chat_test.previous_send_world_chat
+
+assert_equal(python_traceback_reads, 1, 'sensitive exception should not capture a potentially leaking Python traceback')
+assert_equal(#sensitive_exception_logs, 3, 'sensitive exceptions should emit redacted warnings')
+assert_true(sensitive_exception_logs[1]:find('action=加入口令', 1, true) ~= nil, 'sensitive exception log should identify action')
+assert_true(sensitive_exception_logs[2]:find('action=发送队伍聊天', 1, true) ~= nil, 'team chat exception log should identify action')
+assert_true(sensitive_exception_logs[3]:find('action=发送世界聊天', 1, true) ~= nil, 'world chat exception log should identify action')
+assert_true(not table.concat(sensitive_exception_logs, '\n'):find(secret_token, 1, true), 'sensitive exception logs must not contain token')
+assert_true(not table.concat(sensitive_exception_logs, '\n'):find(chat_test.team_secret, 1, true), 'sensitive exception logs must not contain team message')
+assert_true(not table.concat(sensitive_exception_logs, '\n'):find(chat_test.world_secret, 1, true), 'sensitive exception logs must not contain world message')
+
+y3.player = previous_player_api
+log.error = previous_log_error
+log.warn = previous_log_warn
+python = previous_python
+end
 
 local join_token_result = y3.lobby.join_by_token(' token-123 ')
 assert_equal(join_token_result.accepted, true, 'join_by_token should be accepted')
@@ -1880,7 +2002,7 @@ do
     assert_equal(missing_game_play_connect.accepted, false, 'missing game_play_id connect should be rejected synchronously')
     assert_equal(missing_game_play_connect.sync, true, 'missing game_play_id connect should be synchronous')
     assert_equal(missing_game_play_connect.code, 'invalid_game_play_id', 'missing game_play_id connect code')
-    local string_game_play_connect = y3.lobby.connect('10190356')
+    local string_game_play_connect = y3.lobby.connect('190356')
     assert_equal(string_game_play_connect.accepted, false, 'string game_play_id connect should be rejected synchronously')
     assert_equal(string_game_play_connect.code, 'invalid_game_play_id', 'string game_play_id connect code')
     local zero_game_play_connect = y3.lobby.connect(0)
@@ -1889,7 +2011,7 @@ do
     local negative_game_play_connect = y3.lobby.connect(-1)
     assert_equal(negative_game_play_connect.accepted, false, 'negative game_play_id connect should be rejected synchronously')
     assert_equal(negative_game_play_connect.code, 'invalid_game_play_id', 'negative game_play_id connect code')
-    local fractional_game_play_connect = y3.lobby.connect(10190356.5)
+    local fractional_game_play_connect = y3.lobby.connect(190356.5)
     assert_equal(fractional_game_play_connect.accepted, false, 'fractional game_play_id connect should be rejected synchronously')
     assert_equal(fractional_game_play_connect.code, 'invalid_game_play_id', 'fractional game_play_id connect code')
     assert_equal(invalid_argument_factory_calls, 0, 'invalid game_play_id must not create client')
@@ -1995,6 +2117,7 @@ frame_callbacks[1]()
 assert_equal(#emitted_events, 1, 'ECA same_room_split delayed synchronous completion should emit exactly one completion event')
 assert_equal(emitted_events[1].payload.request_id, eca_split_result.request_id, 'ECA same_room_split completion request_id should match accepted result')
 assert_equal(emitted_events[1].payload.success, true, 'ECA same_room_split completion should be successful')
+state_api.runtime.locks.cross_map_transition = nil
 
 emitted_events = {}
 frame_callbacks = {}

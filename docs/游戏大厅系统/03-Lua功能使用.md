@@ -11,18 +11,18 @@
 ```lua
 local y3 = require 'y3'
 
-local result = y3.lobby.connect(10190356)
+local result = y3.lobby.connect(190356)
 if not result.accepted then
     print('大厅服务连接请求未发出：' .. tostring(result.reason))
 end
 ```
 
-`connect(玩法ID, 是否在游戏关卡)` 的第一个参数是正整数玩法 ID，必填。当前示例项目使用 `10190356`；迁移到自己的项目时，填写目标项目对应的玩法 ID。这个值不是调试参数，也不是 UUID 格式的 `map_id`，框架不会自动从运行环境读取。
+`connect(玩法ID, 是否在游戏关卡)` 的第一个参数是正整数玩法 ID，必填。当前示例项目使用 `190356`；迁移到自己的项目时，填写目标项目对应的玩法 ID。这个值不是调试参数，也不是 UUID 格式的 `map_id`，框架不会自动从运行环境读取。
 
 第二个参数可选，默认为 `false`。如果当前关卡已经是目标玩法关卡，并且仍需要连接大厅服务，可传 `true`：
 
 ```lua
-y3.lobby.connect(10190356, true)
+y3.lobby.connect(190356, true)
 ```
 
 重复调用时，框架会返回当前连接请求或当前连接状态，不会创建多个客户端。

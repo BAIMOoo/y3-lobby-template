@@ -5,6 +5,7 @@ import ast
 import json
 import re
 import subprocess
+import sys
 import unittest
 from pathlib import Path
 from typing import Optional
@@ -27,8 +28,11 @@ MIGRATION_PACKAGE = DOCS / "迁移包"
 PACKAGE_Y3_ROOT = MIGRATION_PACKAGE / "script" / "y3"
 PACKAGE_PROTOCOL = MIGRATION_PACKAGE / "需要合并到项目" / "custom" / "protocol" / "protocol.pb"
 WORKTREE = ROOT / ".omx" / "worktrees" / "y3-lualib-lobby"
+ENTRYMAP_Y3_ROOT = ROOT / "maps" / "EntryMap" / "script" / "y3"
+CHILD_MAP_Y3_ROOT = ROOT / "maps" / "MapName001" / "script" / "y3"
+PUBLISHED_Y3_ROOTS = [WORKTREE, ENTRYMAP_Y3_ROOT, CHILD_MAP_Y3_ROOT, PACKAGE_Y3_ROOT]
 FUNCTION_DSL = ROOT / "tools" / "eca" / "lobby_service_functions.json"
-TEST_GAME_PLAY_ID = 10190356
+TEST_GAME_PLAY_ID = 190356
 
 EXPECTED_ECA_NAMES = [
     "大厅服务 - 建立连接",
@@ -268,6 +272,7 @@ class DocumentationExamplesTest(unittest.TestCase):
             unexpected.append(rel)
         self.assertEqual([], unexpected, "迁移包存在白名单之外的文件：\n" + "\n".join(unexpected))
         self.assertTrue(PACKAGE_Y3_ROOT.is_dir())
+        self.assertTrue((PACKAGE_Y3_ROOT / "game" / "lobby" / "proto" / "service_pb.lua").is_file())
         self.assertTrue(PACKAGE_PROTOCOL.is_file())
         self.assertFalse((MIGRATION_PACKAGE / "script" / "pub").exists())
 
@@ -297,12 +302,38 @@ class DocumentationExamplesTest(unittest.TestCase):
             WORKTREE / "game" / "lobby" / "state.lua",
             WORKTREE / "game" / "lobby" / "client.lua",
             WORKTREE / "game" / "lobby" / "proto" / "service.pb",
+            WORKTREE / "game" / "lobby" / "proto" / "service_pb.lua",
+            WORKTREE / "tools" / "generate_lobby_service_pb.py",
         ]
         missing = [str(path.relative_to(ROOT)) for path in required if not path.is_file()]
         self.assertEqual([], missing)
         self.assertTrue((WORKTREE / "init.lua").is_file())
         if (WORKTREE / "util" / "log.lua").is_file():
             self.assertFalse((WORKTREE / "util" / "log.lua").read_text(encoding="utf-8").startswith("-- lobby"))
+
+    def test_embedded_service_protocol_is_current(self):
+        synchronized_files = [
+            "game/lobby/proto/proto_helper.lua",
+            "game/lobby/proto/service.pb",
+            "game/lobby/proto/service_pb.lua",
+            "tools/generate_lobby_service_pb.py",
+        ]
+        for lualib_root in PUBLISHED_Y3_ROOTS:
+            with self.subTest(root=lualib_root):
+                process = subprocess.run(
+                    [sys.executable, "tools/generate_lobby_service_pb.py", "--check"],
+                    cwd=lualib_root,
+                    text=True,
+                    capture_output=True,
+                    check=False,
+                )
+                self.assertEqual(0, process.returncode, process.stdout + process.stderr)
+                for relative_path in synchronized_files:
+                    self.assertEqual(
+                        (WORKTREE / relative_path).read_bytes(),
+                        (lualib_root / relative_path).read_bytes(),
+                        f"大厅协议发布副本不一致: {lualib_root / relative_path}",
+                    )
 
     def test_lobby_module_sources_keep_protocol_and_version_boundaries(self):
         lobby_root = WORKTREE / "game" / "lobby"
