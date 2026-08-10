@@ -26,10 +26,11 @@ y3 = {
         end,
     },
     lobby = {
-        connect = function(game_play_id, in_game)
+        connect = function(game_play_id, in_game, endpoint_env)
             connect_calls[#connect_calls + 1] = {
                 game_play_id = game_play_id,
                 in_game = in_game,
+                endpoint_env = endpoint_env,
             }
             return { accepted = true }
         end,
@@ -51,7 +52,8 @@ assert_equal(#connect_calls, 0, 'other player does not start a connection')
 callbacks['玩家-加入游戏'](nil, { player = local_player })
 assert_equal(#connect_calls, 1, 'local player starts one connection')
 assert_equal(connect_calls[1].game_play_id, 190356, 'required game play id')
-assert_equal(connect_calls[1].in_game, nil, 'entry map connects as lobby')
+assert_equal(connect_calls[1].in_game, false, 'entry map connects as lobby')
+assert_equal(connect_calls[1].endpoint_env, 'pre', 'entry map explicitly connects to pre')
 
 callbacks['玩家-加入游戏'](nil, { player = other_player })
 assert_equal(#connect_calls, 1, 'later joins do not reconnect the local client')

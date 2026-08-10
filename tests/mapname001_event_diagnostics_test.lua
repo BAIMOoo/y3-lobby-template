@@ -31,10 +31,11 @@ y3 = {
                 result_data = { status = 'idle' },
             }
         end,
-        connect = function(game_play_id, in_game)
+        connect = function(game_play_id, in_game, endpoint_env)
             connect_calls[#connect_calls + 1] = {
                 game_play_id = game_play_id,
                 in_game = in_game,
+                endpoint_env = endpoint_env,
             }
             return { accepted = true }
         end,
@@ -167,6 +168,7 @@ callbacks['玩家-加入游戏'](triggers[2], { player = computer_player, is_mid
 assert_equal(#connect_calls, 1, 'only local player starts a lobby connection')
 assert_equal(connect_calls[1].game_play_id, 190356, 'target level game play id')
 assert_equal(connect_calls[1].in_game, true, 'target level connects as in-game')
+assert_equal(connect_calls[1].endpoint_env, 'pre', 'target level explicitly connects to pre')
 
 assert_contains(find_log('event received: event=游戏-初始化 main_load=1'), 'event_seq=1', 'game init sequence')
 

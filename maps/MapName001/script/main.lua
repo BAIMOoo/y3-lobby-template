@@ -213,7 +213,7 @@ player_join_trigger = y3.game:event('玩家-加入游戏', function(trg, data)
         if player ~= local_player then
             return
         end
-        local result = y3.lobby.connect(GAME_PLAY_ID, true)
+        local result = y3.lobby.connect(GAME_PLAY_ID, true, 'pre')
         if not result.accepted then
             log.error('[MapName001] 大厅服务连接请求未发出：' .. tostring(result.reason))
         end

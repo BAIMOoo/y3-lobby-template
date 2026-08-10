@@ -744,9 +744,11 @@ end
 
 first_factory_game_play_id = nil
 first_factory_in_game = nil
-reset_lobby_with_factory(function(game_play_id, in_game)
+first_factory_endpoint_env = nil
+reset_lobby_with_factory(function(game_play_id, in_game, endpoint_env)
     first_factory_game_play_id = game_play_id
     first_factory_in_game = in_game
+    first_factory_endpoint_env = endpoint_env
     factory_calls = factory_calls + 1
     latest_client = new_fake_client()
     return latest_client
@@ -761,6 +763,7 @@ assert_result_shape(connect_result, '建立连接')
 assert_equal(connect_result.accepted, true, 'connect should be accepted')
 assert_equal(first_factory_game_play_id, TEST_GAME_PLAY_ID, 'connect must pass required game_play_id to client factory')
 assert_equal(first_factory_in_game, false, 'connect should default in_game to false')
+assert_equal(first_factory_endpoint_env, nil, 'connect should preserve platform-selected endpoint by default')
 assert_equal(connect_result.sync, false, 'connect should complete asynchronously when client is not ready yet')
 assert_equal(#completion_payloads, 0, 'connect must not report completion before ready callback')
 local duplicate_connect = y3.lobby.connect(TEST_GAME_PLAY_ID)
@@ -884,15 +887,18 @@ do
     all_listener.remove()
 
     in_game_factory_value = nil
-    reset_lobby_with_factory(function(_, in_game)
+    endpoint_env_factory_value = nil
+    reset_lobby_with_factory(function(_, in_game, endpoint_env)
         in_game_factory_value = in_game
+        endpoint_env_factory_value = endpoint_env
         factory_calls = factory_calls + 1
         latest_client = new_fake_client()
         return latest_client
     end)
-    in_game_connect = y3.lobby.connect(TEST_GAME_PLAY_ID, true)
+    in_game_connect = y3.lobby.connect(TEST_GAME_PLAY_ID, true, 'pre')
     assert_equal(in_game_connect.accepted, true, 'connect with in_game true should be accepted')
     assert_equal(in_game_factory_value, true, 'connect forwards in_game boolean to client factory')
+    assert_equal(endpoint_env_factory_value, 'pre', 'connect forwards endpoint environment to client factory')
     reset_lobby_with_factory(function(_, in_game)
         in_game_factory_value = in_game
         factory_calls = factory_calls + 1
@@ -902,6 +908,11 @@ do
     invalid_in_game_connect = y3.lobby.connect(TEST_GAME_PLAY_ID, { in_game = true })
     assert_equal(invalid_in_game_connect.accepted, false, 'connect options table must be rejected')
     assert_equal(invalid_in_game_connect.code, 'invalid_argument', 'connect options table rejection code')
+    local factory_calls_before_invalid_endpoint = factory_calls
+    local invalid_endpoint_connect = y3.lobby.connect(TEST_GAME_PLAY_ID, false, 'staging')
+    assert_equal(invalid_endpoint_connect.accepted, false, 'unsupported endpoint environment must be rejected')
+    assert_equal(invalid_endpoint_connect.code, 'invalid_argument', 'unsupported endpoint environment rejection code')
+    assert_equal(factory_calls, factory_calls_before_invalid_endpoint, 'invalid endpoint environment must not create client')
 end
 
 do

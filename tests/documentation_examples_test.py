@@ -230,7 +230,7 @@ class DocumentationExamplesTest(unittest.TestCase):
         lobby_entry = read_text(ROOT / "maps" / "EntryMap" / "script" / "main.lua")
         target_entry = read_text(ROOT / "maps" / "MapName001" / "script" / "main.lua")
         self.assertIn(f"local GAME_PLAY_ID = {TEST_GAME_PLAY_ID}", lobby_entry)
-        self.assertIn("y3.lobby.connect(GAME_PLAY_ID)", lobby_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'pre')", lobby_entry)
         self.assertIn("y3.lobby.get_connection_status()", target_entry)
         self.assertNotIn("include 'pub.init'", lobby_entry)
         self.assertNotIn("include 'pub.init'", target_entry)
