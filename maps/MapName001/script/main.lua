@@ -2,6 +2,8 @@
 -- 请到vscode插件商城下载"Y3开发助手"插件，内置详细lua开发教程及lua开发套件
 -- github地址：https://github.com/y3-editor/y3-lualib.git
 
+local GAME_PLAY_ID = 10190356
+
 local function diagnostic_value(getter)
     local ok, value = pcall(getter)
     if ok then
@@ -207,6 +209,15 @@ player_join_trigger = y3.game:event('玩家-加入游戏', function(trg, data)
         dungeon_value('game_mode'),
         dungeon_value('space_id')))
     log_all_players('player-join-' .. tostring(lifecycle.player_join_count))
+    y3.player.with_local(function(local_player)
+        if player ~= local_player then
+            return
+        end
+        local result = y3.lobby.connect(GAME_PLAY_ID, true)
+        if not result.accepted then
+            log.error('[MapName001] 大厅服务连接请求未发出：' .. tostring(result.reason))
+        end
+    end)
 end)
 log.info(string.format(
     '[MapName001][EventDiag] listener registered: event=玩家-加入游戏 main_load=%s listener=%s trigger=%s',
@@ -216,3 +227,5 @@ log.info(string.format(
 
 include 'dungeon_unit_spawn'
 log.info('[MapName001] dungeon_unit_spawn loaded')
+-- 目标关卡复用主关卡的 BobTestUI 根画板，按钮直接调用 y3.lobby。
+include 'pub.test_ui'

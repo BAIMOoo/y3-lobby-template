@@ -5,10 +5,13 @@ local PLATFORM_LOBBY_GAME_MODE = 0
 local LOBBY_GAME_MODE = 1001
 local MATCH_GAME_MODE = 1002
 local PRIVATE_GAME_MODE = 1003
+local MATCH_LEVEL_ID = '50377054694119407947881484918402159964'
+local SAME_ROOM_LEVEL_ID = '25e6448f-7e73-11f1-88ae-03dc5a85955c'
+local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
 local EXPECTED_PRIVATE_PLAYERS = 2
 local MAX_MEMBER_ROWS = 4
 local MAX_CHAT_LINES = 5
-local UI_LAYOUT_VERSION = 15
+local UI_LAYOUT_VERSION = 18
 
 local COLOR_TEXT = { 244, 234, 213, 255 }
 local COLOR_MUTED = { 197, 185, 159, 255 }
@@ -19,15 +22,21 @@ local COLOR_BORDER = { 224, 196, 132, 82 }
 local COLOR_PANEL = { 30, 25, 18, 236 }
 local COLOR_PANEL_SOFT = { 35, 29, 21, 226 }
 local COLOR_PANEL_DEEP = { 21, 18, 14, 244 }
-local COLOR_BACKDROP = { 12, 14, 12, 142 }
+local COLOR_BACKDROP = { 255, 255, 255, 255 }
+local BACKDROP_IMAGE = 134217745
 
-local runtime = rawget(_G, '__BOB_TEST_UI_RUNTIME') or {}
-_G.__BOB_TEST_UI_RUNTIME = runtime
+local runtime = rawget(_G, '__LOBBY_TEST_UI_RUNTIME') or {}
+_G.__LOBBY_TEST_UI_RUNTIME = runtime
+
+for _, resource_key in ipairs({ 'refresh_timer', 'complete_listener', 'event_listener' }) do
+    local resource = runtime[resource_key]
+    if resource then
+        pcall(function() resource:remove() end)
+        runtime[resource_key] = nil
+    end
+end
 
 if runtime.layout_version ~= UI_LAYOUT_VERSION then
-    if runtime.refresh_timer then
-        pcall(function() runtime.refresh_timer:remove() end)
-    end
     for _, ui in ipairs({
         runtime.backdrop,
         runtime.full_panel,
@@ -110,7 +119,7 @@ local function mode_label(mode)
         return '匹配对局'
     end
     if mode == PRIVATE_GAME_MODE then
-        return '私人副本'
+        return '目标关卡'
     end
     return '未知'
 end
@@ -201,15 +210,27 @@ local function add_input(parent, x, y, width, height)
 end
 
 local function safe_action(name, action)
-    local ok, action_ok, action_err = xpcall(action, function(message)
+    local ok, action_result, action_err = xpcall(action, function(message)
         return tostring(message)
     end)
     if not ok then
-        runtime.notice = name .. '：' .. tostring(action_ok)
-        log.error('[BobTestUI] ' .. runtime.notice)
+        runtime.notice = name .. '：' .. tostring(action_result)
+        log.error('[LobbyTestUI] ' .. runtime.notice)
         return false
     end
-    if action_ok == false then
+
+    if type(action_result) == 'table' and action_result.accepted ~= nil then
+        if not action_result.accepted then
+            runtime.notice = name .. '：' .. tostring(action_result.reason or action_result.code or '操作失败')
+            return false
+        end
+        runtime.notice = name .. '：' .. tostring(action_result.sync
+            and (action_result.reason or '操作完成')
+            or '请求已受理')
+        return true
+    end
+
+    if action_result == false then
         runtime.notice = name .. '：' .. tostring(action_err or '操作失败')
         return false
     end
@@ -217,8 +238,27 @@ local function safe_action(name, action)
     return true
 end
 
-local function bob_ready()
-    return BOB and IsValid(BOB) and BOB.client ~= nil and BOB:is_valid()
+local function lobby_state()
+    local state_result = y3.lobby.get_state()
+    if state_result and state_result.accepted and type(state_result.result_data) == 'table' then
+        return state_result.result_data
+    end
+    return {
+        status = state_result and state_result.code or 'unavailable',
+        connected = false,
+        members = {},
+        member_count = 0,
+        member_limit = 0,
+        token = '',
+    }
+end
+
+local function current_token()
+    local token_result = y3.lobby.get_token()
+    if token_result and token_result.accepted and type(token_result.result_data) == 'table' then
+        return tostring(token_result.result_data.token or '')
+    end
+    return ''
 end
 
 local function set_status_value(key, value, color)
@@ -231,16 +271,16 @@ local function set_status_value(key, value, color)
     ui:set_text_color(text_color[1], text_color[2], text_color[3], text_color[4])
 end
 
-local function refresh_member_rows(bob, max_count, can_manage)
-    local members = bob and bob.team_info and bob.team_info.members or {}
+local function refresh_member_rows(snapshot, max_count, can_manage)
+    local members = snapshot.members or {}
     runtime.member_count_text:set_text(string.format('%d / %d', #members, max_count))
     for index, row in ipairs(runtime.member_rows) do
         local member = members[index]
         row.container:set_visible(member ~= nil)
         if member then
             local aid = tostring(member.aid or 0)
-            local is_self = bob and aid == tostring(bob.aid)
-            local captain = bob.team_info and member.aid == bob.team_info.captain and ' [队长]' or ''
+            local is_self = aid == tostring(snapshot.aid)
+            local captain = is_self and snapshot.is_captain and ' [队长]' or ''
             row.aid = member.aid
             row.index_text:set_text(tostring(index))
             row.name_text:set_text(tostring(member.name or member.nickname or '未知玩家') .. captain)
@@ -258,35 +298,38 @@ local function refresh_member_rows(bob, max_count, can_manage)
 end
 
 local function chat_history_text()
-    if not BOB or not IsValid(BOB) then
-        return 'BOB 尚未创建'
+    local history_result = y3.lobby.get_chat_history(nil)
+    if not history_result or not history_result.accepted then
+        return '大厅服务尚未连接'
     end
-    local history = BOB.message_history or {}
+    local history = history_result.result_data and history_result.result_data.messages or {}
     local lines = {}
     local first = math.max(1, #history - MAX_CHAT_LINES + 1)
     for index = first, #history do
         local item = history[index]
-        local ok, text = pcall(BOB.format_message, BOB, item)
-        lines[#lines + 1] = ok and text or tostring(item.message or '')
+        local sender = item.sender and (item.sender.name or item.sender.aid) or ''
+        local message = tostring(item.message or '')
+        lines[#lines + 1] = sender ~= '' and (tostring(sender) .. '：' .. message) or message
     end
     return #lines > 0 and table.concat(lines, '\n') or '暂无聊天消息'
 end
 
 local function send_chat_from_input(channel, input)
     local message = input:get_input_field_content()
-    if message == '' or not bob_ready() then
-        return false, 'BOB 未登录或消息为空'
+    if message == '' then
+        return false, '消息为空'
     end
-    local sent, reason
+    local send_result
     if channel == '队伍' then
-        sent, reason = BOB:send_chat(message)
+        send_result = y3.lobby.send_team_chat(message)
     else
-        sent, reason = BOB:send_world_chat(message)
+        send_result = y3.lobby.send_world_chat(message)
     end
-    if sent then
+    if send_result and send_result.accepted then
         input:set_text('')
+        return true
     end
-    return sent, reason
+    return false, send_result and (send_result.reason or send_result.code) or '请求未发出'
 end
 
 local function safe_send_chat(channel, input)
@@ -296,7 +339,7 @@ local function safe_send_chat(channel, input)
         return tostring(message)
     end)
     if not ok then
-        pcall(log.error, '[BobTestUI] ' .. channel .. '聊天：' .. tostring(sent))
+        pcall(log.error, '[LobbyTestUI] ' .. channel .. '聊天：' .. tostring(sent))
         return false, sent
     end
     return sent, reason
@@ -307,39 +350,36 @@ local function refresh()
         return
     end
     local mode = current_mode()
-    local bob = BOB and IsValid(BOB) and BOB or nil
-    local team_id = bob and bob.team_info and bob.team_info.team_id or 0
-    local team_count, max_count = 0, 0
-    if bob then
-        team_count, max_count = bob:get_player_count()
-    end
+    local snapshot = lobby_state()
+    local team_id = snapshot.team_id or 0
+    local team_count = snapshot.member_count or #(snapshot.members or {})
+    local max_count = snapshot.member_limit or 0
 
-    local battle_mode = MatchTestIsBattleContext()
+    local battle_mode = not is_lobby_mode(mode)
     if runtime.game_hud then
         runtime.game_hud:set_visible(not battle_mode)
     end
-    local team_busy = bob and (bob:is_matching() or bob:is_launching()) or false
-    local in_team = bob and bob:is_in_team() or false
-    local is_captain = in_team and bob:is_captain() or false
-    local ready = bob_ready()
-    local matching = bob and bob:is_matching() or false
-    local launching = bob and bob:is_launching() or false
-    local dungeon_token = type(MatchTestGetDungeonToken) == 'function'
-        and MatchTestGetDungeonToken() or ''
+    local matching = snapshot.matching == true
+    local launching = snapshot.launching == true
+    local team_busy = matching or launching
+    local in_team = snapshot.has_team == true
+    local is_captain = in_team and snapshot.is_captain == true
+    local ready = snapshot.connected == true
+    local dungeon_token = current_token()
     runtime.full_panel:set_visible(not battle_mode)
     runtime.status_bg:set_visible(battle_mode)
     runtime.status_text:set_visible(battle_mode)
     runtime.return_button:set_visible(battle_mode)
     runtime.battle_chat_panel:set_visible(battle_mode)
     runtime.status_text:set_text(string.format(
-        '模式：%s (%s)    玩家：%s / ID=%s\nBOB：%s    登录：%s    AID=%s\n队伍：%s    人数：%s/%s    匹配：%s    启动：%s\n副本口令：%s',
+        '模式：%s (%s)    玩家：%s / ID=%s\n大厅服务：%s    连接：%s    AID=%s\n队伍：%s    人数：%s/%s    匹配：%s    启动：%s\n关卡口令：%s',
         mode_label(mode),
         tostring(mode),
         runtime.player:get_name(),
         tostring(runtime.player:get_id()),
-        bob and tostring(bob.state) or '未创建',
-        ready and '已登录' or '未登录',
-        bob and tostring(bob.aid) or '-',
+        tostring(snapshot.status or '未知'),
+        ready and '已连接' or '未连接',
+        tostring(snapshot.aid or '-'),
         in_team and tostring(team_id) or '未加入',
         tostring(team_count),
         tostring(max_count),
@@ -376,8 +416,8 @@ local function refresh()
     elseif matching then
         match_text = '取消匹配'
         match_enabled = ready and (not in_team or is_captain)
-    elseif bob and ready then
-        match_enabled = bob:can_match()
+    elseif ready then
+        match_enabled = not in_team or is_captain
     end
     set_button_text(runtime.match_button, match_text)
     runtime.match_button:set_button_enable(match_enabled)
@@ -388,17 +428,30 @@ local function refresh()
 
     set_status_value('mode', string.format('%s (%s)', mode_label(mode), tostring(mode)))
     set_status_value('player', string.format('%s / ID=%s', runtime.player:get_name(), runtime.player:get_id()))
-    set_status_value('bob', bob and tostring(bob.state) or '未创建', bob and COLOR_SUCCESS or COLOR_WARNING)
-    set_status_value('login', ready and '已登录' or '未登录', ready and COLOR_SUCCESS or COLOR_WARNING)
-    set_status_value('aid', bob and tostring(bob.aid) or '-')
+    set_status_value('bob', tostring(snapshot.status or '未知'), ready and COLOR_SUCCESS or COLOR_WARNING)
+    set_status_value('login', ready and '已连接' or '未连接', ready and COLOR_SUCCESS or COLOR_WARNING)
+    set_status_value('aid', tostring(snapshot.aid or '-'))
     set_status_value('team', in_team and tostring(team_id) or '未加入')
     set_status_value('count', string.format('%s/%s', team_count, max_count))
     set_status_value('match', matching and '匹配中' or '未匹配', matching and COLOR_WARNING or COLOR_TEXT)
     set_status_value('launch', launching and '启动中' or '未启动', launching and COLOR_WARNING or COLOR_TEXT)
-    refresh_member_rows(bob, max_count, is_captain and not team_busy)
+    refresh_member_rows(snapshot, max_count, is_captain and not team_busy)
     runtime.chat_text:set_text(chat_history_text())
     runtime.notice_text:set_text(runtime.notice or '等待操作')
 end
+
+runtime.complete_listener = y3.lobby.on_complete(function(payload)
+    local message = tostring(payload.action or '大厅服务') .. '：'
+        .. tostring(payload.success and (payload.reason ~= '' and payload.reason or '操作完成')
+            or payload.reason or payload.code or '操作失败')
+    runtime.notice = message
+    runtime.battle_notice = message
+    refresh()
+end)
+
+runtime.event_listener = y3.lobby.on_event(function()
+    refresh()
+end)
 
 local function build_chat_panel(parent, x, y, options)
     local width, height = 700, 390
@@ -418,13 +471,13 @@ local function build_chat_panel(parent, x, y, options)
     if options.with_token then
         token_text = add_text(panel, 132, 346, 390, 34, '-', 17, COLOR_WARNING, '左', '中')
         copy_button = add_button(panel, 542, 340, 140, 42, '复制口令', function()
-            if MatchTestGetDungeonToken() == '' then
-                runtime.battle_notice = '当前没有可复制的副本口令'
+            if current_token() == '' then
+                runtime.battle_notice = '当前没有可复制的关卡口令'
                 refresh()
                 return
             end
             GameAPI.copy_ui_text_to_clipboard(runtime.player.handle, token_text.handle)
-            runtime.battle_notice = '副本口令已复制到剪贴板'
+            runtime.battle_notice = '关卡口令已复制到剪贴板'
             refresh()
         end)
     else
@@ -478,7 +531,7 @@ local function build(player)
     runtime.game_hud = y3.ui.get_ui(player, 'GameHUD')
     runtime.player = player
 
-    runtime.backdrop = add_image(root, 0, 0, 1920, 1080, 109589, COLOR_BACKDROP)
+    runtime.backdrop = add_image(root, 0, 0, 1920, 1080, BACKDROP_IMAGE, COLOR_BACKDROP)
     runtime.backdrop:set_intercepts_operations(false)
     runtime.backdrop:set_z_order(-3000)
 
@@ -488,18 +541,24 @@ local function build(player)
     runtime.status_bg:set_ui_size(860, 200)
     runtime.status_bg:set_z_order(9000)
     add_panel(runtime.status_bg, 0, 0, 860, 200, COLOR_PANEL, true)
-    add_text(runtime.status_bg, 18, 170, 360, 18, 'BOBTestUI · 战斗上下文', 11, COLOR_MUTED)
-    add_text(runtime.status_bg, 18, 136, 420, 30, '匹配系统测试状态', 20, COLOR_TEXT)
+    add_text(runtime.status_bg, 18, 170, 360, 18, '大厅服务测试 · 关卡上下文', 11, COLOR_MUTED)
+    add_text(runtime.status_bg, 18, 136, 420, 30, '大厅服务测试状态', 20, COLOR_TEXT)
     runtime.status_text = add_text(
         runtime.status_bg, 18, 14, 640, 110, '', 15, COLOR_TEXT, '左', '上')
     runtime.return_button = add_button(runtime.status_bg, 680, 136, 160, 48, '返回初始关卡', function()
-        safe_action('返回初始关卡', MatchTestReturnLobby)
+        safe_action('返回初始关卡', function()
+            return y3.lobby.return_lobby({
+                level_id = LOBBY_LEVEL_ID,
+                game_mode = LOBBY_GAME_MODE,
+                max_player = 1,
+            })
+        end)
         runtime.battle_notice = runtime.notice
         refresh()
     end)
 
     local battle_chat = build_chat_panel(root, 24, 24, {
-        context_label = '副本口令',
+        context_label = '关卡口令',
         notice_key = 'battle_notice',
         with_token = true,
         z_order = 9000,
@@ -517,7 +576,7 @@ local function build(player)
         runtime.exit_confirm_overlay:set_visible(true)
     end, 'danger')
     runtime.exit_button:set_relative_parent_pos('顶部', 24)
-    runtime.exit_button:set_relative_parent_pos('右侧', 240)
+    runtime.exit_button:set_relative_parent_pos('右侧', 24)
     runtime.exit_button:set_z_order(10000)
 
     runtime.exit_confirm_overlay = add_image(root, 0, 0, 1920, 1080, 109589, { 0, 0, 0, 190 })
@@ -534,7 +593,7 @@ local function build(player)
     end)
     runtime.exit_confirm_button = add_button(exit_confirm_panel, 258, 36, 180, 52, '确认退出', function()
         runtime.exit_confirm_overlay:set_visible(false)
-        safe_action('退出游戏', MatchTestExitGame)
+        safe_action('退出游戏', y3.lobby.exit_game)
     end, 'danger')
     runtime.exit_confirm_overlay:set_visible(false)
 
@@ -547,16 +606,16 @@ local function build(player)
 
     add_panel(panel, 24, 936, 430, 120, COLOR_PANEL, true)
     add_text(panel, 42, 1022, 280, 18, '方案 B · 沉浸远征', 12, COLOR_WARNING)
-    add_text(panel, 42, 978, 320, 38, 'BOB 匹配测试系统', 24, COLOR_TEXT)
-    add_text(panel, 42, 952, 320, 22, '组队大厅 · 完整测试控制台', 13, COLOR_MUTED)
+    add_text(panel, 42, 978, 320, 38, '大厅服务测试系统', 24, COLOR_TEXT)
+    add_text(panel, 42, 952, 320, 22, '组队、匹配与关卡切换', 13, COLOR_MUTED)
 
     add_panel(panel, 470, 936, 1004, 120, COLOR_PANEL, true)
     runtime.status_values = {}
     local status_specs = {
         { 'mode', '模式', 488, 994, 150 },
         { 'player', '玩家', 646, 994, 210 },
-        { 'bob', 'BOB', 864, 994, 105 },
-        { 'login', '登录', 977, 994, 105 },
+        { 'bob', '服务', 864, 994, 105 },
+        { 'login', '连接', 977, 994, 105 },
         { 'aid', 'AID', 1090, 994, 366 },
         { 'team', '队伍', 488, 946, 210 },
         { 'count', '人数', 706, 946, 100 },
@@ -584,21 +643,22 @@ local function build(player)
             return
         end
         safe_action('加入队伍', function()
-            MatchTestSetJoinTeamId(team_id)
-            MatchTestJoinTeam(team_id)
+            return y3.lobby.join_team(team_id)
         end)
     end)
     add_button(panel, 338, 792, 96, 42, '创建队伍', function()
-        safe_action('创建队伍', MatchTestCreateTeam)
+        safe_action('创建队伍', function()
+            return y3.lobby.create_team(EXPECTED_PRIVATE_PLAYERS)
+        end)
     end)
     runtime.leave_button = add_button(panel, 444, 792, 82, 42, '离队', function()
-        safe_action('离开队伍', MatchTestLeaveTeam)
+        safe_action('离开队伍', y3.lobby.leave_team)
     end)
 
     add_text(panel, 42, 752, 180, 24, '队员列表', 16, COLOR_TEXT)
     runtime.member_count_text = add_text(panel, 326, 752, 70, 24, '', 14, COLOR_MUTED, '右', '中')
     runtime.dismiss_button = add_button(panel, 408, 744, 118, 42, '解散队伍', function()
-        safe_action('解散队伍', MatchTestDismissTeam)
+        safe_action('解散队伍', y3.lobby.dismiss_team)
     end, 'danger')
     add_text(panel, 54, 720, 38, 20, '序号', 11, COLOR_MUTED)
     add_text(panel, 96, 720, 132, 20, '玩家', 11, COLOR_MUTED)
@@ -621,13 +681,13 @@ local function build(player)
         row.current_text = add_text(row.container, 368, 0, 106, 56, '当前玩家', 12, COLOR_MUTED, '右', '中')
         row.transfer_button = add_button(row.container, 358, 7, 60, 42, '转让', function()
             if row.aid then
-                safe_action('转移队长', function() return MatchTestChangeCaptain(row.aid) end)
+                safe_action('转移队长', function() return y3.lobby.change_captain(row.aid) end)
                 refresh()
             end
         end)
         row.kick_button = add_button(row.container, 426, 7, 50, 42, '移出', function()
             if row.aid then
-                safe_action('移出队员', function() return MatchTestKickMember(row.aid) end)
+                safe_action('移出队员', function() return y3.lobby.kick_member(row.aid) end)
                 refresh()
             end
         end, 'danger')
@@ -641,7 +701,7 @@ local function build(player)
     add_panel(panel, 670, 472, 580, 250, COLOR_PANEL_SOFT)
     add_text(panel, 696, 670, 180, 18, '本轮远征', 11, COLOR_WARNING)
     add_text(panel, 696, 622, 360, 42, '暮潮遗迹', 28, COLOR_TEXT)
-    add_text(panel, 696, 580, 520, 36, '私人副本测试 · 匹配、口令与队伍状态验证', 13, COLOR_MUTED)
+    add_text(panel, 696, 580, 520, 36, '匹配、口令与分流合流状态验证', 13, COLOR_MUTED)
     add_text(panel, 696, 526, 120, 18, '预计席位', 11, COLOR_MUTED)
     add_text(panel, 696, 494, 120, 26, tostring(EXPECTED_PRIVATE_PLAYERS), 17, COLOR_TEXT)
     add_text(panel, 854, 526, 120, 18, '队伍上限', 11, COLOR_MUTED)
@@ -654,39 +714,64 @@ local function build(player)
     add_text(panel, 1358, 372, 260, 26, '匹配与副本', 19, COLOR_WARNING)
     add_text(panel, 1690, 372, 186, 26, '队长权限', 12, COLOR_MUTED, '右', '中')
     runtime.match_button = add_button(panel, 1358, 294, 174, 42, '开始匹配', function()
-        if BOB and IsValid(BOB) and BOB:is_matching() then
-            safe_action('取消匹配', MatchTestCancel)
+        if lobby_state().matching then
+            safe_action('取消匹配', y3.lobby.cancel_match)
         else
-            safe_action('开始匹配', function() return MatchTestStart(1000) end)
+            safe_action('开始匹配', function()
+                return y3.lobby.start_match({
+                    level_id = MATCH_LEVEL_ID,
+                    game_mode = MATCH_GAME_MODE,
+                    score = 1000,
+                })
+            end)
         end
         refresh()
     end)
-    add_button(panel, 1544, 294, 160, 42, '私人副本', function()
-        safe_action('创建私人副本', MatchTestLocalPrivate)
+    runtime.same_room_button = add_button(panel, 1544, 294, 160, 42, '同房分流', function()
+        safe_action('同房分流', function()
+            return y3.lobby.same_room_split({
+                level_id = SAME_ROOM_LEVEL_ID,
+                game_mode = PRIVATE_GAME_MODE,
+                max_player = EXPECTED_PRIVATE_PLAYERS,
+            })
+        end)
     end)
-    runtime.private_button = add_button(panel, 1716, 294, 160, 42, 'RPC 多人', function()
-        safe_action('RPC 多人副本', MatchTestStartPrivate)
+    runtime.cross_room_button = add_button(panel, 1716, 294, 160, 42, '跨房合流', function()
+        safe_action('跨房合流', function()
+            local snapshot = lobby_state()
+            local players = {}
+            for _, member in ipairs(snapshot.members or {}) do
+                players[#players + 1] = { aid = member.aid }
+            end
+            return y3.lobby.cross_room_merge({
+                game_map_id = snapshot.game_map_id,
+                level_id = MATCH_LEVEL_ID,
+                game_mode = PRIVATE_GAME_MODE,
+                players = players,
+            })
+        end)
     end, 'primary')
-    add_text(panel, 1358, 256, 160, 22, '副本口令', 13, COLOR_MUTED)
+    runtime.private_button = runtime.cross_room_button
+    add_text(panel, 1358, 256, 160, 22, '关卡口令', 13, COLOR_MUTED)
     runtime.dungeon_input = add_input(panel, 1358, 206, 340, 42)
     runtime.dungeon_join_button = add_button(panel, 1710, 206, 166, 42, '加入副本', function()
         local token = runtime.dungeon_input:get_input_field_content()
         if token == '' or token:match('^%s*$') then
-            runtime.notice = '加入副本：请输入副本口令'
+            runtime.notice = '加入口令：请输入关卡口令'
             refresh()
             return
         end
-        local sent = safe_action('加入副本', function()
-            return MatchTestJoinPrivateDungeon(token)
+        local sent = safe_action('加入口令', function()
+            return y3.lobby.join_by_token(token)
         end)
         if sent then
-            runtime.notice = '加入请求已发送；需在开局120秒内且房间未满'
+            runtime.notice = '加入口令请求已受理；目标房间需允许中途加入'
         end
         refresh()
     end)
     runtime.action_team_text = add_text(panel, 1358, 150, 518, 30, '', 14, COLOR_TEXT)
     add_text(panel, 1358, 104, 518, 34,
-        '匹配、私人副本与口令加入沿用当前 BOB 测试流程。', 12, COLOR_MUTED)
+        '目标模式 1002 / 1003', 12, COLOR_MUTED)
 
     local lobby_chat = build_chat_panel(panel, 24, 24, {
         context_label = '聊天上下文',
@@ -704,16 +789,26 @@ local function build(player)
     runtime.notice = '测试 UI 已就绪'
     refresh()
     runtime.refresh_timer = y3.ltimer.loop(0.5, refresh)
-    log.info('[BobTestUI] runtime panel created')
+    log.info('[LobbyTestUI] runtime panel created')
 end
 
 local function schedule_build(player)
     y3.ltimer.wait_frame(5, function()
-        local ok, err = xpcall(function() build(player) end, function(message)
+        local ok, err = xpcall(function()
+            if runtime.built then
+                runtime.player = player
+                refresh()
+                if not runtime.refresh_timer then
+                    runtime.refresh_timer = y3.ltimer.loop(0.5, refresh)
+                end
+                return
+            end
+            build(player)
+        end, function(message)
             return tostring(message)
         end)
         if not ok then
-            log.error('[BobTestUI] create failed: ' .. tostring(err))
+            log.error('[LobbyTestUI] create failed: ' .. tostring(err))
         end
     end)
 end

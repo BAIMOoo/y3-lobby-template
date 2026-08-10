@@ -36,8 +36,10 @@ local function new_ui(kind)
     function ui:set_font_size() end
     function ui:set_text_color() end
     function ui:set_btn_status_image(status, image) self.status_images[status] = image end
-    function ui:set_image() end
-    function ui:set_image_color() end
+    function ui:set_image(image) self.image = image end
+    function ui:set_image_color(red, green, blue, alpha)
+        self.image_color = { red, green, blue, alpha }
+    end
     function ui:set_ui_9_enable(enabled) self.nine_slice_enabled = enabled end
     function ui:set_ui_9(left, right, top, bottom)
         self.nine_slice = { left, right, top, bottom }
@@ -78,6 +80,7 @@ end
 local function run_case(path)
     local join_callback
     local refresh_callback
+    local refresh_loop_count = 0
     local start_count = 0
     local cancel_count = 0
     local exit_count = 0
@@ -89,6 +92,10 @@ local function run_case(path)
     local team_chat_message
     local world_chat_message
     local throw_team_chat = false
+    local same_room_params
+    local cross_room_params
+    local start_match_params
+    local return_lobby_params
     local current_mode = 1001
     local dungeon_token = ''
     local root = new_ui('根节点')
@@ -98,6 +105,30 @@ local function run_case(path)
         get_name = function() return '测试玩家' end,
         get_id = function() return 1 end,
     }
+
+    local state = {
+        ready = true,
+        matching = false,
+        launching = false,
+    }
+    BOB = {
+        aid = 1001,
+        state = 'connected',
+        team_info = nil,
+        message_history = {},
+    }
+
+    local function accepted(action, result_data, sync)
+        return {
+            accepted = true,
+            action = action,
+            request_id = sync and '' or 'test-request',
+            reason = sync and '结果已返回' or '请求已受理',
+            code = 'ok',
+            sync = sync == true,
+            result_data = result_data or {},
+        }
+    end
 
     log = {
         info = function() end,
@@ -144,92 +175,107 @@ local function run_case(path)
         ltimer = {
             wait_frame = function(_, callback) callback() end,
             loop = function(_, callback)
+                refresh_loop_count = refresh_loop_count + 1
                 refresh_callback = callback
                 return { remove = function() end }
             end,
         },
+        lobby = {
+            on_complete = function(callback)
+                return { remove = function() callback = nil end }
+            end,
+            on_event = function(callback)
+                return { remove = function() callback = nil end }
+            end,
+            get_state = function()
+                local team_info = BOB.team_info
+                local members = team_info and team_info.members or {}
+                return accepted('获取状态快照', {
+                    status = state.ready and 'connected' or 'idle',
+                    connected = state.ready,
+                    aid = BOB.aid,
+                    has_team = team_info ~= nil,
+                    team_id = team_info and team_info.team_id or nil,
+                    members = members,
+                    member_count = #members,
+                    member_limit = 4,
+                    is_captain = team_info ~= nil and team_info.captain == BOB.aid,
+                    matching = state.matching,
+                    launching = state.launching,
+                    token = dungeon_token,
+                    game_map_id = 'test-game-map-id',
+                }, true)
+            end,
+            get_token = function()
+                return accepted('获取口令', { token = dungeon_token }, true)
+            end,
+            get_chat_history = function()
+                if not state.ready then
+                    return { accepted = false, reason = '尚未连接', code = 'not_connected' }
+                end
+                return accepted('获取聊天记录', { messages = BOB.message_history }, true)
+            end,
+            send_team_chat = function(message)
+                if throw_team_chat then
+                    error('模拟聊天发送异常')
+                end
+                team_chat_message = message
+                return accepted('发送队伍聊天')
+            end,
+            send_world_chat = function(message)
+                world_chat_message = message
+                return accepted('发送世界聊天')
+            end,
+            create_team = function() return accepted('创建队伍') end,
+            join_team = function() return accepted('加入队伍') end,
+            leave_team = function() return accepted('离开队伍') end,
+            dismiss_team = function() return accepted('解散队伍') end,
+            change_captain = function() return accepted('转移队长') end,
+            kick_member = function() return accepted('移出队员') end,
+            start_match = function(params)
+                start_count = start_count + 1
+                start_match_params = params
+                return accepted('开始匹配')
+            end,
+            cancel_match = function()
+                cancel_count = cancel_count + 1
+                return accepted('取消匹配')
+            end,
+            same_room_split = function(params)
+                same_room_params = params
+                return accepted('同房分流')
+            end,
+            cross_room_merge = function(params)
+                cross_room_params = params
+                return accepted('跨房合流')
+            end,
+            join_by_token = function(token)
+                dungeon_join_count = dungeon_join_count + 1
+                dungeon_join_token = token
+                return accepted('加入口令')
+            end,
+            return_lobby = function(params)
+                return_count = return_count + 1
+                return_lobby_params = params
+                return accepted('返回大厅')
+            end,
+            exit_game = function()
+                exit_count = exit_count + 1
+                return accepted('退出游戏')
+            end,
+        },
     }
-    IsValid = function() return true end
-    MatchTestIsBattleContext = function() return current_mode ~= 1001 end
-    MatchTestReturnLobby = function()
-        return_count = return_count + 1
-        return true
-    end
-    MatchTestExitGame = function()
-        exit_count = exit_count + 1
-        return true
-    end
-    MatchTestSetJoinTeamId = function() return true end
-    MatchTestJoinTeam = function() return true end
-    MatchTestCreateTeam = function() return true end
-    MatchTestLeaveTeam = function() return true end
-    MatchTestStart = function()
-        start_count = start_count + 1
-        return true
-    end
-    MatchTestCancel = function()
-        cancel_count = cancel_count + 1
-        return true
-    end
-    MatchTestLocalPrivate = function() return true end
-    MatchTestStartPrivate = function() return true end
-    MatchTestGetDungeonToken = function() return dungeon_token end
-    MatchTestJoinPrivateDungeon = function(token)
-        dungeon_join_count = dungeon_join_count + 1
-        dungeon_join_token = token
-        return true
-    end
-    MatchTestDismissTeam = function() return true end
-    MatchTestChangeCaptain = function() return true end
-    MatchTestKickMember = function() return true end
 
-    local state = {
-        ready = true,
-        matching = false,
-        launching = false,
-    }
-    BOB = {
-        aid = 1001,
-        client = {},
-        state = 'connected',
-        team_info = nil,
-        message_history = {},
-        is_valid = function() return state.ready end,
-        is_matching = function() return state.matching end,
-        is_launching = function() return state.launching end,
-        is_in_team = function(self) return self.team_info ~= nil end,
-        is_captain = function(self)
-            return self.team_info ~= nil and self.team_info.captain == self.aid
-        end,
-        can_match = function(self)
-            if self.team_info and not self:is_captain() then return false, '不是队长' end
-            if state.matching then return false, '正在匹配' end
-            if state.launching then return false, '正在启动' end
-            if not state.ready then return false, '失去连接' end
-            return true
-        end,
-        get_player_count = function(self)
-            return self.team_info and #self.team_info.members or 1, 4
-        end,
-        format_message = function(_, item) return item.message end,
-        send_chat = function(_, message)
-            if throw_team_chat then
-                error('模拟聊天发送异常')
-            end
-            team_chat_message = message
-            return true
-        end,
-        send_world_chat = function(_, message)
-            world_chat_message = message
-            return true
-        end,
-    }
-
+    _G.__LOBBY_TEST_UI_RUNTIME = nil
     _G.__BOB_TEST_UI_RUNTIME = nil
     dofile(path)
+    _G.__BOB_TEST_UI_RUNTIME = _G.__LOBBY_TEST_UI_RUNTIME
     assert(join_callback, path .. ' must bind player join event')
     join_callback(nil, { player = player })
     assert(refresh_callback, path .. ' must create refresh timer')
+    assert_equal(refresh_loop_count, 1, path .. ' creates one refresh timer')
+    join_callback(nil, { player = player })
+    assert_equal(refresh_loop_count, 1, path .. ' reuses the existing refresh timer')
 
     local exit_button = assert(_G.__BOB_TEST_UI_RUNTIME.exit_button, path .. ' must create exit button')
     assert_equal(
@@ -240,6 +286,11 @@ local function run_case(path)
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.full_panel.height, 1080, path .. ' lobby uses full design height')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.width, 1920, path .. ' backdrop uses full design width')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.height, 1080, path .. ' backdrop uses full design height')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image, 134217745, path .. ' backdrop uses custom Scheme B art')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[1], 255, path .. ' backdrop keeps original red channel')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[2], 255, path .. ' backdrop keeps original green channel')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[3], 255, path .. ' backdrop keeps original blue channel')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[4], 255, path .. ' backdrop remains fully opaque')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.z_order, -3000, path .. ' backdrop stays behind product UI')
     assert_equal(
         _G.__BOB_TEST_UI_RUNTIME.backdrop.intercepts_operations,
@@ -249,7 +300,7 @@ local function run_case(path)
     assert_equal(exit_button.width, 150, path .. ' exit button width')
     assert_equal(exit_button.height, 48, path .. ' exit button height')
     assert_equal(exit_button.relative_parent_pos['顶部'], 24, path .. ' exit button top safe margin')
-    assert_equal(exit_button.relative_parent_pos['右侧'], 240, path .. ' exit button avoids debug overlay')
+    assert_equal(exit_button.relative_parent_pos['右侧'], 24, path .. ' exit button stays in the top-right corner')
     assert_equal(exit_button.z_order, 10000, path .. ' exit button stays above test panel')
     local exit_overlay = assert(
         _G.__BOB_TEST_UI_RUNTIME.exit_confirm_overlay,
@@ -273,7 +324,7 @@ local function run_case(path)
     assert_equal(dungeon_join_count, 0, path .. ' empty dungeon token does not send a request')
     assert_equal(
         _G.__BOB_TEST_UI_RUNTIME.notice_text.text,
-        '加入副本：请输入副本口令',
+        '加入口令：请输入关卡口令',
         path .. ' empty dungeon token shows actionable feedback')
     dungeon_input:set_text('space/token+1=')
     dungeon_join_button:click()
@@ -285,8 +336,17 @@ local function run_case(path)
         path .. ' dungeon input remains available after request')
     assert_equal(
         _G.__BOB_TEST_UI_RUNTIME.notice_text.text,
-        '加入请求已发送；需在开局120秒内且房间未满',
+        '加入口令请求已受理；目标房间需允许中途加入',
         path .. ' dungeon join request feedback')
+
+    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
+    assert(same_room_params, path .. ' same-room split button sends a request')
+    assert_equal(
+        same_room_params.level_id,
+        '25e6448f-7e73-11f1-88ae-03dc5a85955c',
+        path .. ' same-room split target level')
+    assert_equal(same_room_params.game_mode, 1003, path .. ' same-room split target mode')
+    assert_equal(same_room_params.max_player, 2, path .. ' same-room split player limit')
 
     local battle_panel = assert(_G.__BOB_TEST_UI_RUNTIME.battle_chat_panel, path .. ' must create battle chat panel')
     local lobby_chat_panel = assert(
@@ -327,8 +387,14 @@ local function run_case(path)
     _G.__BOB_TEST_UI_RUNTIME.return_button:click()
     assert_equal(return_count, 1, path .. ' return button request count')
     assert_equal(
+        return_lobby_params.level_id,
+        '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e',
+        path .. ' return lobby target level')
+    assert_equal(return_lobby_params.game_mode, 1001, path .. ' return lobby target mode')
+    assert_equal(return_lobby_params.max_player, 1, path .. ' return lobby player limit')
+    assert_equal(
         _G.__BOB_TEST_UI_RUNTIME.battle_notice_text.text,
-        '返回初始关卡：请求已发送',
+        '返回初始关卡：请求已受理',
         path .. ' return button feedback stays visible in battle')
 
     local battle_chat_input = assert(
@@ -412,6 +478,12 @@ local function run_case(path)
     assert_equal(button.enabled, true, path .. ' solo idle enabled')
     button:click()
     assert_equal(start_count, 1, path .. ' solo click starts matching')
+    assert_equal(
+        start_match_params.level_id,
+        '50377054694119407947881484918402159964',
+        path .. ' match target level')
+    assert_equal(start_match_params.game_mode, 1002, path .. ' match target mode')
+    assert_equal(start_match_params.score, 1000, path .. ' match score')
 
     BOB.team_info = {
         captain = 2002,
@@ -429,6 +501,17 @@ local function run_case(path)
     BOB.team_info.captain = BOB.aid
     refresh_callback()
     assert_equal(button.enabled, true, path .. ' captain can start matching')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.cross_room_button.enabled, true,
+        path .. ' captain with enough members can start cross-room merge')
+    _G.__BOB_TEST_UI_RUNTIME.cross_room_button:click()
+    assert(cross_room_params, path .. ' cross-room merge button sends a request')
+    assert_equal(cross_room_params.game_map_id, 'test-game-map-id', path .. ' cross-room target map')
+    assert_equal(
+        cross_room_params.level_id,
+        '50377054694119407947881484918402159964',
+        path .. ' cross-room target level')
+    assert_equal(cross_room_params.game_mode, 1003, path .. ' cross-room target mode')
+    assert_equal(#cross_room_params.players, 2, path .. ' cross-room merge includes all team members')
 
     state.matching = true
     refresh_callback()

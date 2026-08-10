@@ -3,6 +3,8 @@ local triggers = {}
 local included = {}
 local log_lines = {}
 local roster_players = {}
+local local_player
+local connect_calls = {}
 
 y3 = {
     const = {
@@ -28,6 +30,18 @@ y3 = {
                 code = 'idle',
                 result_data = { status = 'idle' },
             }
+        end,
+        connect = function(game_play_id, in_game)
+            connect_calls[#connect_calls + 1] = {
+                game_play_id = game_play_id,
+                in_game = in_game,
+            }
+            return { accepted = true }
+        end,
+    },
+    player = {
+        with_local = function(callback)
+            callback(local_player)
         end,
     },
     player_group = {
@@ -89,8 +103,9 @@ end
 dofile('maps/MapName001/script/main.lua')
 
 assert_equal(#triggers, 2, 'diagnostic listener count')
-assert_equal(#included, 1, 'included module count')
+assert_equal(#included, 2, 'included module count')
 assert_equal(included[1], 'dungeon_unit_spawn', 'spawn include')
+assert_equal(included[2], 'pub.test_ui', 'test UI include')
 assert_contains(log_lines[1], 'main_load=1', 'main load sequence')
 assert_contains(log_lines[1], 'lobby_status=idle', 'lobby status query')
 assert_contains(log_lines[2], 'event=游戏-初始化', 'game init registration')
@@ -119,6 +134,7 @@ local player = {
         return true
     end,
 }
+local_player = player
 
 local computer_player = {
     get_id = function()
@@ -147,6 +163,10 @@ roster_players = { player, computer_player }
 callbacks['游戏-初始化'](triggers[1], {})
 callbacks['玩家-加入游戏'](triggers[2], { player = player, is_middle_join = false })
 callbacks['玩家-加入游戏'](triggers[2], { player = computer_player, is_middle_join = true })
+
+assert_equal(#connect_calls, 1, 'only local player starts a lobby connection')
+assert_equal(connect_calls[1].game_play_id, 10190356, 'target level game play id')
+assert_equal(connect_calls[1].in_game, true, 'target level connects as in-game')
 
 assert_contains(find_log('event received: event=游戏-初始化 main_load=1'), 'event_seq=1', 'game init sequence')
 
