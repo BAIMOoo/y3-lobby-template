@@ -103,6 +103,17 @@ local function collect_match_buttons(ui, result)
     return result
 end
 
+local function collect_buttons_by_text(ui, text, result)
+    result = result or {}
+    if ui.kind == '按钮' and ui.text == text then
+        result[#result + 1] = ui
+    end
+    for _, child in ipairs(ui.children) do
+        collect_buttons_by_text(child, text, result)
+    end
+    return result
+end
+
 local function run_case(path)
     local join_callback
     local refresh_callback
@@ -121,10 +132,10 @@ local function run_case(path)
     local team_chat_message
     local world_chat_message
     local throw_team_chat = false
-    local same_room_params
-    local same_room_result
-    local same_room_error
-    local cross_room_params
+    local private_dungeon_count = 0
+    local private_dungeon_params
+    local private_dungeon_result
+    local private_dungeon_error
     local start_match_params
     local return_lobby_params
     local current_mode = 1001
@@ -162,6 +173,26 @@ local function run_case(path)
         }
     end
 
+    local function cross_map_accepted(action, extra)
+        local result_data = {
+            cross_map_tracking = 'degraded',
+            platform_requested = true,
+            entered_target = 'unknown',
+        }
+        for key, value in pairs(extra or {}) do
+            result_data[key] = value
+        end
+        return {
+            accepted = true,
+            action = action,
+            request_id = '',
+            reason = '请求已发送，等待切图',
+            code = 'ok',
+            sync = false,
+            result_data = result_data,
+        }
+    end
+
     local function capture_log(level, ...)
         local values = table.pack(...)
         for index = 1, values.n do
@@ -179,6 +210,7 @@ local function run_case(path)
     }
     GameAPI = {
         api_get_current_game_mode = function() return current_mode end,
+        get_dungeon_info = function() return {} end,
         copy_ui_text_to_clipboard = function(role, ui_handle)
             copied_role = role
             copied_ui_handle = ui_handle
@@ -298,16 +330,29 @@ local function run_case(path)
                 cancel_count = cancel_count + 1
                 return accepted('取消匹配')
             end,
-            same_room_split = function(params)
-                same_room_params = params
-                if same_room_error then
-                    error(same_room_error)
+            private_dungeon = function(params)
+                private_dungeon_count = private_dungeon_count + 1
+                private_dungeon_params = params
+                if private_dungeon_error then
+                    error(private_dungeon_error)
                 end
-                return same_room_result or accepted('同房分流')
-            end,
-            cross_room_merge = function(params)
-                cross_room_params = params
-                return accepted('跨房合流')
+                if private_dungeon_result then
+                    return private_dungeon_result
+                end
+                if BOB.team_info then
+                    return accepted('局内私人副本', {
+                        route = 'team_bob',
+                        selected_players = { { aid = BOB.aid } },
+                        skipped_in_game_players = {},
+                        unknown_status_players = {},
+                    })
+                end
+                return cross_map_accepted('局内私人副本', {
+                    route = 'solo_engine',
+                    selected_players = {},
+                    skipped_in_game_players = {},
+                    unknown_status_players = {},
+                })
             end,
             join_by_token = function(token)
                 if join_by_token_error then
@@ -315,12 +360,12 @@ local function run_case(path)
                 end
                 dungeon_join_count = dungeon_join_count + 1
                 dungeon_join_token = token
-                return accepted('加入口令')
+                return cross_map_accepted('加入口令')
             end,
             return_lobby = function(params)
                 return_count = return_count + 1
                 return_lobby_params = params
-                return accepted('返回大厅')
+                return cross_map_accepted('返回大厅')
             end,
             exit_game = function()
                 exit_count = exit_count + 1
@@ -342,11 +387,11 @@ local function run_case(path)
     join_callback(nil, { player = player })
     assert_equal(refresh_loop_count, 1, path .. ' reuses the existing refresh timer')
     assert_log_contains(log_entries, 'info', {
-        '[LobbyTestUI] 按钮不可用',
-        'action=跨房合流',
-        'code=disabled',
-        'reason=当前未加入队伍',
-    }, path .. ' logs the initial cross-room disabled reason')
+        '[LobbyTestUI] 按钮可用',
+        'action=局内私人副本',
+        'code=enabled',
+        'reason=条件已满足',
+    }, path .. ' logs that solo private dungeon is initially available')
 
     event_callback({
         event = 'team_changed',
@@ -395,14 +440,14 @@ local function run_case(path)
     }, path .. ' logs async success')
     complete_callback({
         request_id = 'request-failure',
-        action = '跨房合流',
+        action = '局内私人副本',
         success = false,
         code = 'room_missing',
         reason = '目标房间不存在',
     })
     assert_log_contains(log_entries, 'error', {
         '[LobbyTestUI] 异步失败',
-        'action=跨房合流',
+        'action=局内私人副本',
         'success=false',
         'request_id=request-failure',
         'code=room_missing',
@@ -488,7 +533,7 @@ local function run_case(path)
         path .. ' dungeon input remains available after request')
     assert_equal(
         _G.__BOB_TEST_UI_RUNTIME.notice_text.text,
-        '加入口令请求已受理；目标房间需允许中途加入',
+        '加入口令请求已发送，等待切图；目标房间需允许中途加入',
         path .. ' dungeon join request feedback')
     join_by_token_error = true
     dungeon_join_button:click()
@@ -500,62 +545,71 @@ local function run_case(path)
     }, path .. ' redacts dungeon token exceptions')
     join_by_token_error = false
 
-    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
-    assert(same_room_params, path .. ' same-room split button sends a request')
+    local private_button = assert(
+        _G.__BOB_TEST_UI_RUNTIME.private_button,
+        path .. ' must create one private dungeon button')
+    assert_equal(#collect_buttons_by_text(root, '局内私人副本'), 1, path .. ' must create exactly one private dungeon button')
+    assert_equal(#collect_buttons_by_text(root, '同房分流'), 0, path .. ' must not create old same-room split button')
+    assert_equal(#collect_buttons_by_text(root, '跨房合流'), 0, path .. ' must not create old cross-room merge button')
+    private_button:click()
+    assert_equal(private_dungeon_count, 1, path .. ' solo private dungeon sends one request')
+    assert(private_dungeon_params, path .. ' private dungeon button sends parameters')
     assert_equal(
-        same_room_params.level_id,
-        '25e6448f-7e73-11f1-88ae-03dc5a85955c',
-        path .. ' same-room split target level')
-    assert_equal(same_room_params.game_mode, 1003, path .. ' same-room split target mode')
-    assert_equal(same_room_params.max_player, 2, path .. ' same-room split player limit')
+        private_dungeon_params.game_map_id,
+        'test-game-map-id',
+        path .. ' private dungeon target map')
+    assert_equal(
+        private_dungeon_params.level_id,
+        '50377054694119407947881484918402159964',
+        path .. ' private dungeon target level')
+    assert_equal(private_dungeon_params.game_mode, 1003, path .. ' private dungeon target mode')
+    assert_equal(private_dungeon_params.max_player, 2, path .. ' private dungeon player limit')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 操作发起',
-        'action=同房分流',
-    }, path .. ' logs same-room action start')
+        'action=局内私人副本',
+    }, path .. ' logs private dungeon action start')
     assert_log_contains(log_entries, 'info', {
-        '[LobbyTestUI] 请求已受理',
-        'action=同房分流',
+        '[LobbyTestUI] 请求已发送',
+        'action=局内私人副本',
         'accepted=true',
-        'request_id=test-request',
-    }, path .. ' logs same-room acceptance')
+        'request_id=',
+        'route=solo_engine',
+    }, path .. ' logs solo private dungeon submission')
 
-    same_room_result = {
+    private_dungeon_result = {
         accepted = false,
-        action = '同房分流',
+        action = '局内私人副本',
         request_id = '',
         reason = '大厅服务未连接',
         code = 'not_connected',
         sync = true,
-        result_data = {},
+        result_data = {
+            route = 'rejected',
+            selected_players = {},
+            skipped_in_game_players = {},
+            unknown_status_players = {},
+        },
     }
-    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
+    private_button:click()
     assert_log_contains(log_entries, 'warn', {
         '[LobbyTestUI] 操作拒绝',
-        'action=同房分流',
+        'action=局内私人副本',
         'accepted=false',
         'code=not_connected',
         'reason=大厅服务未连接',
-    }, path .. ' logs synchronous rejection')
+        'route=rejected',
+    }, path .. ' logs private dungeon synchronous rejection')
 
-    same_room_result = accepted('同房分流', {}, true)
-    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
-    assert_log_contains(log_entries, 'info', {
-        '[LobbyTestUI] 同步完成',
-        'action=同房分流',
-        'accepted=true',
-        'sync=true',
-    }, path .. ' logs synchronous success')
-
-    same_room_result = nil
-    same_room_error = '模拟同房分流异常'
-    _G.__BOB_TEST_UI_RUNTIME.same_room_button:click()
+    private_dungeon_result = nil
+    private_dungeon_error = '模拟局内私人副本异常'
+    private_button:click()
     assert_log_contains(log_entries, 'error', {
         '[LobbyTestUI] 操作异常',
-        'action=同房分流',
+        'action=局内私人副本',
         'code=lua_exception',
-        '模拟同房分流异常',
-    }, path .. ' logs synchronous exceptions')
-    same_room_error = nil
+        '模拟局内私人副本异常',
+    }, path .. ' logs private dungeon exceptions')
+    private_dungeon_error = nil
 
     local battle_panel = assert(_G.__BOB_TEST_UI_RUNTIME.battle_chat_panel, path .. ' must create battle chat panel')
     local lobby_chat_panel = assert(
@@ -587,11 +641,7 @@ local function run_case(path)
         members = { { aid = BOB.aid, name = '测试玩家', state = '游戏中' } },
     }
     refresh_callback()
-    assert_log_contains(log_entries, 'info', {
-        '[LobbyTestUI] 按钮不可用',
-        'action=跨房合流',
-        'reason=队伍人数不足（1/2）',
-    }, path .. ' logs insufficient cross-room member count')
+    assert_equal(private_button.enabled, true, path .. ' captain may start a private dungeon with one member')
     assert_equal(battle_panel.visible, true, path .. ' battle chat visible in dungeon')
     assert_equal(game_hud.visible, false, path .. ' default HUD hidden in dungeon')
     assert_equal(battle_token_text.text, dungeon_token, path .. ' battle token text')
@@ -608,7 +658,7 @@ local function run_case(path)
     assert_equal(return_lobby_params.max_player, 1, path .. ' return lobby player limit')
     assert_equal(
         _G.__BOB_TEST_UI_RUNTIME.battle_notice_text.text,
-        '返回初始关卡：请求已受理',
+        '返回初始关卡：请求已发送，等待切图',
         path .. ' return button feedback stays visible in battle')
 
     local battle_chat_input = assert(
@@ -730,34 +780,33 @@ local function run_case(path)
     refresh_callback()
     assert_equal(button.text, '开始匹配', path .. ' member idle label')
     assert_equal(button.enabled, false, path .. ' member cannot start matching')
+    assert_equal(private_button.enabled, false, path .. ' member cannot start a team private dungeon')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 按钮不可用',
-        'action=跨房合流',
-        'reason=当前玩家不是队长',
-    }, path .. ' logs non-captain cross-room restriction')
+        'action=局内私人副本',
+        'reason=只有队长可以发起局内私人副本',
+    }, path .. ' logs non-captain private dungeon restriction')
     button:click()
     assert_equal(start_count, 1, path .. ' disabled member click is ignored')
 
     BOB.team_info.captain = BOB.aid
     refresh_callback()
     assert_equal(button.enabled, true, path .. ' captain can start matching')
-    assert_equal(_G.__BOB_TEST_UI_RUNTIME.cross_room_button.enabled, true,
-        path .. ' captain with enough members can start cross-room merge')
+    assert_equal(private_button.enabled, true, path .. ' captain can start a team private dungeon')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 按钮可用',
-        'action=跨房合流',
+        'action=局内私人副本',
         'code=enabled',
         'reason=条件已满足',
-    }, path .. ' logs cross-room availability')
-    _G.__BOB_TEST_UI_RUNTIME.cross_room_button:click()
-    assert(cross_room_params, path .. ' cross-room merge button sends a request')
-    assert_equal(cross_room_params.game_map_id, 'test-game-map-id', path .. ' cross-room target map')
-    assert_equal(
-        cross_room_params.level_id,
-        '50377054694119407947881484918402159964',
-        path .. ' cross-room target level')
-    assert_equal(cross_room_params.game_mode, 1003, path .. ' cross-room target mode')
-    assert_equal(#cross_room_params.players, 2, path .. ' cross-room merge includes all team members')
+    }, path .. ' logs team private dungeon availability')
+    private_button:click()
+    assert_equal(private_dungeon_count, 4, path .. ' captain private dungeon sends a request')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 请求已受理',
+        'action=局内私人副本',
+        'route=team_bob',
+        'selected=1',
+    }, path .. ' logs team private dungeon acceptance')
 
     state.matching = true
     refresh_callback()
@@ -769,9 +818,9 @@ local function run_case(path)
         path .. ' expedition summary follows matching state')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 按钮不可用',
-        'action=跨房合流',
-        'reason=队伍正在匹配',
-    }, path .. ' logs matching cross-room restriction')
+        'action=局内私人副本',
+        'reason=队伍正在匹配，不能发起局内私人副本',
+    }, path .. ' logs matching private dungeon restriction')
     button:click()
     assert_equal(cancel_count, 1, path .. ' matching click cancels matching')
 

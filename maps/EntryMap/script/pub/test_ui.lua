@@ -11,7 +11,7 @@ local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
 local EXPECTED_PRIVATE_PLAYERS = 2
 local MAX_MEMBER_ROWS = 4
 local MAX_CHAT_LINES = 5
-local UI_LAYOUT_VERSION = 18
+local UI_LAYOUT_VERSION = 19
 
 local COLOR_TEXT = { 244, 234, 213, 255 }
 local COLOR_MUTED = { 197, 185, 159, 255 }
@@ -216,6 +216,30 @@ local function log_field(value)
     return tostring(value)
 end
 
+local function count_items(value)
+    if type(value) ~= 'table' then
+        return 0
+    end
+    local count = 0
+    for _ in pairs(value) do
+        count = count + 1
+    end
+    return count
+end
+
+local function result_field(data, key)
+    local result_data = type(data.result_data) == 'table' and data.result_data or {}
+    return data[key] or result_data[key]
+end
+
+local function private_dungeon_summary(data)
+    data = type(data) == 'table' and data or {}
+    local selected = count_items(result_field(data, 'selected_players'))
+    local skipped = count_items(result_field(data, 'skipped_in_game_players'))
+    local unknown = count_items(result_field(data, 'unknown_status_players'))
+    return string.format('筛选：入选 %d，游戏中跳过 %d，状态未知排除 %d', selected, skipped, unknown)
+end
+
 local function write_log(level, message)
     local writer = log and (log[level] or log.info)
     if writer then
@@ -257,7 +281,9 @@ local function log_operation(level, phase, action, data)
     data = type(data) == 'table' and data or {}
     write_log(level, string.format(
         '[LobbyTestUI] %s | action=%s | accepted=%s | success=%s | sync=%s'
-            .. ' | request_id=%s | code=%s | reason=%s | sequence=%s',
+            .. ' | request_id=%s | code=%s | reason=%s | sequence=%s'
+            .. ' | route=%s | selected=%s | skipped_in_game=%s | unknown_status=%s'
+            .. ' | platform_requested=%s | entered_target=%s',
         tostring(phase),
         log_field(action or data.action),
         log_field(data.accepted),
@@ -266,7 +292,13 @@ local function log_operation(level, phase, action, data)
         log_field(data.request_id),
         log_field(data.code),
         log_reason(action, data),
-        log_field(data.sequence)))
+        log_field(data.sequence),
+        log_field(result_field(data, 'route')),
+        log_field(count_items(result_field(data, 'selected_players'))),
+        log_field(count_items(result_field(data, 'skipped_in_game_players'))),
+        log_field(count_items(result_field(data, 'unknown_status_players'))),
+        log_field(result_field(data, 'platform_requested')),
+        log_field(result_field(data, 'entered_target'))))
 end
 
 local function safe_action(name, action)
@@ -288,12 +320,27 @@ local function safe_action(name, action)
     if type(action_result) == 'table' and action_result.accepted ~= nil then
         if not action_result.accepted then
             runtime.notice = name .. '：' .. tostring(action_result.reason or action_result.code or '操作失败')
+            if name == '局内私人副本' then
+                runtime.notice = runtime.notice .. '；' .. private_dungeon_summary(action_result)
+            end
             log_operation('warn', '操作拒绝', name, action_result)
             return false
+        end
+        if action_result.result_data
+            and action_result.result_data.cross_map_tracking == 'degraded' then
+            runtime.notice = name .. '：' .. tostring(action_result.reason or '请求已发送，等待切图')
+            if name == '局内私人副本' then
+                runtime.notice = runtime.notice .. '；' .. private_dungeon_summary(action_result)
+            end
+            log_operation('info', '请求已发送', name, action_result)
+            return true
         end
         runtime.notice = name .. '：' .. tostring(action_result.sync
             and (action_result.reason or '操作完成')
             or '请求已受理')
+        if name == '局内私人副本' then
+            runtime.notice = runtime.notice .. '；' .. private_dungeon_summary(action_result)
+        end
         log_operation('info', action_result.sync and '同步完成' or '请求已受理', name, action_result)
         return true
     end
@@ -455,26 +502,56 @@ local function safe_send_chat(channel, input)
     return sent, reason
 end
 
-local function cross_room_unavailable_reason(ready, in_team, is_captain, matching, launching, team_count)
-    if not ready then
-        return '大厅服务未连接'
-    end
+local function private_dungeon_unavailable_reason(ready, in_team, is_captain, matching, launching)
     if not in_team then
-        return '当前未加入队伍'
+        return nil
     end
     if not is_captain then
-        return '当前玩家不是队长'
+        return '只有队长可以发起局内私人副本'
+    end
+    if not ready then
+        return '队伍路径需要大厅服务已连接'
     end
     if matching then
-        return '队伍正在匹配'
+        return '队伍正在匹配，不能发起局内私人副本'
     end
     if launching then
-        return '队伍正在启动关卡'
-    end
-    if team_count < EXPECTED_PRIVATE_PLAYERS then
-        return string.format('队伍人数不足（%d/%d）', team_count, EXPECTED_PRIVATE_PLAYERS)
+        return '队伍正在启动关卡，不能发起局内私人副本'
     end
     return nil
+end
+
+local function get_private_dungeon_api()
+    return y3.lobby.private_dungeon
+end
+
+local function request_private_dungeon()
+    local api = get_private_dungeon_api()
+    if not api then
+        return {
+            accepted = false,
+            sync = true,
+            code = 'api_missing',
+            reason = '统一接口 y3.lobby.private_dungeon 尚未注册',
+            result_data = {
+                route = 'rejected',
+                completion_mode = 'sync_rejected',
+                request_id = '',
+                selected_players = {},
+                skipped_in_game_players = {},
+                unknown_status_players = {},
+                platform_requested = false,
+                entered_target = 'not_entered',
+            },
+        }
+    end
+    local snapshot = lobby_state()
+    return api({
+        game_map_id = snapshot.game_map_id,
+        level_id = MATCH_LEVEL_ID,
+        game_mode = PRIVATE_GAME_MODE,
+        max_player = EXPECTED_PRIVATE_PLAYERS,
+    })
 end
 
 local function refresh()
@@ -520,16 +597,16 @@ local function refresh()
         dungeon_token ~= '' and dungeon_token or '-'))
 
     runtime.leave_button:set_button_enable(in_team and not team_busy)
-    local cross_room_reason = cross_room_unavailable_reason(
-        ready, in_team, is_captain, matching, launching, team_count)
-    local cross_room_enabled = cross_room_reason == nil
-    runtime.private_button:set_button_enable(cross_room_enabled)
-    local cross_room_log_state = cross_room_enabled and 'available' or cross_room_reason
-    if runtime.cross_room_log_state ~= cross_room_log_state then
-        runtime.cross_room_log_state = cross_room_log_state
-        log_operation('info', cross_room_enabled and '按钮可用' or '按钮不可用', '跨房合流', {
-            code = cross_room_enabled and 'enabled' or 'disabled',
-            reason = cross_room_enabled and '条件已满足' or cross_room_reason,
+    local private_dungeon_reason = private_dungeon_unavailable_reason(
+        ready, in_team, is_captain, matching, launching)
+    local private_dungeon_enabled = private_dungeon_reason == nil
+    runtime.private_button:set_button_enable(private_dungeon_enabled)
+    local private_dungeon_log_state = private_dungeon_enabled and 'available' or private_dungeon_reason
+    if runtime.private_dungeon_log_state ~= private_dungeon_log_state then
+        runtime.private_dungeon_log_state = private_dungeon_log_state
+        log_operation('info', private_dungeon_enabled and '按钮可用' or '按钮不可用', '局内私人副本', {
+            code = private_dungeon_enabled and 'enabled' or 'disabled',
+            reason = private_dungeon_enabled and '条件已满足' or private_dungeon_reason,
         })
     end
     runtime.dismiss_button:set_button_enable(is_captain and not team_busy)
@@ -545,10 +622,11 @@ local function refresh()
     end
     if runtime.action_team_text then
         runtime.action_team_text:set_text(string.format(
-            '队伍就绪  %s/%s    当前身份  %s',
+            '队伍就绪  %s/%s    当前身份  %s    %s',
             tostring(team_count),
             tostring(max_count),
-            is_captain and '队长' or (in_team and '队员' or '单人')))
+            is_captain and '队长' or (in_team and '队员' or '单人'),
+            private_dungeon_reason or (in_team and '可发起队伍副本' or '无队伍：可单人进入')))
     end
 
     local match_text = '开始匹配'
@@ -856,7 +934,7 @@ local function build(player)
     add_panel(panel, 670, 472, 580, 250, COLOR_PANEL_SOFT)
     add_text(panel, 696, 670, 180, 18, '本轮远征', 11, COLOR_WARNING)
     add_text(panel, 696, 622, 360, 42, '暮潮遗迹', 28, COLOR_TEXT)
-    add_text(panel, 696, 580, 520, 36, '匹配、口令与分流合流状态验证', 13, COLOR_MUTED)
+    add_text(panel, 696, 580, 520, 36, '匹配、口令与局内私人副本状态验证', 13, COLOR_MUTED)
     add_text(panel, 696, 526, 120, 18, '预计席位', 11, COLOR_MUTED)
     add_text(panel, 696, 494, 120, 26, tostring(EXPECTED_PRIVATE_PLAYERS), 17, COLOR_TEXT)
     add_text(panel, 854, 526, 120, 18, '队伍上限', 11, COLOR_MUTED)
@@ -882,31 +960,10 @@ local function build(player)
         end
         refresh()
     end)
-    runtime.same_room_button = add_button(panel, 1544, 294, 160, 42, '同房分流', function()
-        safe_action('同房分流', function()
-            return y3.lobby.same_room_split({
-                level_id = SAME_ROOM_LEVEL_ID,
-                game_mode = PRIVATE_GAME_MODE,
-                max_player = EXPECTED_PRIVATE_PLAYERS,
-            })
-        end)
-    end)
-    runtime.cross_room_button = add_button(panel, 1716, 294, 160, 42, '跨房合流', function()
-        safe_action('跨房合流', function()
-            local snapshot = lobby_state()
-            local players = {}
-            for _, member in ipairs(snapshot.members or {}) do
-                players[#players + 1] = { aid = member.aid }
-            end
-            return y3.lobby.cross_room_merge({
-                game_map_id = snapshot.game_map_id,
-                level_id = MATCH_LEVEL_ID,
-                game_mode = PRIVATE_GAME_MODE,
-                players = players,
-            })
-        end)
+    runtime.private_button = add_button(panel, 1544, 294, 332, 42, '局内私人副本', function()
+        safe_action('局内私人副本', request_private_dungeon)
+        refresh()
     end, 'primary')
-    runtime.private_button = runtime.cross_room_button
     add_text(panel, 1358, 256, 160, 22, '关卡口令', 13, COLOR_MUTED)
     runtime.dungeon_input = add_input(panel, 1358, 206, 340, 42)
     runtime.dungeon_join_button = add_button(panel, 1710, 206, 166, 42, '加入副本', function()
@@ -926,7 +983,7 @@ local function build(player)
             return y3.lobby.join_by_token(token)
         end)
         if sent then
-            runtime.notice = '加入口令请求已受理；目标房间需允许中途加入'
+            runtime.notice = '加入口令请求已发送，等待切图；目标房间需允许中途加入'
         end
         refresh()
     end)

@@ -105,16 +105,10 @@
             "lua_bind": true
         },
         {
-            "name": "大厅服务 - 同房分流",
-            "description": "让当前房间内的部分玩家切换到指定关卡；参数表{分流参数}必须包含 level_id、game_mode、max_player",
-            "params": [{"name": "分流参数", "type": "TABLE", "required": true}],
-            "returns": [{"name": "result", "type": "TABLE", "var": "t"}],
-            "lua_bind": true
-        },
-        {
-            "name": "大厅服务 - 跨房合流",
-            "description": "让不同房间内的玩家一起切换到指定关卡；参数表{合流参数}必须包含 game_map_id、level_id、game_mode、players",
-            "params": [{"name": "合流参数", "type": "TABLE", "required": true}],
+            "name": "大厅服务 - 局内私人副本",
+            "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
+            "description": "按统一参数表{副本参数}发起局内私人副本请求；参数表使用 action=private_dungeon，可包含 level_id、game_mode、max_player、game_map_id、custom_param",
+            "params": [{"name": "副本参数", "type": "TABLE", "required": true}],
             "returns": [{"name": "result", "type": "TABLE", "var": "t"}],
             "lua_bind": true
         },
@@ -146,7 +140,7 @@
         },
         {
             "name": "大厅服务 - 获取状态快照",
-            "description": "请求获取大厅、连接、队伍、匹配、聊天、同房分流和跨房合流状态快照",
+            "description": "请求获取大厅、连接、队伍、匹配、聊天和局内私人副本状态快照",
             "returns": [{"name": "result", "type": "TABLE", "var": "t"}],
             "lua_bind": true
         },

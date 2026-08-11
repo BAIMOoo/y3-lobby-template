@@ -12,7 +12,7 @@
                     "call_function": {
                         "func_id": "2a405018f61e54659d17a44122db0379",
                         "name": "大厅服务 - 建立连接",
-                        "args": [190356],
+                        "args": [10209075],
                         "returns": [{"var": "建立连接立即结果", "type": "TABLE"}]
                     }
                 },
@@ -213,26 +213,28 @@
             ]
         },
         {
-            "name": "大厅服务 - 同房分流测试",
+            "name": "大厅服务 - 局内私人副本测试",
             "id": 1931000004,
             "event": [["KEYBOARD_KEY_DOWN_EVENT", 36]],
             "condition": [],
             "action": [
-                ["SET_VARIABLE", {"var": "同房分流参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
-                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "level_id", "your_level_id"],
-                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "game_mode", 20002],
-                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "max_player", 4],
-                ["SET_TABLE_VALUE_1D", {"var": "同房分流参数", "type": "TABLE"}, "custom_param", "optional_custom_param"],
-                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 同房分流；立即结果如下"],
+                ["SET_VARIABLE", {"var": "副本参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
+                ["SET_TABLE_VALUE_1D", {"var": "副本参数", "type": "TABLE"}, "action", "private_dungeon"],
+                ["SET_TABLE_VALUE_1D", {"var": "副本参数", "type": "TABLE"}, "level_id", "your_level_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "副本参数", "type": "TABLE"}, "game_mode", 1003],
+                ["SET_TABLE_VALUE_1D", {"var": "副本参数", "type": "TABLE"}, "max_player", 2],
+                ["SET_TABLE_VALUE_1D", {"var": "副本参数", "type": "TABLE"}, "game_map_id", "your_game_map_id"],
+                ["SET_TABLE_VALUE_1D", {"var": "副本参数", "type": "TABLE"}, "custom_param", "optional_custom_param"],
+                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 局内私人副本；立即结果如下"],
                 {
                     "call_function": {
                         "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
-                        "name": "大厅服务 - 同房分流",
-                        "args": [{"var": "同房分流参数", "type": "TABLE"}],
-                        "returns": [{"var": "同房分流立即结果", "type": "TABLE"}]
+                        "name": "大厅服务 - 局内私人副本",
+                        "args": [{"var": "副本参数", "type": "TABLE"}],
+                        "returns": [{"var": "局内私人副本立即结果", "type": "TABLE"}]
                     }
                 },
-                ["DUMP_TABLE", {"var": "同房分流立即结果", "type": "TABLE"}],
+                ["DUMP_TABLE", {"var": "局内私人副本立即结果", "type": "TABLE"}],
                 [
                     "IF_THEN_ELSE",
                     [
@@ -240,20 +242,20 @@
                             "STRING_COMPARE",
                             [
                                 "GET_STRING_TABLE_VAR_1D",
-                                {"var": "同房分流立即结果", "type": "TABLE"},
+                                {"var": "局内私人副本立即结果", "type": "TABLE"},
                                 "request_id"
                             ],
                             "!=",
                             ""
                         ]
                     ],
-                    [{"register_sub_trigger": "大厅服务 - 同房分流完成回调"}],
-                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "同房分流请求未受理，请查看立即结果"]]
+                    [{"register_sub_trigger": "大厅服务 - 局内私人副本完成回调"}],
+                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "局内私人副本请求未受理，请查看立即结果"]]
                 ]
             ],
             "sub_triggers": [
                 {
-                    "name": "大厅服务 - 同房分流完成回调",
+                    "name": "大厅服务 - 局内私人副本完成回调",
                     "id": 1931000104,
                     "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
                     "action": [
@@ -270,94 +272,13 @@
                                     "==",
                                     [
                                         "GET_STRING_TABLE_VAR_1D",
-                                        {"var": "同房分流立即结果", "type": "TABLE"},
+                                        {"var": "局内私人副本立即结果", "type": "TABLE"},
                                         "request_id"
                                     ]
                                 ]
                             ],
                             [
-                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "同房分流完成回调如下"],
-                                ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
-                                ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
-                            ],
-                            []
-                        ]
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "大厅服务 - 跨房合流测试",
-            "id": 1931000005,
-            "event": [["KEYBOARD_KEY_DOWN_EVENT", 37]],
-            "condition": [],
-            "action": [
-                ["SET_VARIABLE", {"var": "跨房合流参数", "type": "TABLE"}, ["GET_NEW_TABLE"]],
-                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "game_map_id", "your_game_map_id"],
-                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "level_id", "your_level_id"],
-                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "game_mode", 20003],
-                ["SET_VARIABLE", {"var": "跨房合流玩家列表", "type": "TABLE"}, ["GET_NEW_TABLE"]],
-                ["SET_VARIABLE", {"var": "跨房合流玩家1", "type": "TABLE"}, ["GET_NEW_TABLE"]],
-                ["SET_TABLE_VALUE_1D", {"var": "跨房合流玩家1", "type": "TABLE"}, "aid", 10001],
-                ["INSERT_TABLE_VALUE", {"var": "跨房合流玩家列表", "type": "TABLE"}, {"var": "跨房合流玩家1", "type": "TABLE"}],
-                ["SET_VARIABLE", {"var": "跨房合流玩家2", "type": "TABLE"}, ["GET_NEW_TABLE"]],
-                ["SET_TABLE_VALUE_1D", {"var": "跨房合流玩家2", "type": "TABLE"}, "aid", 10002],
-                ["INSERT_TABLE_VALUE", {"var": "跨房合流玩家列表", "type": "TABLE"}, {"var": "跨房合流玩家2", "type": "TABLE"}],
-                ["SET_TABLE_VALUE_1D", {"var": "跨房合流参数", "type": "TABLE"}, "players", {"var": "跨房合流玩家列表", "type": "TABLE"}],
-                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "调用大厅服务 - 跨房合流；立即结果如下"],
-                {
-                    "call_function": {
-                        "func_id": "bee3695399f4531dafa069092b573eca",
-                        "name": "大厅服务 - 跨房合流",
-                        "args": [{"var": "跨房合流参数", "type": "TABLE"}],
-                        "returns": [{"var": "跨房合流立即结果", "type": "TABLE"}]
-                    }
-                },
-                ["DUMP_TABLE", {"var": "跨房合流立即结果", "type": "TABLE"}],
-                [
-                    "IF_THEN_ELSE",
-                    [
-                        [
-                            "STRING_COMPARE",
-                            [
-                                "GET_STRING_TABLE_VAR_1D",
-                                {"var": "跨房合流立即结果", "type": "TABLE"},
-                                "request_id"
-                            ],
-                            "!=",
-                            ""
-                        ]
-                    ],
-                    [{"register_sub_trigger": "大厅服务 - 跨房合流完成回调"}],
-                    [["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "跨房合流请求未受理，请查看立即结果"]]
-                ]
-            ],
-            "sub_triggers": [
-                {
-                    "name": "大厅服务 - 跨房合流完成回调",
-                    "id": 1931000105,
-                    "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务请求完成"]],
-                    "action": [
-                        [
-                            "IF_THEN_ELSE",
-                            [
-                                [
-                                    "STRING_COMPARE",
-                                    [
-                                        "GET_STRING_TABLE_VAR_1D",
-                                        ["GET_CUS_EVENT_PARAM", "回调数据"],
-                                        "request_id"
-                                    ],
-                                    "==",
-                                    [
-                                        "GET_STRING_TABLE_VAR_1D",
-                                        {"var": "跨房合流立即结果", "type": "TABLE"},
-                                        "request_id"
-                                    ]
-                                ]
-                            ],
-                            [
-                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "跨房合流完成回调如下"],
+                                ["PRINT_MESSAGE_ACTION_TO_DIALOG", 3, "局内私人副本完成回调如下"],
                                 ["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "回调数据"]],
                                 ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]
                             ],

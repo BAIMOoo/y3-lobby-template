@@ -10,7 +10,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流参数", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -24,7 +24,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000002, 
+            "element_id": 1931000004000002, 
             "enable": true
         }, 
         {
@@ -37,7 +37,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流参数", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -47,20 +47,20 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "game_map_id"
+                        "action"
                     ], 
                     "sub_type": 1
                 }, 
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "your_game_map_id"
+                        "private_dungeon"
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000003, 
+            "element_id": 1931000004000003, 
             "enable": true
         }, 
         {
@@ -73,7 +73,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流参数", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -96,7 +96,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000004, 
+            "element_id": 1931000004000004, 
             "enable": true
         }, 
         {
@@ -109,7 +109,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流参数", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -126,67 +126,13 @@
                 {
                     "arg_type": 100002, 
                     "args_list": [
-                        20003
+                        1003
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000005, 
-            "enable": true
-        }, 
-        {
-            "action_type": "SET_VARIABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100030, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家列表", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": 1
-                }, 
-                {
-                    "arg_type": 100011, 
-                    "args_list": [], 
-                    "sub_type": "GET_NEW_TABLE"
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1931000005000006, 
-            "enable": true
-        }, 
-        {
-            "action_type": "SET_VARIABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100030, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家1", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": 1
-                }, 
-                {
-                    "arg_type": 100011, 
-                    "args_list": [], 
-                    "sub_type": "GET_NEW_TABLE"
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1931000005000007, 
+            "element_id": 1931000004000005, 
             "enable": true
         }, 
         {
@@ -199,7 +145,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流玩家1", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -209,89 +155,20 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "aid"
+                        "max_player"
                     ], 
                     "sub_type": 1
                 }, 
                 {
                     "arg_type": 100002, 
                     "args_list": [
-                        10001
+                        2
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000008, 
-            "enable": true
-        }, 
-        {
-            "action_type": "INSERT_TABLE_VALUE", 
-            "args_list": [
-                {
-                    "arg_type": 100011, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家列表", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": "VARIABLE"
-                }, 
-                {
-                    "arg_type": 100011, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家1", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": "VARIABLE"
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1931000005000009, 
-            "enable": true, 
-            "op_arg": [
-                null
-            ], 
-            "op_arg_enable": [
-                false
-            ]
-        }, 
-        {
-            "action_type": "SET_VARIABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100030, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家2", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": 1
-                }, 
-                {
-                    "arg_type": 100011, 
-                    "args_list": [], 
-                    "sub_type": "GET_NEW_TABLE"
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1931000005000010, 
+            "element_id": 1931000004000006, 
             "enable": true
         }, 
         {
@@ -304,7 +181,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流玩家2", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -314,63 +191,21 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "aid"
+                        "game_map_id"
                     ], 
                     "sub_type": 1
                 }, 
                 {
-                    "arg_type": 100002, 
+                    "arg_type": 100003, 
                     "args_list": [
-                        10002
+                        "your_game_map_id"
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000011, 
+            "element_id": 1931000004000007, 
             "enable": true
-        }, 
-        {
-            "action_type": "INSERT_TABLE_VALUE", 
-            "args_list": [
-                {
-                    "arg_type": 100011, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家列表", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": "VARIABLE"
-                }, 
-                {
-                    "arg_type": 100011, 
-                    "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家2", 
-                                "local"
-                            ]
-                        }
-                    ], 
-                    "sub_type": "VARIABLE"
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1931000005000012, 
-            "enable": true, 
-            "op_arg": [
-                null
-            ], 
-            "op_arg_enable": [
-                false
-            ]
         }, 
         {
             "action_type": "SET_TABLE_VALUE_1D", 
@@ -382,7 +217,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流参数", 
+                                "副本参数", 
                                 "local"
                             ]
                         }
@@ -392,27 +227,20 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "players"
+                        "custom_param"
                     ], 
                     "sub_type": 1
                 }, 
                 {
-                    "arg_type": 100011, 
+                    "arg_type": 100003, 
                     "args_list": [
-                        {
-                            "__tuple__": true, 
-                            "items": [
-                                "TABLE", 
-                                "跨房合流玩家列表", 
-                                "local"
-                            ]
-                        }
+                        "optional_custom_param"
                     ], 
-                    "sub_type": "VARIABLE"
+                    "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000013, 
+            "element_id": 1931000004000008, 
             "enable": true
         }, 
         {
@@ -428,13 +256,13 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "调用大厅服务 - 跨房合流；立即结果如下"
+                        "调用大厅服务 - 局内私人副本；立即结果如下"
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000014, 
+            "element_id": 1931000004000009, 
             "enable": true
         }, 
         {
@@ -450,7 +278,7 @@
                                     "__tuple__": true, 
                                     "items": [
                                         "TABLE", 
-                                        "跨房合流参数", 
+                                        "副本参数", 
                                         "local"
                                     ]
                                 }
@@ -460,7 +288,7 @@
                     ], 
                     "op_arg": [], 
                     "op_arg_enable": [], 
-                    "sub_type": "bee3695399f4531dafa069092b573eca"
+                    "sub_type": "0d827eca2ea0531c83ce1d8cff4db2f1"
                 }, 
                 {
                     "arg_type": 100011, 
@@ -469,7 +297,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流立即结果", 
+                                "局内私人副本立即结果", 
                                 "local"
                             ]
                         }
@@ -481,7 +309,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1931000005000015, 
+            "element_id": 1931000004000010, 
             "enable": true
         }, 
         {
@@ -494,7 +322,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "跨房合流立即结果", 
+                                "局内私人副本立即结果", 
                                 "local"
                             ]
                         }
@@ -503,7 +331,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000016, 
+            "element_id": 1931000004000011, 
             "enable": true
         }, 
         {
@@ -524,7 +352,7 @@
                                                     "__tuple__": true, 
                                                     "items": [
                                                         "TABLE", 
-                                                        "跨房合流立即结果", 
+                                                        "局内私人副本立即结果", 
                                                         "local"
                                                     ]
                                                 }
@@ -557,7 +385,7 @@
                                 }
                             ], 
                             "condition_type": "STRING_COMPARE", 
-                            "element_id": 1931000005000017, 
+                            "element_id": 1931000004000012, 
                             "enable": true
                         }
                     ], 
@@ -566,7 +394,7 @@
                 {
                     "arg_type": 100022, 
                     "args_list": [
-                        1931000105
+                        1931000104
                     ], 
                     "sub_type": 1
                 }, 
@@ -586,13 +414,13 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "跨房合流请求未受理，请查看立即结果"
+                                        "局内私人副本请求未受理，请查看立即结果"
                                     ], 
                                     "sub_type": 1
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1931000005000018, 
+                            "element_id": 1931000004000013, 
                             "enable": true
                         }
                     ], 
@@ -600,7 +428,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000005000019, 
+            "element_id": 1931000004000014, 
             "enable": true, 
             "fake_op": [
                 2
@@ -616,12 +444,12 @@
                 {
                     "arg_type": 200220, 
                     "args_list": [
-                        37
+                        36
                     ], 
                     "sub_type": 1
                 }
             ], 
-            "element_id": 1931000005000001, 
+            "element_id": 1931000004000001, 
             "enable": true, 
             "event_type": "KEYBOARD_KEY_DOWN_EVENT"
         }
@@ -629,7 +457,7 @@
     "group_id": 0, 
     "p_trigger_id": null, 
     "sub_trigger": {
-        "1931000105": {
+        "1931000104": {
             "action": [
                 {
                     "action_type": "IF_THEN_ELSE", 
@@ -682,7 +510,7 @@
                                                             "__tuple__": true, 
                                                             "items": [
                                                                 "TABLE", 
-                                                                "跨房合流立即结果", 
+                                                                "局内私人副本立即结果", 
                                                                 "local"
                                                             ]
                                                         }
@@ -701,7 +529,7 @@
                                         }
                                     ], 
                                     "condition_type": "STRING_COMPARE", 
-                                    "element_id": 1931000105000002, 
+                                    "element_id": 1931000104000002, 
                                     "enable": true
                                 }
                             ], 
@@ -723,13 +551,13 @@
                                         {
                                             "arg_type": 100003, 
                                             "args_list": [
-                                                "跨房合流完成回调如下"
+                                                "局内私人副本完成回调如下"
                                             ], 
                                             "sub_type": 1
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1931000105000003, 
+                                    "element_id": 1931000104000003, 
                                     "enable": true
                                 }, 
                                 {
@@ -750,7 +578,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1931000105000004, 
+                                    "element_id": 1931000104000004, 
                                     "enable": true
                                 }, 
                                 {
@@ -763,7 +591,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1931000105000005, 
+                                    "element_id": 1931000104000005, 
                                     "enable": true
                                 }
                             ], 
@@ -776,7 +604,7 @@
                         }
                     ], 
                     "bp": false, 
-                    "element_id": 1931000105000006, 
+                    "element_id": 1931000104000006, 
                     "enable": true, 
                     "fake_op": [
                         2
@@ -797,16 +625,16 @@
                             "sub_type": 1
                         }
                     ], 
-                    "element_id": 1931000105000001, 
+                    "element_id": 1931000104000001, 
                     "enable": true, 
                     "event_type": "RECEIVE_CUSTOM_EVENT"
                 }
             ], 
             "group_id": 0, 
             "is_conf": true, 
-            "p_trigger_id": 1931000005, 
-            "trigger_id": 1931000105, 
-            "trigger_name": "大厅服务 - 跨房合流完成回调", 
+            "p_trigger_id": 1931000004, 
+            "trigger_id": 1931000104, 
+            "trigger_name": "大厅服务 - 局内私人副本完成回调", 
             "valid": true, 
             "var_data": [
                 {}, 
@@ -815,32 +643,23 @@
             ]
         }
     }, 
-    "trigger_id": 1931000005, 
-    "trigger_name": "大厅服务 - 跨房合流测试", 
+    "trigger_id": 1931000004, 
+    "trigger_name": "大厅服务 - 局内私人副本测试", 
     "valid": true, 
     "var_data": [
         {
             "TABLE": {
-                "跨房合流参数": null, 
-                "跨房合流玩家1": null, 
-                "跨房合流玩家2": null, 
-                "跨房合流玩家列表": null, 
-                "跨房合流立即结果": null
+                "副本参数": null, 
+                "局内私人副本立即结果": null
             }
         }, 
         {
-            "跨房合流参数": 0, 
-            "跨房合流玩家1": 0, 
-            "跨房合流玩家2": 0, 
-            "跨房合流玩家列表": 0, 
-            "跨房合流立即结果": 0
+            "副本参数": 0, 
+            "局内私人副本立即结果": 0
         }, 
         [
-            "跨房合流参数", 
-            "跨房合流玩家列表", 
-            "跨房合流玩家1", 
-            "跨房合流玩家2", 
-            "跨房合流立即结果"
+            "副本参数", 
+            "局内私人副本立即结果"
         ]
     ]
 }

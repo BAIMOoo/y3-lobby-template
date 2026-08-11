@@ -23,7 +23,7 @@
                         {
                             "arg_type": 100003, 
                             "args_list": [
-                                "Bind['大厅服务 - 跨房合流'](args[1])"
+                                "Bind['大厅服务 - 局内私人副本'](args[1])"
                             ], 
                             "sub_type": 1
                         }
@@ -36,7 +36,7 @@
                                     "__tuple__": true, 
                                     "items": [
                                         "TABLE", 
-                                        "合流参数", 
+                                        "副本参数", 
                                         "local"
                                     ]
                                 }
@@ -59,7 +59,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 123392893000002, 
+            "element_id": 1891242560000002, 
             "enable": true
         }, 
         {
@@ -81,7 +81,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 123392893000003, 
+            "element_id": 1891242560000003, 
             "enable": true
         }
     ], 
@@ -91,14 +91,14 @@
     "event": [], 
     "func_category": "t_function", 
     "func_comment": "", 
-    "func_des": "让不同房间内的玩家一起切换到指定关卡；参数表{合流参数}必须包含 game_map_id、level_id、game_mode、players", 
-    "func_id": "bee3695399f4531dafa069092b573eca", 
-    "func_name": "大厅服务 - 跨房合流", 
+    "func_des": "按统一参数表{副本参数}发起局内私人副本请求；参数表使用 action=private_dungeon，可包含 level_id、game_mode、max_player、game_map_id、custom_param", 
+    "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1", 
+    "func_name": "大厅服务 - 局内私人副本", 
     "func_param_list": [
         {
             "__tuple__": true, 
             "items": [
-                "合流参数", 
+                "副本参数", 
                 true
             ]
         }
@@ -117,23 +117,23 @@
     "is_func": true, 
     "is_official_func": false, 
     "p_trigger_id": null, 
-    "trigger_id": 123392893, 
-    "trigger_name": "大厅服务 - 跨房合流", 
+    "trigger_id": 1891242560, 
+    "trigger_name": "大厅服务 - 局内私人副本", 
     "valid": true, 
     "var_data": [
         {
             "NEW_TIMER": {}, 
             "TABLE": {
                 "t": null, 
-                "合流参数": null
+                "副本参数": null
             }
         }, 
         {
             "t": 0, 
-            "合流参数": 0
+            "副本参数": 0
         }, 
         [
-            "合流参数", 
+            "副本参数", 
             "t"
         ]
     ]

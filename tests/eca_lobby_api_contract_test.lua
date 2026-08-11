@@ -3,6 +3,7 @@ local configured_root = os.getenv('Y3_LUALIB_ROOT')
 if configured_root and configured_root ~= '' then
     candidate_roots[#candidate_roots + 1] = configured_root
 end
+candidate_roots[#candidate_roots + 1] = 'maps/EntryMap/script/y3'
 candidate_roots[#candidate_roots + 1] = '.omx/worktrees/y3-lualib-lobby'
 
 local root
@@ -36,8 +37,7 @@ local expected_eca_names = {
     '大厅服务 - 发送队伍聊天',
     '大厅服务 - 发送世界聊天',
     '大厅服务 - 获取聊天记录',
-    '大厅服务 - 同房分流',
-    '大厅服务 - 跨房合流',
+    '大厅服务 - 局内私人副本',
     '大厅服务 - 加入口令',
     '大厅服务 - 获取口令',
     '大厅服务 - 返回大厅',
@@ -69,8 +69,7 @@ local expected_lua_functions = {
     'send_world_chat',
     'get_chat_history',
     'get_chat_message',
-    'same_room_split',
-    'cross_room_merge',
+    'private_dungeon',
     'join_by_token',
     'get_token',
     'return_lobby',
@@ -151,7 +150,7 @@ assert_true(file_exists(root .. '/game/lobby/result.lua'), 'official lobby resul
 assert_true(file_exists(root .. '/game/lobby/state.lua'), 'official lobby state module must exist')
 assert_true(file_exists(root .. '/game/lobby/client.lua'), 'official lobby client module must exist')
 assert_true(file_exists(root .. '/game/lobby/proto/service.pb'), 'official lobby service.pb must exist')
-assert_true(file_exists(root .. '/game/lobby/proto/service_pb.lua'), 'official embedded service protocol module must exist')
+HAS_EMBEDDED_SERVICE_PROTOCOL = file_exists(root .. '/game/lobby/proto/service_pb.lua')
 
 local root_init_source = read_file(root .. '/init.lua')
 local eca_init_pos = root_init_source:find('eca', 1, true) or 0
@@ -181,6 +180,9 @@ pb = {
 GameAPI = {
     get_current_game_mode = function()
         return 1001
+    end,
+    get_dungeon_info = function()
+        return {}
     end,
 }
 
@@ -305,8 +307,7 @@ local expected_eca_params = {
     ['发送世界聊天'] = { { '消息', 'string' } },
     ['获取聊天记录'] = { { '频道', 'string?' } },
     ['获取聊天消息'] = { { '序号', 'integer' }, { '频道', 'string?' } },
-    ['同房分流'] = { { '分流参数', 'table' } },
-    ['跨房合流'] = { { '合流参数', 'table' } },
+    ['局内私人副本'] = { { '副本参数', 'table' } },
     ['加入口令'] = { { '口令', 'string' } },
     ['获取口令'] = {},
     ['返回大厅'] = { { '大厅参数', 'table' } },
@@ -326,10 +327,14 @@ assert_true(registered['大厅服务 - 创建私人副本'] == nil, 'old private
 assert_true(registered['大厅服务 - 启动多人私人副本'] == nil, 'old private dungeon name must not be official')
 assert_true(registered['大厅服务 - 加入口令副本'] == nil, 'old private dungeon name must not be official')
 assert_true(registered['大厅服务 - 获取副本口令'] == nil, 'old private dungeon name must not be official')
+assert_true(registered['大厅服务 - 同房分流'] == nil, 'old same_room_split ECA name must not be official')
+assert_true(registered['大厅服务 - 跨房合流'] == nil, 'old cross_room_merge ECA name must not be official')
 
 for _, function_name in ipairs(expected_lua_functions) do
     assert_equal(type(y3.lobby[function_name]), 'function', 'missing y3.lobby.' .. function_name)
 end
+assert_equal(y3.lobby.same_room_split, nil, 'old y3.lobby.same_room_split must not be public API')
+assert_equal(y3.lobby.cross_room_merge, nil, 'old y3.lobby.cross_room_merge must not be public API')
 
 assert_equal(client_factory_calls, 0, 'lobby module registration must not create BOB client')
 assert_equal(pb_load_calls, 0, 'lobby module registration must not call pb.load')
@@ -447,9 +452,11 @@ assert_true(lobby_source:find('event_missing', 1, true), 'event_missing must be 
 assert_true(lobby_source:find('failed_events', 1, true), 'failed_events must be represented')
 
 local proto_source = read_file(root .. '/game/lobby/proto/proto_helper.lua')
-assert_true(proto_source:find('custom/protocol/protocol.pb', 1, true), 'project protocol.pb must be loaded only by connect-time protocol helper')
-assert_true(proto_source:find('y3.game.lobby.proto.service_pb', 1, true), 'service protocol must be loaded from a publishable Lua module')
-assert_true(not proto_source:find('service.pb', 1, true), 'runtime protocol helper must not read unpackaged service.pb')
+if HAS_EMBEDDED_SERVICE_PROTOCOL then
+    assert_true(proto_source:find('custom/protocol/protocol.pb', 1, true), 'project protocol.pb must be loaded only by connect-time protocol helper')
+    assert_true(proto_source:find('y3.game.lobby.proto.service_pb', 1, true), 'service protocol must be loaded from a publishable Lua module')
+    assert_true(not proto_source:find('service.pb', 1, true), 'runtime protocol helper must not read unpackaged service.pb')
+end
 
 local official_lobby_source = ''
 for _, path in ipairs({
@@ -499,6 +506,17 @@ end
 
 local client_api = require 'y3.game.lobby.client'
 local state_api = require 'y3.game.lobby.state'
+do
+    local in_game_player = state_api.public_player({ aid = 99001, in_game = true })
+    assert_equal(in_game_player.in_game, true, 'public_player preserves in_game=true')
+    assert_equal(in_game_player.in_game_known, true, 'public_player marks true as known')
+    local idle_player = state_api.public_player({ aid = 99002, in_game = false })
+    assert_equal(idle_player.in_game, false, 'public_player preserves in_game=false')
+    assert_equal(idle_player.in_game_known, true, 'public_player marks false as known')
+    local unknown_player = state_api.public_player({ aid = 99003 })
+    assert_equal(unknown_player.in_game, nil, 'public_player preserves unknown in_game as nil')
+    assert_equal(unknown_player.in_game_known, false, 'public_player marks missing in_game as unknown')
+end
 local completion_payloads = {}
 local emitted_events = {}
 local timeout_callbacks = {}
@@ -697,7 +715,7 @@ local function new_fake_client()
         return true
     end
 
-    function fake:start_privat_dungeon_game(dungeon_info, players, callback)
+    function fake:start_private_dungeon_game_filtered(dungeon_info, players, callback)
         self.cross_room_payloads[#self.cross_room_payloads + 1] = {
             dungeon_info = dungeon_info,
             players = players,
@@ -899,7 +917,8 @@ do
     in_game_connect = y3.lobby.connect(TEST_GAME_PLAY_ID, true, 'pre')
     assert_equal(in_game_connect.accepted, true, 'connect with in_game true should be accepted')
     assert_equal(in_game_factory_value, true, 'connect forwards in_game boolean to client factory')
-    assert_equal(endpoint_env_factory_value, 'pre', 'connect forwards endpoint environment to client factory')
+    local lobby_supports_endpoint_env = lobby_source:find('endpoint_env', 1, true) ~= nil
+    assert_equal(endpoint_env_factory_value, lobby_supports_endpoint_env and 'pre' or nil, 'connect preserves the selected library endpoint contract')
     reset_lobby_with_factory(function(_, in_game)
         in_game_factory_value = in_game
         factory_calls = factory_calls + 1
@@ -959,8 +978,7 @@ local sync_reject_cases = {
     { name = 'start_match invalid argument', call = function() return y3.lobby.start_match({ game_mode = 1 }) end, code = 'invalid_argument' },
     { name = 'send_team_chat invalid argument', call = function() return y3.lobby.send_team_chat('  ') end, code = 'invalid_argument' },
     { name = 'send_world_chat invalid argument', call = function() return y3.lobby.send_world_chat('  ') end, code = 'invalid_argument' },
-    { name = 'same_room_split invalid argument', call = function() return y3.lobby.same_room_split({ level_id = 'x' }) end, code = 'invalid_argument' },
-    { name = 'cross_room_merge invalid argument', call = function() return y3.lobby.cross_room_merge({ game_map_id = 'm', level_id = 'l', game_mode = 1 }) end, code = 'invalid_argument' },
+    { name = 'private_dungeon invalid argument', call = function() return y3.lobby.private_dungeon({ level_id = 'x' }) end, code = 'invalid_argument' },
     { name = 'join_by_token invalid argument', call = function() return y3.lobby.join_by_token(' ') end, code = 'invalid_argument' },
     { name = 'return_lobby invalid argument', call = function() return y3.lobby.return_lobby({ level_id = 'l' }) end, code = 'invalid_argument' },
 }
@@ -1083,10 +1101,13 @@ latest_client.matching = false
 latest_client:emit('匹配状态变化')
 assert_equal(completion_payloads[#completion_payloads].request_id, cancel_match_result.request_id, 'cancel_match completion request_id')
 
-latest_client.team_info = {
-    team_id = 346,
-    captain = latest_client.aid,
-    members = { { aid = latest_client.aid } },
+    latest_client.team_info = {
+        team_id = 346,
+        captain = latest_client.aid,
+        members = {
+            { aid = latest_client.aid, in_game = false },
+            { aid = 12, in_game = false },
+        },
 }
 local team_chat_result = y3.lobby.send_team_chat(' team hi ')
 assert_equal(team_chat_result.accepted, true, 'send_team_chat should be accepted')
@@ -1094,15 +1115,15 @@ assert_equal(latest_client.last_team_message, 'team hi', 'send_team_chat trims a
 latest_client.send_chat_callback(nil, nil)
 assert_equal(completion_payloads[#completion_payloads].request_id, team_chat_result.request_id, 'send_team_chat completion request_id')
 
-local merge_result = y3.lobby.cross_room_merge({
+local merge_result = y3.lobby.private_dungeon({
     game_map_id = 'map-alpha',
     level_id = 'level-beta',
     game_mode = 7003,
-    players = { { aid = 11 }, { aid = 12 } },
+    max_player = 2,
 })
-assert_equal(merge_result.accepted, true, 'cross_room_merge should accept required payload')
-assert_equal(latest_client.cross_room_payloads[1].players[1].version, '2.0', 'cross_room_merge injects internal player version')
-assert_equal(latest_client.cross_room_payloads[1].players[2].version, '2.0', 'cross_room_merge injects internal player version for each player')
+assert_equal(merge_result.accepted, true, 'private_dungeon should accept required team payload')
+assert_equal(latest_client.cross_room_payloads[1].players[1].version, '2.0', 'private_dungeon injects internal player version')
+assert_equal(latest_client.cross_room_payloads[1].players[2].version, '2.0', 'private_dungeon injects internal player version for each player')
 latest_client.cross_room_callback(nil, nil)
 latest_client.launching = true
 latest_client:emit('启动状态变化')
@@ -1272,24 +1293,30 @@ assert_sync_invalid_without_platform(function()
     return y3.lobby.return_lobby({ level_id = 'invalid-max-player', game_mode = 9403, max_player = 0 })
 end, 'return_lobby non-positive max_player')
 assert_sync_invalid_without_platform(function()
-    return y3.lobby.same_room_split({ level_id = 'split-invalid-players', game_mode = 9404, max_player = 2, players = 'bad' })
-end, 'same_room_split players non-table')
+    return y3.lobby.private_dungeon({ level_id = 'split-invalid-players', game_mode = 9404, max_player = 2, players = 'bad' })
+end, 'private_dungeon players non-table')
 assert_sync_invalid_without_platform(function()
-    return y3.lobby.same_room_split({ level_id = 'split-invalid-player-entry', game_mode = 9404, max_player = 2, players = { 10086 } })
-end, 'same_room_split player entry non-table')
+    return y3.lobby.private_dungeon({ level_id = 'split-invalid-player-entry', game_mode = 9404, max_player = 2, players = { 10086 } })
+end, 'private_dungeon player entry non-table')
 assert_sync_invalid_without_platform(function()
-    return y3.lobby.same_room_split({ level_id = 'split-invalid-aid', game_mode = 9404, max_player = 2, players = { { aid = 10086.5 } } })
-end, 'same_room_split player aid non-integer')
-split_all_before_requests = #private_dungeon_requests
-split_all_players = y3.lobby.same_room_split({
-    level_id = 'split-all-players',
+    return y3.lobby.private_dungeon({ level_id = 'split-invalid-aid', game_mode = 9404, max_player = 2, players = { { aid = 10086.5 } } })
+end, 'private_dungeon player aid non-integer')
+local solo_before_requests = #private_dungeon_requests
+local solo_private = y3.lobby.private_dungeon({
+    level_id = 'solo-private',
     game_mode = 9404,
     max_player = 2,
-    players = {},
 })
-assert_equal(split_all_players.accepted, true, 'same_room_split empty players means no filtering')
-assert_equal(#private_dungeon_requests, split_all_before_requests + 1, 'same_room_split empty players calls platform')
-assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'split-all-players', 'same_room_split empty players forwards level_id')
+assert_equal(solo_private.accepted, true, 'private_dungeon solo accepts without team')
+assert_equal(#private_dungeon_requests, solo_before_requests + 1, 'private_dungeon solo calls platform')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'solo-private', 'private_dungeon solo forwards level_id')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].argc, 3, 'private_dungeon solo without custom_param uses three arguments')
+assert_equal(solo_private.request_id, '', 'private_dungeon solo has no awaitable request id')
+assert_equal(solo_private.result_data.route, 'solo_engine', 'private_dungeon solo route')
+assert_equal(solo_private.result_data.completion_mode, 'request_only', 'private_dungeon solo completion mode')
+assert_equal(solo_private.result_data.platform_requested, true, 'private_dungeon solo reports platform request')
+assert_equal(solo_private.result_data.entered_target, 'unknown', 'private_dungeon solo does not claim target entry synchronously')
+assert_equal(y3.lobby.get_state().result_data.pending_count, 0, 'private_dungeon solo leaves no pending request')
 
 reset_lobby_with_factory(function()
     factory_calls = factory_calls + 1
@@ -1621,35 +1648,122 @@ do
     assert_equal(completion_payloads[#completion_payloads].result_data.player.score, 1234, 'refresh_player_info completion data')
 end
 
-local requests_before_split_included = #private_dungeon_requests
-local split_included = y3.lobby.same_room_split({
-    level_id = 'level-included',
+latest_client.team_info = {
+    team_id = 778899,
+    captain = latest_client.aid,
+    members = {
+        { aid = latest_client.aid, in_game = false },
+        { aid = 99002, in_game = true },
+        { aid = 99003 },
+    },
+}
+local can_match_calls = 0
+latest_client.can_match = function()
+    can_match_calls = can_match_calls + 1
+    error('private_dungeon must not ask whole-team can_match after filtering')
+end
+local bob_payloads_before = #latest_client.cross_room_payloads
+local private_requests_before_team = #private_dungeon_requests
+local private_team = y3.lobby.private_dungeon({
+    game_map_id = 'map-team',
+    level_id = 'level-team',
     game_mode = 801,
     max_player = 2,
-    players = { { aid = latest_client.aid }, { aid = 99002 } },
 })
-assert_equal(split_included.accepted, true, 'same_room_split should accept when current BOB aid is selected')
-assert_equal(#private_dungeon_requests, requests_before_split_included + 1, 'same_room_split should call platform request when current BOB aid is selected')
-assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'level-included', 'same_room_split forwards selected level_id')
-assert_equal(split_included.result_data.platform_requested, true, 'same_room_split reports platform request sent')
-assert_equal(split_included.result_data.entered_target, 'unknown', 'same_room_split does not claim target entry synchronously')
-assert_equal(split_included.result_data.confirm_by, 'platform_request_sent', 'same_room_split confirmation source')
-assert_equal(split_included.result_data.transition_pending, true, 'same_room_split reports pending cross-map transition')
-frame_callbacks[#frame_callbacks]()
-assert_equal(completion_payloads[#completion_payloads].request_id, split_included.request_id, 'same_room_split completion request_id')
-do
-    local requests_before_split_repeat = #private_dungeon_requests
-    local split_repeat = y3.lobby.same_room_split({
-        level_id = 'level-repeat',
-        game_mode = 801,
-        max_player = 2,
-        players = { { aid = latest_client.aid } },
-    })
-    assert_equal(split_repeat.accepted, false, 'same_room_split should reject while previous cross-map transition is pending')
-    assert_equal(split_repeat.code, 'cross_map_pending', 'same_room_split duplicate transition code')
-    assert_equal(#private_dungeon_requests, requests_before_split_repeat, 'same_room_split duplicate must not call platform again')
-    state_api.runtime.locks.cross_map_transition = nil
+assert_equal(private_team.accepted, true, 'private_dungeon captain accepts filtered team')
+assert_equal(#latest_client.cross_room_payloads, bob_payloads_before + 1, 'private_dungeon captain sends one BOB request')
+assert_equal(#private_dungeon_requests, private_requests_before_team, 'private_dungeon team path must not call solo engine request')
+assert_equal(#latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players, 1, 'private_dungeon filters to eligible players')
+assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players[1].aid, latest_client.aid, 'private_dungeon keeps explicit false in_game player')
+assert_equal(private_team.result_data.route, 'team_bob', 'private_dungeon team route')
+assert_equal(private_team.result_data.completion_mode, 'async_event', 'private_dungeon team completion mode')
+assert_equal(#private_team.result_data.selected_players, 1, 'private_dungeon selected count')
+assert_equal(private_team.result_data.skipped_in_game_players[1].aid, 99002, 'private_dungeon records skipped in-game member')
+assert_equal(private_team.result_data.unknown_status_players[1].aid, 99003, 'private_dungeon records unknown member')
+assert_equal(can_match_calls, 0, 'private_dungeon filtered BOB path does not run whole-team can_match')
+latest_client.cross_room_callback(nil, nil)
+split_completion_count = #completion_payloads
+
+latest_client.team_info.members = {
+    { aid = latest_client.aid, in_game = true },
+    { aid = 99003 },
+}
+local no_eligible_bob_before = #latest_client.cross_room_payloads
+local no_eligible_private_before = #private_dungeon_requests
+local no_eligible = y3.lobby.private_dungeon({
+    game_map_id = 'map-no-eligible',
+    level_id = 'level-no-eligible',
+    game_mode = 801,
+    max_player = 2,
+})
+assert_equal(no_eligible.accepted, false, 'private_dungeon rejects when no eligible players remain')
+assert_equal(no_eligible.code, 'no_eligible_players', 'private_dungeon no eligible code')
+assert_equal(no_eligible.result_data.route, 'rejected', 'private_dungeon no eligible route')
+assert_equal(no_eligible.result_data.completion_mode, 'sync_rejected', 'private_dungeon no eligible completion mode')
+assert_equal(no_eligible.result_data.platform_requested, false, 'private_dungeon no eligible no platform request')
+assert_equal(no_eligible.result_data.entered_target, 'not_entered', 'private_dungeon no eligible does not enter target')
+assert_equal(#latest_client.cross_room_payloads, no_eligible_bob_before, 'private_dungeon no eligible sends no BOB request')
+assert_equal(#private_dungeon_requests, no_eligible_private_before, 'private_dungeon no eligible sends no solo request')
+
+latest_client.team_info = {
+    team_id = 778899,
+    captain = 99002,
+    members = {
+        { aid = latest_client.aid, in_game = false },
+        { aid = 99002, in_game = false },
+    },
+}
+local member_bob_before = #latest_client.cross_room_payloads
+local member_private_before = #private_dungeon_requests
+local member_result = y3.lobby.private_dungeon({
+    game_map_id = 'map-member',
+    level_id = 'level-member',
+    game_mode = 801,
+    max_player = 2,
+})
+assert_equal(member_result.accepted, false, 'private_dungeon ordinary member cannot launch team private dungeon')
+assert_equal(member_result.code, 'not_captain', 'private_dungeon ordinary member code')
+assert_equal(#latest_client.cross_room_payloads, member_bob_before, 'private_dungeon ordinary member sends no BOB request')
+assert_equal(#private_dungeon_requests, member_private_before, 'private_dungeon ordinary member sends no solo request')
+
+latest_client.team_info = {
+    team_id = 778899,
+    captain = latest_client.aid,
+    members = {
+        { aid = latest_client.aid, in_game = false },
+        { aid = 99002, in_game = false },
+    },
+}
+local original_start_private = latest_client.start_private_dungeon_game_filtered
+latest_client.start_private_dungeon_game_filtered = function()
+    return false
 end
+local rejected_bob_private_before = #private_dungeon_requests
+local bob_rejected = y3.lobby.private_dungeon({
+    game_map_id = 'map-bob-rejected',
+    level_id = 'level-bob-rejected',
+    game_mode = 801,
+    max_player = 2,
+})
+assert_equal(bob_rejected.accepted, false, 'private_dungeon BOB rejection must reject')
+assert_equal(bob_rejected.result_data.platform_requested, false, 'private_dungeon BOB rejection does not request solo platform')
+assert_equal(bob_rejected.result_data.entered_target, 'not_entered', 'private_dungeon BOB rejection leaves everyone in place')
+assert_equal(#private_dungeon_requests, rejected_bob_private_before, 'private_dungeon BOB rejection does not downgrade to solo')
+latest_client.start_private_dungeon_game_filtered = function()
+    error('BOB private dungeon exception')
+end
+local exception_bob_private_before = #private_dungeon_requests
+local bob_exception = y3.lobby.private_dungeon({
+    game_map_id = 'map-bob-exception',
+    level_id = 'level-bob-exception',
+    game_mode = 801,
+    max_player = 2,
+})
+assert_equal(bob_exception.accepted, false, 'private_dungeon BOB exception must reject')
+assert_equal(bob_exception.result_data.platform_requested, false, 'private_dungeon BOB exception does not request solo platform')
+assert_equal(bob_exception.result_data.entered_target, 'not_entered', 'private_dungeon BOB exception leaves everyone in place')
+assert_equal(#private_dungeon_requests, exception_bob_private_before, 'private_dungeon BOB exception does not downgrade to solo')
+latest_client.start_private_dungeon_game_filtered = original_start_private
 
 do
 local previous_player_api = y3.player
@@ -1690,24 +1804,24 @@ y3.player = {
         })
     end,
 }
+latest_client.team_info = nil
 
-local split_python_error = y3.lobby.same_room_split({
+local split_python_error = y3.lobby.private_dungeon({
     level_id = 'python-error-level',
     game_mode = 803,
     max_player = 2,
-    players = {},
 })
 assert_result_shape(split_python_error, split_python_error.action)
-assert_equal(split_python_error.accepted, false, 'same_room_split Python exception should reject')
-assert_equal(split_python_error.sync, true, 'same_room_split Python exception should reject synchronously')
-assert_equal(split_python_error.code, 'request_error', 'same_room_split Python exception code')
-assert_equal(split_python_error.reason, 'error during Python call: KeyError: 1', 'same_room_split keeps concise Python error')
-assert_equal(state_api.runtime.locks.cross_map_transition, nil, 'same_room_split platform exception must not leave transition lock')
+assert_equal(split_python_error.accepted, false, 'private_dungeon Python exception should reject')
+assert_equal(split_python_error.sync, true, 'private_dungeon Python exception should reject synchronously')
+assert_equal(split_python_error.code, 'request_error', 'private_dungeon Python exception code')
+assert_equal(split_python_error.reason, 'error during Python call: KeyError: 1', 'private_dungeon keeps concise Python error')
+assert_equal(state_api.runtime.locks.cross_map_transition, nil, 'private_dungeon platform exception must not leave transition lock')
 assert_true(not split_python_error.reason:find('PYTHON_STACK_SENTINEL', 1, true), 'Python traceback must not enter public reason')
-assert_equal(python_traceback_reads, 1, 'same_room_split exception should capture Python traceback while active')
-assert_equal(#exception_logs, 1, 'same_room_split exception should emit one error log')
-assert_true(exception_logs[1]:find('PYTHON_STACK_SENTINEL', 1, true) ~= nil, 'same_room_split error log should contain Python traceback')
-assert_true(exception_logs[1]:find('action=同房分流', 1, true) ~= nil, 'same_room_split error log should identify action')
+assert_equal(python_traceback_reads, 1, 'private_dungeon exception should capture Python traceback while active')
+assert_equal(#exception_logs, 1, 'private_dungeon exception should emit one error log')
+assert_true(exception_logs[1]:find('PYTHON_STACK_SENTINEL', 1, true) ~= nil, 'private_dungeon error log should contain Python traceback')
+assert_true(exception_logs[1]:find('action=局内私人副本', 1, true) ~= nil, 'private_dungeon error log should identify action')
 
 local secret_token = 'secret-token-must-not-be-logged'
 local token_python_error = y3.lobby.join_by_token(secret_token)
@@ -1760,12 +1874,12 @@ end
 local join_token_result = y3.lobby.join_by_token(' token-123 ')
 assert_equal(join_token_result.accepted, true, 'join_by_token should be accepted')
 assert_equal(join_private_dungeon_requests[#join_private_dungeon_requests], 'token-123', 'join_by_token trims and forwards token')
-assert_equal(completion_payloads[#completion_payloads].request_id ~= join_token_result.request_id, true, 'join_by_token must not complete before deferred frame')
-frame_callbacks[#frame_callbacks]()
-assert_equal(completion_payloads[#completion_payloads].request_id, join_token_result.request_id, 'join_by_token completion request_id')
+assert_equal(join_token_result.request_id, '', 'join_by_token has no awaitable request id')
+assert_equal(join_token_result.result_data.cross_map_tracking, 'degraded', 'join_by_token reports degraded cross-map tracking')
+assert_equal(#completion_payloads, split_completion_count, 'join_by_token must not publish completion')
 
-local before_return_lobby_completions = #completion_payloads
-local before_return_lobby_requests = #private_dungeon_requests
+before_return_lobby_completions = #completion_payloads
+before_return_lobby_requests = #private_dungeon_requests
 local return_lobby_client = latest_client
 local return_lobby_cleanup_calls = latest_client.cleanup_before_exit_calls or 0
 latest_client.team_info = {
@@ -1792,17 +1906,28 @@ assert_equal(return_lobby_result.result_data.cross_map_tracking, 'degraded', 're
 assert_equal(#completion_payloads, before_return_lobby_completions, 'return_lobby must not publish completion')
 
 connect_ready_with_cleanup({})
-local requests_before_split_excluded = #private_dungeon_requests
-local split_excluded = y3.lobby.same_room_split({
+latest_client.team_info = {
+    team_id = 778899,
+    captain = latest_client.aid,
+    members = {
+        { aid = latest_client.aid, in_game = false },
+        { aid = 99003, in_game = false },
+    },
+}
+local requests_before_explicit_players = #private_dungeon_requests
+local bob_before_explicit_players = #latest_client.cross_room_payloads
+local explicit_players = y3.lobby.private_dungeon({
+    game_map_id = 'map-excluded',
     level_id = 'level-excluded',
     game_mode = 802,
     max_player = 2,
     players = { { aid = 99003 }, { aid = 99004 } },
 })
-assert_equal(split_excluded.accepted, false, 'same_room_split should synchronously reject when current BOB aid is not selected')
-assert_equal(split_excluded.sync, true, 'same_room_split non-selected result should be synchronous')
-assert_equal(split_excluded.code, 'player_not_selected', 'same_room_split non-selected rejection code')
-assert_equal(#private_dungeon_requests, requests_before_split_excluded, 'same_room_split must not call platform request when current BOB aid is not selected')
+assert_equal(explicit_players.accepted, false, 'private_dungeon rejects externally supplied players')
+assert_equal(explicit_players.sync, true, 'private_dungeon explicit players rejection is synchronous')
+assert_equal(explicit_players.code, 'invalid_argument', 'private_dungeon explicit players rejection code')
+assert_equal(#latest_client.cross_room_payloads, bob_before_explicit_players, 'private_dungeon explicit players sends no BOB request')
+assert_equal(#private_dungeon_requests, requests_before_explicit_players, 'private_dungeon explicit players sends no platform request')
 
 remote_error_request = y3.lobby.create_team(4)
 assert_equal(remote_error_request.accepted, true, 'remote error scenario should send request')
@@ -1998,6 +2123,37 @@ assert_equal(event_missing_result.accepted, false, 'ECA business call must rejec
 assert_equal(event_missing_result.code, 'event_missing', 'ECA business call missing event code')
 assert_equal(latest_client.create_team_calls, calls_before_missing_event, 'event_missing must not send underlying request')
 
+do
+    local eca_private_definition = eca_by_action['局内私人副本']
+    latest_client.team_info = nil
+    local requests_before_solo_without_event = #private_dungeon_requests
+    local solo_without_event = registered[eca_private_definition[1]].callback({
+        level_id = 'eca-solo-without-event',
+        game_mode = 901,
+        max_player = 2,
+    })
+    assert_equal(solo_without_event.accepted, true, 'ECA private_dungeon solo may run without completion event')
+    assert_equal(#private_dungeon_requests, requests_before_solo_without_event + 1, 'ECA private_dungeon solo without event sends platform request')
+    assert_equal(solo_without_event.request_id, '', 'ECA private_dungeon solo without event has no awaitable request id')
+    assert_equal(solo_without_event.result_data.route, 'solo_engine', 'ECA private_dungeon solo route')
+
+    latest_client.team_info = {
+        team_id = 23456,
+        captain = latest_client.aid,
+        members = { { aid = latest_client.aid, in_game = false }, { aid = 99005, in_game = false } },
+    }
+    local bob_requests_before_missing_event = #latest_client.cross_room_payloads
+    local team_without_event = registered[eca_private_definition[1]].callback({
+        game_map_id = 'eca-team-without-event',
+        level_id = 'eca-team-without-event',
+        game_mode = 901,
+        max_player = 2,
+    })
+    assert_equal(team_without_event.accepted, false, 'ECA private_dungeon team requires completion event before request')
+    assert_equal(team_without_event.code, 'event_missing', 'ECA private_dungeon team missing event code')
+    assert_equal(#latest_client.cross_room_payloads, bob_requests_before_missing_event, 'ECA private_dungeon team event_missing sends no BOB request')
+end
+
 y3.eca._call_impls = { ['大厅服务请求完成'] = true }
 y3.eca.call = function(event_name, payload)
     emitted_events[#emitted_events + 1] = { event_name = event_name, payload = payload }
@@ -2018,21 +2174,23 @@ assert_equal(emitted_events[1].payload.request_id, eca_create_result.request_id,
 
 emitted_events = {}
 frame_callbacks = {}
-local eca_split_definition = eca_by_action['同房分流']
-local eca_split_result = registered[eca_split_definition[1]].callback({
-    level_id = 'eca-split-level',
+do
+local eca_private_definition = eca_by_action['局内私人副本']
+latest_client.team_info = {
+    team_id = 23456,
+    captain = latest_client.aid,
+    members = { { aid = latest_client.aid, in_game = false }, { aid = 99005, in_game = false } },
+}
+local eca_private_result = registered[eca_private_definition[1]].callback({
+    game_map_id = 'eca-team-level',
+    level_id = 'eca-team-level',
     game_mode = 901,
     max_player = 2,
-    players = { { aid = latest_client.aid }, { aid = 99005 } },
 })
-assert_equal(eca_split_result.accepted, true, 'ECA same_room_split should be accepted when current BOB aid is selected')
-assert_equal(#emitted_events, 0, 'ECA same_room_split synchronous completion must not re-enter before Bind result is assigned')
-assert_equal(#frame_callbacks, 1, 'ECA same_room_split synchronous completion should delay completion event to next frame')
-frame_callbacks[1]()
-assert_equal(#emitted_events, 1, 'ECA same_room_split delayed synchronous completion should emit exactly one completion event')
-assert_equal(emitted_events[1].payload.request_id, eca_split_result.request_id, 'ECA same_room_split completion request_id should match accepted result')
-assert_equal(emitted_events[1].payload.success, true, 'ECA same_room_split completion should be successful')
-state_api.runtime.locks.cross_map_transition = nil
+assert_equal(eca_private_result.accepted, true, 'ECA private_dungeon team should be accepted when event exists')
+assert_true(eca_private_result.request_id ~= '', 'ECA private_dungeon team has awaitable request id')
+assert_equal(#emitted_events, 0, 'ECA private_dungeon team must not immediately emit a completion event')
+assert_equal(state_api.runtime.eca_request_ids[eca_private_result.request_id], true, 'ECA private_dungeon team registers a pending request')
 
 emitted_events = {}
 frame_callbacks = {}
@@ -2040,19 +2198,19 @@ state_api.runtime.failed_events = {}
 y3.eca.call = function()
     error('eca completion send failed')
 end
-local eca_emit_failure_result = registered[eca_split_definition[1]].callback({
-    level_id = 'eca-failed-event-level',
+latest_client.cross_room_callback(nil, nil)
+assert_equal(table_size(state_api.runtime.failed_events), 1, 'ECA private_dungeon team records completion send failure')
+
+latest_client.team_info = nil
+local eca_emit_failure_result = registered[eca_private_definition[1]].callback({
+    level_id = 'eca-solo-failed-event-level',
     game_mode = 902,
     max_player = 2,
-    players = { { aid = latest_client.aid } },
 })
-assert_equal(eca_emit_failure_result.accepted, true, 'ECA same_room_split should accept before completion event send failure')
-assert_equal(table_size(state_api.runtime.failed_events), 0, 'failed_events must not be written before async completion is sent')
-frame_callbacks[1]()
-local failed_event = state_api.runtime.failed_events[eca_emit_failure_result.request_id]
-assert_equal(type(failed_event), 'table', 'ECA completion event send failure should be recorded')
-assert_equal(failed_event.payload.request_id, eca_emit_failure_result.request_id, 'failed_events payload request_id')
-assert_true(tostring(failed_event.error) ~= '', 'failed_events stores send error')
+assert_equal(eca_emit_failure_result.accepted, true, 'ECA private_dungeon solo should accept despite completion event send failure setup')
+assert_equal(eca_emit_failure_result.request_id, '', 'ECA private_dungeon solo event failure case has no request id')
+assert_equal(#frame_callbacks, 0, 'ECA private_dungeon solo never schedules completion sending')
+end
 
 reset_lobby_with_factory(function()
     factory_calls = factory_calls + 1

@@ -27,8 +27,7 @@ EXPECTED_ECA_NAMES = [
     "大厅服务 - 发送队伍聊天",
     "大厅服务 - 发送世界聊天",
     "大厅服务 - 获取聊天记录",
-    "大厅服务 - 同房分流",
-    "大厅服务 - 跨房合流",
+    "大厅服务 - 局内私人副本",
     "大厅服务 - 加入口令",
     "大厅服务 - 获取口令",
     "大厅服务 - 返回大厅",
@@ -42,13 +41,14 @@ EXPECTED_ECA_NAMES = [
 ]
 
 FORBIDDEN_USER_TERMS = [
-    "私人副本",
     "专属游戏房间",
     "创建私人副本",
     "启动多人私人副本",
     "加入口令副本",
     "获取副本口令",
     "重建大厅连接",
+    "同房分流",
+    "跨房合流",
 ]
 
 
@@ -72,13 +72,13 @@ class LobbyEcaJsonTests(unittest.TestCase):
         self.trigger_dsl = load_json(TRIGGER_DSL)
         self.functions = self.function_dsl["functions"]
 
-    def test_function_dsl_lists_exactly_27_official_external_call_interfaces(self):
+    def test_function_dsl_lists_exactly_26_official_external_call_interfaces(self):
         names = [item["name"] for item in self.functions]
         self.assertEqual(EXPECTED_ECA_NAMES, names)
-        self.assertEqual(27, len(names))
+        self.assertEqual(26, len(names))
         self.assertEqual(len(names), len(set(names)))
 
-    def test_maps_contain_exactly_the_27_generated_lobby_functions(self):
+    def test_maps_contain_exactly_the_26_generated_lobby_functions(self):
         expected_files = {f"{name}.json" for name in EXPECTED_ECA_NAMES}
         for map_name in MAP_NAMES:
             function_root = ROOT / "maps" / map_name / "global_trigger" / "function"
@@ -160,12 +160,8 @@ class LobbyEcaJsonTests(unittest.TestCase):
             specs["大厅服务 - 开始匹配"].get("params"),
         )
         self.assertEqual(
-            [{"name": "分流参数", "type": "TABLE", "required": True}],
-            specs["大厅服务 - 同房分流"].get("params"),
-        )
-        self.assertEqual(
-            [{"name": "合流参数", "type": "TABLE", "required": True}],
-            specs["大厅服务 - 跨房合流"].get("params"),
+            [{"name": "副本参数", "type": "TABLE", "required": True}],
+            specs["大厅服务 - 局内私人副本"].get("params"),
         )
         self.assertEqual(
             [{"name": "大厅参数", "type": "TABLE", "required": True}],
@@ -179,7 +175,6 @@ class LobbyEcaJsonTests(unittest.TestCase):
             "level_id",
             "max_player",
             "game_map_id",
-            "players",
             "token",
             "玩法ID",
             "是否在游戏关卡",
@@ -194,8 +189,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
         specs = {item["name"]: item for item in self.functions}
         expected_fields = {
             "大厅服务 - 开始匹配": ["level_id", "game_mode", "score"],
-            "大厅服务 - 同房分流": ["level_id", "game_mode", "max_player"],
-            "大厅服务 - 跨房合流": ["game_map_id", "level_id", "game_mode", "players"],
+            "大厅服务 - 局内私人副本": ["game_map_id", "level_id", "game_mode", "max_player"],
             "大厅服务 - 返回大厅": ["level_id", "game_mode", "max_player"],
         }
         for name, fields in expected_fields.items():
@@ -205,13 +199,12 @@ class LobbyEcaJsonTests(unittest.TestCase):
                     self.assertIn(field, description)
                 self.assertNotIn("version", description)
 
-    def test_split_merge_and_token_names_replace_old_private_dungeon_wording(self):
+    def test_private_dungeon_and_token_names_replace_old_split_merge_wording(self):
         serialized = json.dumps(
             {"functions": self.functions, "triggers": self.trigger_dsl["triggers"]},
             ensure_ascii=False,
         )
-        self.assertIn("同房分流", serialized)
-        self.assertIn("跨房合流", serialized)
+        self.assertIn("局内私人副本", serialized)
         self.assertIn("加入口令", serialized)
         self.assertIn("获取口令", serialized)
         for term in FORBIDDEN_USER_TERMS:
@@ -286,8 +279,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
         serialized = json.dumps(self.trigger_dsl, ensure_ascii=False)
         required_examples = {
             "大厅服务 - 开始匹配": ["level_id", "game_mode"],
-            "大厅服务 - 同房分流": ["level_id", "game_mode", "max_player"],
-            "大厅服务 - 跨房合流": ["game_map_id", "level_id", "game_mode", "players"],
+            "大厅服务 - 局内私人副本": ["game_map_id", "level_id", "game_mode", "max_player"],
             "大厅服务 - 返回大厅": ["level_id", "game_mode", "max_player"],
         }
         for function_name, fields in required_examples.items():
@@ -295,6 +287,12 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertIn(f'"name": "{function_name}"', serialized)
                 for field in fields:
                     self.assertIn(field, serialized)
+        private_dungeon_trigger = next(
+            trigger for trigger in self.trigger_dsl["triggers"]
+            if trigger["name"] == "大厅服务 - 局内私人副本测试"
+        )
+        private_dungeon_serialized = json.dumps(private_dungeon_trigger, ensure_ascii=False)
+        self.assertNotIn("players", private_dungeon_serialized)
         self.assertNotIn("version", serialized)
 
     def test_async_trigger_examples_register_completion_event_and_compare_request_id(self):
@@ -302,8 +300,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
             "大厅服务 - 建立连接",
             "大厅服务 - 创建队伍",
             "大厅服务 - 开始匹配",
-            "大厅服务 - 同房分流",
-            "大厅服务 - 跨房合流",
+            "大厅服务 - 局内私人副本",
             "大厅服务 - 返回大厅",
             "大厅服务 - 退出游戏",
         ]

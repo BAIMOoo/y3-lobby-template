@@ -23,7 +23,7 @@
                         {
                             "arg_type": 100003,
                             "args_list": [
-                                "Bind['大厅服务 - 同房分流'](args[1])"
+                                "Bind['大厅服务 - 局内私人副本'](args[1])"
                             ],
                             "sub_type": 1
                         }
@@ -36,7 +36,7 @@
                                     "__tuple__": true,
                                     "items": [
                                         "TABLE",
-                                        "分流参数",
+                                        "副本参数",
                                         "local"
                                     ]
                                 }
@@ -59,7 +59,7 @@
                 }
             ],
             "bp": false,
-            "element_id": 1433022576000002,
+            "element_id": 1891242560000002,
             "enable": true
         },
         {
@@ -81,7 +81,7 @@
                 }
             ],
             "bp": false,
-            "element_id": 1433022576000003,
+            "element_id": 1891242560000003,
             "enable": true
         }
     ],
@@ -91,30 +91,30 @@
     "event": [],
     "func_category": "t_function",
     "func_comment": "",
-    "func_des": "让当前房间内的部分玩家切换到指定关卡；参数表{分流参数}必须包含 level_id、game_mode、max_player",
+    "func_des": "按统一参数表{副本参数}发起局内私人副本请求；参数表使用 action=private_dungeon，可包含 level_id、game_mode、max_player、game_map_id、custom_param",
     "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
-    "func_name": "大厅服务 - 同房分流",
+    "func_name": "大厅服务 - 局内私人副本",
     "group_id": 0,
     "is_func": true,
     "is_official_func": false,
     "p_trigger_id": null,
-    "trigger_id": 1433022576,
-    "trigger_name": "大厅服务 - 同房分流",
+    "trigger_id": 1891242560,
+    "trigger_name": "大厅服务 - 局内私人副本",
     "valid": true,
     "var_data": [
         {
             "NEW_TIMER": {},
             "TABLE": {
-                "分流参数": null,
+                "副本参数": null,
                 "t": null
             }
         },
         {
-            "分流参数": 0,
+            "副本参数": 0,
             "t": 0
         },
         [
-            "分流参数",
+            "副本参数",
             "t"
         ]
     ],
@@ -122,7 +122,7 @@
         {
             "__tuple__": true,
             "items": [
-                "分流参数",
+                "副本参数",
                 true
             ]
         }

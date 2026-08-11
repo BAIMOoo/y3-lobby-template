@@ -32,7 +32,7 @@ ENTRYMAP_Y3_ROOT = ROOT / "maps" / "EntryMap" / "script" / "y3"
 CHILD_MAP_Y3_ROOT = ROOT / "maps" / "MapName001" / "script" / "y3"
 PUBLISHED_Y3_ROOTS = [WORKTREE, ENTRYMAP_Y3_ROOT, CHILD_MAP_Y3_ROOT, PACKAGE_Y3_ROOT]
 FUNCTION_DSL = ROOT / "tools" / "eca" / "lobby_service_functions.json"
-TEST_GAME_PLAY_ID = 190356
+TEST_GAME_PLAY_ID = 10209075
 
 EXPECTED_ECA_NAMES = [
     "大厅服务 - 建立连接",
@@ -50,8 +50,7 @@ EXPECTED_ECA_NAMES = [
     "大厅服务 - 发送队伍聊天",
     "大厅服务 - 发送世界聊天",
     "大厅服务 - 获取聊天记录",
-    "大厅服务 - 同房分流",
-    "大厅服务 - 跨房合流",
+    "大厅服务 - 局内私人副本",
     "大厅服务 - 加入口令",
     "大厅服务 - 获取口令",
     "大厅服务 - 返回大厅",
@@ -65,7 +64,6 @@ EXPECTED_ECA_NAMES = [
 ]
 
 FORBIDDEN_DOC_TERMS = [
-    "私人副本",
     "专属游戏房间",
     "轻量方案",
     "Lua-only",
@@ -188,13 +186,12 @@ class DocumentationExamplesTest(unittest.TestCase):
     def test_docs_use_plain_external_call_interface_language(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
         self.assertIn("对外调用接口", corpus)
-        self.assertIn("同房分流", corpus)
-        self.assertIn("跨房合流", corpus)
+        self.assertIn("局内私人副本", corpus)
         for term in FORBIDDEN_DOC_TERMS:
             with self.subTest(term=term):
                 self.assertNotIn(term, corpus)
 
-    def test_docs_list_27_official_eca_external_call_interfaces(self):
+    def test_docs_list_26_official_eca_external_call_interfaces(self):
         eca_doc = read_text(DOCS / "04-ECA功能使用.md")
         missing = [name for name in EXPECTED_ECA_NAMES if f"`{name}`" not in eca_doc]
         self.assertEqual([], missing)
@@ -219,21 +216,39 @@ class DocumentationExamplesTest(unittest.TestCase):
 
     def test_docs_describe_required_dynamic_fields_and_internal_version_boundary(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
-        for field in ["game_mode", "score", "level_id", "max_player", "game_map_id", "players"]:
+        for field in ["game_mode", "score", "level_id", "max_player", "game_map_id"]:
             with self.subTest(field=field):
                 self.assertIn(field, corpus)
         self.assertIn("2.0", corpus)
         self.assertIn("内部", corpus)
         self.assertNotRegex(corpus, r"version\s*[=:]")
 
-    def test_example_maps_use_official_lobby_entry_points(self):
+    def test_example_maps_use_prod_lobby_endpoints(self):
         lobby_entry = read_text(ROOT / "maps" / "EntryMap" / "script" / "main.lua")
         target_entry = read_text(ROOT / "maps" / "MapName001" / "script" / "main.lua")
         self.assertIn(f"local GAME_PLAY_ID = {TEST_GAME_PLAY_ID}", lobby_entry)
-        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'pre')", lobby_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'prod')", lobby_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, true, 'prod')", target_entry)
         self.assertIn("y3.lobby.get_connection_status()", target_entry)
         self.assertNotIn("include 'pub.init'", lobby_entry)
         self.assertNotIn("include 'pub.init'", target_entry)
+
+    def test_example_maps_do_not_keep_legacy_pub_lobby(self):
+        legacy_paths = [
+            "core",
+            "eca_lobby_api.lua",
+            "init.lua",
+            "pub.lua",
+            "runtime_token.lua",
+            "ui.lua",
+            "匹配系统说明.md",
+            "ECA大厅服务接口说明.md",
+        ]
+        for map_name in ["EntryMap", "MapName001"]:
+            pub_root = ROOT / "maps" / map_name / "script" / "pub"
+            for relative_path in legacy_paths:
+                with self.subTest(map_name=map_name, path=relative_path):
+                    self.assertFalse((pub_root / relative_path).exists())
 
     def test_docs_explain_required_game_play_id_for_connection(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
@@ -248,11 +263,17 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertNotIn("connect()` 无参数", corpus)
         self.assertNotIn("由平台运行环境提供，不是调用参数", corpus)
 
-    def test_same_room_split_examples_use_player_records(self):
+    def test_private_dungeon_docs_explain_filter_result_fields(self):
         lua_guide = read_text(DOCS / "03-Lua功能使用.md")
         eca_guide = read_text(DOCS / "04-ECA功能使用.md")
-        self.assertIn("{ aid = 10001 }", lua_guide)
-        self.assertIn("每项包含 `aid`", eca_guide)
+        self.assertIn("y3.lobby.private_dungeon", lua_guide)
+        self.assertNotIn("{ aid = 10001 }", lua_guide)
+        self.assertIn("调用者不再传 `players`", lua_guide)
+        self.assertIn("调用者不传 `players`", eca_guide)
+        for field in ["selected_players", "skipped_in_game_players", "unknown_status_players"]:
+            with self.subTest(field=field):
+                self.assertIn(field, lua_guide)
+                self.assertIn(field, eca_guide)
 
     def test_docs_do_not_reuse_current_project_event_or_function_ids(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
