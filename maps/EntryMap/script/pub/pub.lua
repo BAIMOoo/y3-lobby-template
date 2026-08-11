@@ -2,9 +2,9 @@
 local LOCAL_PRIVATE_LEVEL_ID = '25e6448f-7e73-11f1-88ae-03dc5a85955c'
 local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
 -- 上传平台后必须填写真实的玩法固定ID；不能使用Bob内核兜底的10000。
-local GAME_PLAY_ID_OVERRIDE = 190356
--- pre环境测试时先强制走pre匹配服；验证完成后可改成 nil 恢复自动识别。
-local MATCH_ENV_OVERRIDE = 'pre'
+local GAME_PLAY_ID_OVERRIDE = 10209075
+-- 测试项目上传平台后强制连接正式匹配服。
+local MATCH_ENV_OVERRIDE = 'prod'
 local PLATFORM_LOBBY_GAME_MODE = 0
 local LOBBY_GAME_MODE = 1001
 local MATCH_GAME_MODE = 1002
