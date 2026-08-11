@@ -46,8 +46,8 @@ foreach ($file in $packagedFiles) {
     }
 }
 
-$entryScript = Get-Content -Raw -Encoding utf8 (Join-Path $repoRoot 'maps\EntryMap\script\pub\test_ui.lua')
-$battleScript = Get-Content -Raw -Encoding utf8 (Join-Path $repoRoot 'maps\MapName001\script\pub\test_ui.lua')
+$entryScript = Get-Content -Raw -Encoding utf8 (Join-Path $repoRoot 'maps\EntryMap\script\test_ui.lua')
+$battleScript = Get-Content -Raw -Encoding utf8 (Join-Path $repoRoot 'maps\MapName001\script\test_ui.lua')
 $resourceTable = Get-Content -Raw -Encoding utf8 (Join-Path $repoRoot 'editor_table\resicon.json')
 $repository = Get-Content -Raw -Encoding utf8 (
     Join-Path $repoRoot 'custom\CustomImportRepo.local\resource.repository')

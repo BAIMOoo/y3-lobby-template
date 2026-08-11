@@ -36,11 +36,11 @@
 - `maps/EntryMap/script/main.lua`
 - `maps/EntryMap/script/y3/game/lobby/init.lua`
 - `maps/EntryMap/script/y3/game/lobby/eca.lua`
-- `maps/EntryMap/script/pub/test_ui.lua`
+- `maps/EntryMap/script/test_ui.lua`
 - `tests/eca_lobby_api_contract_test.lua`
 - `tests/lobby_embedded_protocol_test.lua`
 - `tools/eca/lobby_service_functions.json`
 - `tools/eca/lobby_service_tests.json`
 - `setting.json`
 
-这些文件分别展示正式 `y3.lobby` 框架、测试项目入口、测试 UI 适配和框架契约验证。`pub/test_ui.lua` 属于测试项目 UI，不是迁移时必须复制的通用框架文件。
+这些文件分别展示正式 `y3.lobby` 框架、测试项目入口、测试 UI 适配和框架契约验证。`test_ui.lua` 属于测试项目 UI，不是迁移时必须复制的通用框架文件。

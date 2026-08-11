@@ -234,21 +234,12 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertNotIn("include 'pub.init'", target_entry)
 
     def test_example_maps_do_not_keep_legacy_pub_lobby(self):
-        legacy_paths = [
-            "core",
-            "eca_lobby_api.lua",
-            "init.lua",
-            "pub.lua",
-            "runtime_token.lua",
-            "ui.lua",
-            "匹配系统说明.md",
-            "ECA大厅服务接口说明.md",
-        ]
         for map_name in ["EntryMap", "MapName001"]:
-            pub_root = ROOT / "maps" / map_name / "script" / "pub"
-            for relative_path in legacy_paths:
-                with self.subTest(map_name=map_name, path=relative_path):
-                    self.assertFalse((pub_root / relative_path).exists())
+            script_root = ROOT / "maps" / map_name / "script"
+            pub_root = script_root / "pub"
+            with self.subTest(map_name=map_name, path="test_ui.lua"):
+                self.assertTrue((script_root / "test_ui.lua").is_file())
+                self.assertFalse(pub_root.exists())
 
     def test_docs_explain_required_game_play_id_for_connection(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)

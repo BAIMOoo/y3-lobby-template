@@ -43,7 +43,7 @@ end
 
 dofile('maps/EntryMap/script/main.lua')
 
-assert_equal(included[1], 'pub.test_ui', 'test UI include')
+assert_equal(included[1], 'test_ui', 'test UI include')
 assert(callbacks['玩家-加入游戏'], 'player join listener must be registered')
 
 callbacks['玩家-加入游戏'](nil, { player = other_player })

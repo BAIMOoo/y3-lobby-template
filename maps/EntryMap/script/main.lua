@@ -23,4 +23,4 @@ y3.game:event('玩家-加入游戏', function (_, data)
 end)
 
 -- 测试界面只复用旧 UI 布局，所有操作直接调用 y3.lobby。
-include 'pub.test_ui'
+include 'test_ui'

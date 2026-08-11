@@ -843,7 +843,7 @@ local function run_case(path)
     assert_equal(button.enabled, false, path .. ' disconnected button disabled')
 end
 
-run_case('maps/EntryMap/script/pub/test_ui.lua')
-run_case('maps/MapName001/script/pub/test_ui.lua')
+run_case('maps/EntryMap/script/test_ui.lua')
+run_case('maps/MapName001/script/test_ui.lua')
 
 print('match_button_state_test: PASS')

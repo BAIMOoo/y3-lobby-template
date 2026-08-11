@@ -228,4 +228,4 @@ log.info(string.format(
 include 'dungeon_unit_spawn'
 log.info('[MapName001] dungeon_unit_spawn loaded')
 -- 目标关卡复用主关卡的 BobTestUI 根画板，按钮直接调用 y3.lobby。
-include 'pub.test_ui'
+include 'test_ui'
