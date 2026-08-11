@@ -36,6 +36,19 @@ local function trim(value)
     return tostring(value or ''):match('^%s*(.-)%s*$')
 end
 
+local function is_non_empty_custom_param(value)
+    if value == nil then
+        return false
+    end
+    if type(value) == 'string' then
+        return trim(value) ~= ''
+    end
+    if type(value) == 'table' then
+        return next(value) ~= nil
+    end
+    return true
+end
+
 local function local_rejection(code, reason, result_data)
     return false, {
         kind = LOCAL_REJECTION,
@@ -118,6 +131,25 @@ local function get_local_player_aid(local_player)
         end
     end
     return to_integer(local_player.aid or local_player.platform_id or local_player.platformId)
+end
+
+local function request_create_private_dungeon(local_player, level_id, game_mode, max_player, custom_param)
+    if is_non_empty_custom_param(custom_param) then
+        local_player.handle:request_create_private_dungeon(level_id, game_mode, max_player, custom_param)
+    else
+        local_player.handle:request_create_private_dungeon(level_id, game_mode, max_player)
+    end
+end
+
+local function cross_map_request_data(level_id, game_mode, max_player)
+    return {
+        level_id = level_id,
+        game_mode = game_mode,
+        max_player = max_player,
+        platform_requested = false,
+        cross_map_tracking = 'degraded',
+        entered_target = 'unknown',
+    }
 end
 
 local function notify_complete(payload)
@@ -1288,41 +1320,51 @@ function M.return_lobby(params)
     if level_id == '' or not game_mode or not max_player or max_player <= 0 then
         return result.rejected(action, 'invalid_argument', 'level_id, integer game_mode and positive max_player are required')
     end
-    return run_terminal_async(action, function(client, _, done)
-        run_exit_cleanup_before(client, function(cleanup)
+    local previous_status = state.runtime.status
+    local preserved_client = previous_status ~= 'connecting' and client_api.get() or nil
+    local terminal_token = state.next_request_id()
+    state.runtime.locks.terminal = terminal_token
+    state.set_status('closing')
+    cancel_pending_request_for_terminal('operation', action, terminal_token)
+    cancel_pending_request_for_terminal('chat', action, terminal_token)
+    client_api.cancel_pending_connect(action, function(cancelled_request)
+        finish_cancelled_request(cancelled_request, action, terminal_token)
+    end)
+
+    local initial_data = cross_map_request_data(level_id, game_mode, max_player)
+    initial_data.platform_requested = false
+
+    local function release_terminal()
+        if state.runtime.locks.terminal == terminal_token then
+            state.runtime.locks.terminal = nil
+        end
+        if preserved_client and client_api.get() == preserved_client then
+            state.set_status(previous_status)
+        else
             client_api.release_for_terminal()
             state.set_status('idle')
-            local data = {
-                level_id = level_id,
-                game_mode = game_mode,
-                max_player = max_player,
-                platform_requested = false,
-                entered_target = 'unknown',
-                confirm_by = 'platform_request_sent',
-                cleanup_ok = cleanup.ok == true,
-                cleanup = cleanup,
-            }
-            local local_player = get_local_player()
-            if not local_player or not local_player.handle then
-                done(false, 'local_player_missing', 'local player not found', data)
-                return
-            end
-            local requested, request_error = xpcall(function()
-                local_player.handle:request_create_private_dungeon(
-                    level_id,
-                    game_mode,
-                    max_player,
-                    params.custom_param)
-            end, caught_error_handler(action))
-            if not requested then
-                done(false, 'request_error', request_error, data)
-                return
-            end
-            data.platform_requested = true
-            done(true, 'ok', 'return lobby requested', data)
-        end)
-        return true
-    end)
+        end
+    end
+
+    local local_player = get_local_player()
+    if not local_player or not local_player.handle then
+        release_terminal()
+        return result.rejected(action, 'local_player_missing', 'local player not found', initial_data)
+    end
+    local requested, request_error = xpcall(function()
+        request_create_private_dungeon(local_player, level_id, game_mode, max_player, params.custom_param)
+    end, caught_error_handler(action))
+    release_terminal()
+    if not requested then
+        return result.rejected(action, 'request_error', request_error, initial_data)
+    end
+    initial_data.platform_requested = true
+
+    return result.accepted(action, nil, {
+        sync = true,
+        reason = '返回大厅请求已提交，等待关卡切换',
+        result_data = initial_data,
+    })
 end
 
 function M.exit_game()

@@ -373,12 +373,14 @@ y3.player = {
     with_local = function(callback)
         callback({
             handle = {
-                request_create_private_dungeon = function(_, level_id, game_mode, max_player, custom_param)
+                request_create_private_dungeon = function(_, ...)
+                    local args = table.pack(...)
                     unconnected_platform_requests[#unconnected_platform_requests + 1] = {
-                        level_id = level_id,
-                        game_mode = game_mode,
-                        max_player = max_player,
-                        custom_param = custom_param,
+                        level_id = args[1],
+                        game_mode = args[2],
+                        max_player = args[3],
+                        custom_param = args[4],
+                        argc = args.n,
                     }
                 end,
             },
@@ -400,10 +402,9 @@ assert_equal(client_factory_calls, 0, 'return_lobby without connection must not 
 assert_equal(#unconnected_platform_requests, 1, 'return_lobby without connection should call platform request')
 assert_equal(unconnected_platform_requests[1].level_id, 'unconnected-lobby', 'return_lobby without connection forwards level_id')
 assert_equal(unconnected_platform_requests[1].custom_param, 'unconnected-param', 'return_lobby without connection forwards custom_param')
-if #unconnected_frame_callbacks > 0 then
-    unconnected_frame_callbacks[#unconnected_frame_callbacks]()
-    assert_equal(unconnected_completions[#unconnected_completions].request_id, unconnected_return_lobby.request_id, 'return_lobby without connection completion request_id')
-end
+assert_equal(unconnected_platform_requests[1].argc, 4, 'return_lobby with custom_param uses four arguments')
+assert_equal(unconnected_return_lobby.request_id, '', 'return_lobby without connection has no awaitable request id')
+assert_equal(#unconnected_completions, 0, 'return_lobby without connection must not publish completion')
 
 local before_unconnected_exit_completions = #unconnected_completions
 local before_unconnected_exit_frames = #unconnected_frame_callbacks
@@ -1111,12 +1112,14 @@ y3.player = {
     with_local = function(callback)
         callback({
             handle = {
-                request_create_private_dungeon = function(_, level_id, game_mode, max_player, custom_param)
+                request_create_private_dungeon = function(_, ...)
+                    local args = table.pack(...)
                     private_dungeon_requests[#private_dungeon_requests + 1] = {
-                        level_id = level_id,
-                        game_mode = game_mode,
-                        max_player = max_player,
-                        custom_param = custom_param,
+                        level_id = args[1],
+                        game_mode = args[2],
+                        max_player = args[3],
+                        custom_param = args[4],
+                        argc = args.n,
                     }
                 end,
                 request_join_private_dungeon = function(_, token)
@@ -1310,9 +1313,8 @@ assert_completion(completion_payloads[1], eca_pending_connect.request_id, eca_pe
 assert_equal(emitted_events[1].payload.request_id, eca_pending_connect.request_id, 'ECA pending connect cancellation should emit completion event')
 assert_equal(state_api.runtime.eca_request_ids[eca_pending_connect.request_id], nil, 'ECA pending connect marker should be cleared by cancellation completion listener')
 assert_equal(eca_pending_client.cleanup_before_exit_calls or 0, 0, 'return_lobby must not cleanup half-initialized pending connect client')
-assert_equal(#frame_callbacks > 0, true, 'return_lobby terminal completion should defer when starter completes synchronously')
-frame_callbacks[1]()
-assert_equal(completion_payloads[#completion_payloads].request_id, eca_return_result.request_id, 'return_lobby completion should follow connect cancellation')
+assert_equal(eca_return_result.request_id, '', 'ECA return_lobby has no awaitable request id')
+assert_equal(#completion_payloads, 1, 'return_lobby must not add a completion after connect cancellation')
 local after_eca_return_completion_count = #completion_payloads
 emit_late_connect_callbacks(eca_pending_client, eca_pending_timeout_callback)
 assert_equal(#completion_payloads, after_eca_return_completion_count, 'late ready/login/disconnect/unavailable/timeout after return_lobby must not complete again')
@@ -1348,9 +1350,12 @@ local terminal_while_pending = y3.lobby.return_lobby(terminal_params)
 assert_equal(terminal_while_pending.accepted, true, 'terminal should bypass operation/chat locks')
 assert_completion(completion_payloads[completions_before_terminal_while_pending + 1], pending_operation.request_id, pending_operation.action, false, 'cancelled_by_terminal', 'pending operation cancelled by terminal')
 assert_completion(completion_payloads[completions_before_terminal_while_pending + 2], pending_chat.request_id, pending_chat.action, false, 'cancelled_by_terminal', 'pending chat cancelled by terminal')
-assert_equal(#completion_payloads, completions_before_terminal_while_pending + 2, 'terminal must wait for cleanup after cancelling operation/chat')
-connected_client_for_terminal.cleanup_before_exit_callback(true, nil)
-assert_equal(completion_payloads[#completion_payloads].request_id, terminal_while_pending.request_id, 'terminal completion should follow old request cancellations')
+assert_equal(#completion_payloads, completions_before_terminal_while_pending + 2, 'return_lobby must not publish completion after cancelling operation/chat')
+assert_equal(connected_client_for_terminal.cleanup_before_exit_calls or 0, 0, 'return_lobby must not cleanup the connected client')
+assert_equal(state_api.runtime.client, connected_client_for_terminal, 'return_lobby must preserve the connected client')
+assert_equal(y3.lobby.get_connection_status().result_data.status, 'connected', 'return_lobby restores connected status after request submission')
+assert_equal(#completion_payloads, completions_before_terminal_while_pending + 2, 'return_lobby must not complete after old request cancellations')
+assert_equal(terminal_while_pending.request_id, '', 'return_lobby during pending operations has no awaitable request id')
 local completion_count_after_terminal = #completion_payloads
 connected_client_for_terminal.create_team_callback(nil, nil)
 connected_client_for_terminal.team_info = {
@@ -1381,22 +1386,17 @@ reentrant_listener.remove()
 emit_late_connect_callbacks(reentrant_client, reentrant_timeout_callback)
 
 connect_ready_with_cleanup({ cleanup_before_exit_returns_false = true })
-local terminal_in_progress = y3.lobby.return_lobby(terminal_params)
-assert_equal(terminal_in_progress.accepted, true, 'return_lobby delayed cleanup should be accepted')
-assert_equal(y3.lobby.get_connection_status().result_data.status, 'closing', 'terminal enters closing status')
-latest_client:emit('准备就绪')
-assert_equal(y3.lobby.get_connection_status().result_data.status, 'closing', 'late ready must not restore connected during terminal cleanup')
-emit_client_event(latest_client, 3, 'login')
-assert_equal(y3.lobby.get_connection_status().result_data.status, 'closing', 'late login must not restore connected during terminal cleanup')
-local operation_during_terminal = y3.lobby.create_team(4)
-assert_equal(operation_during_terminal.accepted, false, 'business request during terminal should be rejected')
-assert_equal(operation_during_terminal.code, 'terminal_in_progress', 'business request during terminal code')
-local query_during_terminal = y3.lobby.get_token()
-assert_equal(query_during_terminal.accepted, false, 'query request during terminal should be rejected')
-assert_equal(query_during_terminal.code, 'terminal_in_progress', 'query request during terminal code')
-local second_terminal = y3.lobby.exit_game()
-assert_equal(second_terminal.accepted, false, 'second terminal during terminal should be rejected')
-assert_equal(second_terminal.code, 'terminal_locked', 'second terminal during terminal code')
+local return_retry_client = latest_client
+local return_retry_cleanup_calls = latest_client.cleanup_before_exit_calls or 0
+local return_retry_requests = #private_dungeon_requests
+local first_return_retry = y3.lobby.return_lobby(terminal_params)
+local second_return_retry = y3.lobby.return_lobby(terminal_params)
+assert_equal(first_return_retry.accepted, true, 'return_lobby first submission should be accepted')
+assert_equal(second_return_retry.accepted, true, 'return_lobby remains retryable when the platform does not switch maps')
+assert_equal(#private_dungeon_requests, return_retry_requests + 2, 'return_lobby retry should submit a second platform request')
+assert_equal(latest_client.cleanup_before_exit_calls or 0, return_retry_cleanup_calls, 'return_lobby retry must not run exit cleanup')
+assert_equal(state_api.runtime.client, return_retry_client, 'return_lobby retry must preserve the client')
+assert_equal(y3.lobby.get_connection_status().result_data.status, 'connected', 'return_lobby retry keeps connected status')
 
 do
     connect_ready_with_cleanup({})
@@ -1454,12 +1454,11 @@ y3.player = {
     end,
 }
 local platform_fail_return = y3.lobby.return_lobby(terminal_params)
-assert_equal(platform_fail_return.accepted, true, 'return_lobby platform failure should be accepted before cleanup')
-platform_fail_client.cleanup_before_exit_callback(true, nil)
-assert_equal(completion_payloads[#completion_payloads].request_id, platform_fail_return.request_id, 'return_lobby platform failure completion request_id')
-assert_equal(completion_payloads[#completion_payloads].success, false, 'return_lobby platform failure completion success')
-assert_equal(y3.lobby.get_connection_status().result_data.status ~= 'connected', true, 'return_lobby platform failure should leave runtime non-connected')
-assert_equal(state_api.runtime.client, nil, 'return_lobby platform failure should clear runtime client')
+assert_equal(platform_fail_return.accepted, false, 'return_lobby platform failure should reject synchronously')
+assert_equal(platform_fail_return.code, 'request_error', 'return_lobby platform failure code')
+assert_equal(platform_fail_client.cleanup_before_exit_calls or 0, 0, 'return_lobby platform failure must not run exit cleanup')
+assert_equal(y3.lobby.get_connection_status().result_data.status, 'connected', 'return_lobby platform failure preserves connected status')
+assert_equal(state_api.runtime.client, platform_fail_client, 'return_lobby platform failure preserves runtime client')
 
 connect_ready_with_cleanup({})
 local missing_player_client = latest_client
@@ -1469,22 +1468,24 @@ y3.player = {
     end,
 }
 local missing_player_return = y3.lobby.return_lobby(terminal_params)
-assert_equal(missing_player_return.accepted, true, 'return_lobby missing player should be accepted before cleanup')
-missing_player_client.cleanup_before_exit_callback(true, nil)
-assert_equal(completion_payloads[#completion_payloads].code, 'local_player_missing', 'return_lobby missing player completion code')
-assert_equal(y3.lobby.get_connection_status().result_data.status ~= 'connected', true, 'return_lobby missing player should leave runtime non-connected')
-assert_equal(state_api.runtime.client, nil, 'return_lobby missing player should clear runtime client')
+assert_equal(missing_player_return.accepted, false, 'return_lobby missing player should reject synchronously')
+assert_equal(missing_player_return.code, 'local_player_missing', 'return_lobby missing player code')
+assert_equal(missing_player_client.cleanup_before_exit_calls or 0, 0, 'return_lobby missing player must not run exit cleanup')
+assert_equal(y3.lobby.get_connection_status().result_data.status, 'connected', 'return_lobby missing player preserves connected status')
+assert_equal(state_api.runtime.client, missing_player_client, 'return_lobby missing player preserves runtime client')
 
 y3.player = {
     with_local = function(callback)
         callback({
             handle = {
-                request_create_private_dungeon = function(_, level_id, game_mode, max_player, custom_param)
+                request_create_private_dungeon = function(_, ...)
+                    local args = table.pack(...)
                     private_dungeon_requests[#private_dungeon_requests + 1] = {
-                        level_id = level_id,
-                        game_mode = game_mode,
-                        max_player = max_player,
-                        custom_param = custom_param,
+                        level_id = args[1],
+                        game_mode = args[2],
+                        max_player = args[3],
+                        custom_param = args[4],
+                        argc = args.n,
                     }
                 end,
                 request_join_private_dungeon = function(_, token)
@@ -1498,137 +1499,32 @@ y3.player = {
     end,
 }
 
-connect_ready_with_cleanup({ cleanup_before_exit_immediate = true })
-local delayed_factory_before = factory_calls
-local delayed_completion_count = #completion_payloads
-local delayed_return = y3.lobby.return_lobby(terminal_params)
-assert_equal(delayed_return.accepted, true, 'return_lobby delayed completion window setup should be accepted')
-assert_equal(#completion_payloads, delayed_completion_count, 'return_lobby synchronous cleanup should defer terminal completion')
-local connect_during_delayed_completion_window = y3.lobby.connect(TEST_GAME_PLAY_ID)
-assert_equal(connect_during_delayed_completion_window.accepted, false, 'connect during return_lobby completion next-frame window should reject')
-assert_equal(connect_during_delayed_completion_window.code, 'connection_closing', 'connect during return_lobby completion next-frame window code')
-assert_equal(factory_calls, delayed_factory_before, 'connect during return_lobby completion next-frame window must not create client')
-frame_callbacks[1]()
-assert_equal(completion_payloads[#completion_payloads].request_id, delayed_return.request_id, 'return_lobby delayed completion window should publish terminal completion')
-
 connect_ready_with_cleanup({})
-local before_return_cleanup_requests = #private_dungeon_requests
-local before_return_cleanup_completions = #completion_payloads
-local return_cleanup_success = y3.lobby.return_lobby({
-    level_id = 'return-cleanup-ok',
+local preserved_return_client = latest_client
+local preserved_return_cleanup_calls = latest_client.cleanup_before_exit_calls or 0
+latest_client.team_info = {
+    team_id = 665544,
+    captain = latest_client.aid,
+    members = { { aid = latest_client.aid } },
+}
+local before_preserved_return_requests = #private_dungeon_requests
+local before_preserved_return_completions = #completion_payloads
+local preserved_return = y3.lobby.return_lobby({
+    level_id = 'return-preserves-session',
     game_mode = 903,
     max_player = 8,
-    custom_param = 'cleanup-ok-param',
+    custom_param = 'preserve-param',
 })
-local return_cleanup_request_timer = timeout_timers[#timeout_timers]
-assert_equal(return_cleanup_success.accepted, true, 'return_lobby cleanup success should be accepted')
-assert_equal(#private_dungeon_requests, before_return_cleanup_requests, 'return_lobby must not request platform before cleanup callback')
-assert_equal(#completion_payloads, before_return_cleanup_completions, 'return_lobby must not complete before cleanup callback')
-assert_equal(type(latest_client.cleanup_before_exit_callback), 'function', 'return_lobby should wait for cleanup callback when connected')
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, before_return_cleanup_requests + 1, 'return_lobby cleanup success should request platform once')
-assert_equal(#completion_payloads, before_return_cleanup_completions + 1, 'return_lobby cleanup success should complete once')
-assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'return-cleanup-ok', 'return_lobby cleanup success forwards level_id')
-assert_equal(completion_payloads[#completion_payloads].request_id, return_cleanup_success.request_id, 'return_lobby cleanup success completion request_id')
-assert_latest_cleanup('ok', true, true, 'return_lobby cleanup success')
-assert_equal(return_cleanup_request_timer.removed, true, 'return_lobby cleanup success removes request timer')
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, before_return_cleanup_requests + 1, 'return_lobby repeated cleanup callback must not request platform twice')
-assert_equal(#completion_payloads, before_return_cleanup_completions + 1, 'return_lobby repeated cleanup callback must not complete twice')
-
-connect_ready_with_cleanup({})
-local before_return_failed_requests = #private_dungeon_requests
-local before_return_failed_completions = #completion_payloads
-local return_cleanup_failed = y3.lobby.return_lobby({
-    level_id = 'return-cleanup-failed',
-    game_mode = 904,
-    max_player = 8,
-})
-assert_equal(return_cleanup_failed.accepted, true, 'return_lobby cleanup failure should still be accepted')
-assert_equal(#private_dungeon_requests, before_return_failed_requests, 'return_lobby cleanup failure should wait for callback before platform request')
-latest_client.cleanup_before_exit_callback(false, 'cleanup_failed')
-assert_equal(#private_dungeon_requests, before_return_failed_requests + 1, 'return_lobby cleanup failure should still request platform')
-assert_equal(#completion_payloads, before_return_failed_completions + 1, 'return_lobby cleanup failure should still complete')
-assert_latest_cleanup('cleanup_failed', false, true, 'return_lobby cleanup failure')
-
-connect_ready_with_cleanup({ cleanup_before_exit_error = 'cleanup exploded' })
-local before_return_exception_requests = #private_dungeon_requests
-local before_return_exception_completions = #completion_payloads
-local return_cleanup_exception = y3.lobby.return_lobby({
-    level_id = 'return-cleanup-exception',
-    game_mode = 905,
-    max_player = 8,
-})
-assert_equal(return_cleanup_exception.accepted, true, 'return_lobby cleanup exception should be converted to accepted platform request')
-assert_equal(#private_dungeon_requests, before_return_exception_requests + 1, 'return_lobby cleanup exception should still request platform')
-if #completion_payloads == before_return_exception_completions and #frame_callbacks > 0 then
-    frame_callbacks[#frame_callbacks]()
-end
-assert_equal(#completion_payloads, before_return_exception_completions + 1, 'return_lobby cleanup exception should still complete')
-assert_latest_cleanup('cleanup_exception', false, true, 'return_lobby cleanup exception')
-
-connect_ready_with_cleanup({ cleanup_before_exit_returns_false = true })
-local before_return_delayed_requests = #private_dungeon_requests
-local before_return_delayed_completions = #completion_payloads
-local return_cleanup_delayed = y3.lobby.return_lobby({
-    level_id = 'return-cleanup-delayed',
-    game_mode = 906,
-    max_player = 8,
-})
-local cleanup_watchdog_timer, cleanup_watchdog_callback = find_timer_by_delay(8)
-local request_timeout_timer = find_timer_by_delay(10)
-assert_equal(return_cleanup_delayed.accepted, true, 'return_lobby cleanup false should be accepted')
-assert_equal(#private_dungeon_requests, before_return_delayed_requests, 'return_lobby cleanup false must wait for delayed callback or watchdog')
-assert_equal(#completion_payloads, before_return_delayed_completions, 'return_lobby cleanup false must not complete immediately')
-assert_equal(type(cleanup_watchdog_callback), 'function', 'return_lobby cleanup false should install cleanup watchdog')
-assert_equal(type(request_timeout_timer), 'table', 'return_lobby should keep request timeout timer')
-assert_equal(cleanup_watchdog_timer.delay < request_timeout_timer.delay, true, 'cleanup watchdog must fire before request timeout')
-latest_client.cleanup_before_exit_callback(false, 'cleanup_failed')
-assert_equal(#private_dungeon_requests, before_return_delayed_requests + 1, 'return_lobby delayed cleanup callback should request platform once')
-assert_equal(#completion_payloads, before_return_delayed_completions + 1, 'return_lobby delayed cleanup callback should complete once')
-assert_latest_cleanup('cleanup_failed', false, true, 'return_lobby delayed cleanup failure')
-assert_equal(cleanup_watchdog_timer.removed, true, 'return_lobby delayed cleanup callback removes cleanup watchdog')
-assert_equal(request_timeout_timer.removed, true, 'return_lobby delayed cleanup callback removes request timeout')
-cleanup_watchdog_callback()
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, before_return_delayed_requests + 1, 'return_lobby cleanup callback/watchdog race must not request twice')
-assert_equal(#completion_payloads, before_return_delayed_completions + 1, 'return_lobby cleanup callback/watchdog race must not complete twice')
-
-connect_ready_with_cleanup({ cleanup_before_exit_returns_false = true })
-local before_return_watchdog_requests = #private_dungeon_requests
-local before_return_watchdog_completions = #completion_payloads
-local return_cleanup_watchdog = y3.lobby.return_lobby({
-    level_id = 'return-cleanup-watchdog',
-    game_mode = 907,
-    max_player = 8,
-})
-local cleanup_watchdog_timer_only, cleanup_watchdog_callback_only = find_timer_by_delay(8)
-assert_equal(return_cleanup_watchdog.accepted, true, 'return_lobby cleanup watchdog should be accepted')
-assert_equal(#private_dungeon_requests, before_return_watchdog_requests, 'return_lobby cleanup watchdog must not request before watchdog')
-cleanup_watchdog_callback_only()
-assert_equal(#private_dungeon_requests, before_return_watchdog_requests + 1, 'return_lobby cleanup watchdog should request platform once')
-assert_equal(#completion_payloads, before_return_watchdog_completions + 1, 'return_lobby cleanup watchdog should complete once')
-assert_latest_cleanup('cleanup_watchdog', false, true, 'return_lobby cleanup watchdog')
-assert_equal(cleanup_watchdog_timer_only.removed, true, 'return_lobby cleanup watchdog removes cleanup timer')
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, before_return_watchdog_requests + 1, 'return_lobby late cleanup callback after watchdog must not request twice')
-
-connect_ready_with_cleanup({ cleanup_before_exit = nil })
-latest_client.cleanup_before_exit = nil
-local before_return_unavailable_requests = #private_dungeon_requests
-local before_return_unavailable_completions = #completion_payloads
-local return_cleanup_unavailable = y3.lobby.return_lobby({
-    level_id = 'return-cleanup-unavailable',
-    game_mode = 908,
-    max_player = 8,
-})
-assert_equal(return_cleanup_unavailable.accepted, true, 'return_lobby without cleanup helper should be accepted')
-assert_equal(#private_dungeon_requests, before_return_unavailable_requests + 1, 'return_lobby without cleanup helper should still request platform')
-if #completion_payloads == before_return_unavailable_completions and #frame_callbacks > 0 then
-    frame_callbacks[#frame_callbacks]()
-end
-assert_equal(#completion_payloads, before_return_unavailable_completions + 1, 'return_lobby without cleanup helper should complete')
-assert_latest_cleanup('cleanup_unavailable', nil, false, 'return_lobby cleanup unavailable')
+assert_equal(preserved_return.accepted, true, 'return_lobby should accept a valid request')
+assert_equal(#private_dungeon_requests, before_preserved_return_requests + 1, 'return_lobby should request the platform immediately')
+assert_equal(#completion_payloads, before_preserved_return_completions, 'return_lobby must not publish completion')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'return-preserves-session', 'return_lobby forwards level_id')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].argc, 4, 'return_lobby with custom_param uses four arguments')
+assert_equal(preserved_return.request_id, '', 'return_lobby has no awaitable request id')
+assert_equal(latest_client.cleanup_before_exit_calls or 0, preserved_return_cleanup_calls, 'return_lobby must not run exit cleanup')
+assert_equal(state_api.runtime.client, preserved_return_client, 'return_lobby must preserve runtime client')
+assert_equal(latest_client.team_info.team_id, 665544, 'return_lobby must preserve cached team state')
+assert_equal(y3.lobby.get_connection_status().result_data.status, 'connected', 'return_lobby preserves connected status')
 
 connect_ready_with_cleanup({})
 do
@@ -1868,6 +1764,15 @@ assert_equal(completion_payloads[#completion_payloads].request_id ~= join_token_
 frame_callbacks[#frame_callbacks]()
 assert_equal(completion_payloads[#completion_payloads].request_id, join_token_result.request_id, 'join_by_token completion request_id')
 
+local before_return_lobby_completions = #completion_payloads
+local before_return_lobby_requests = #private_dungeon_requests
+local return_lobby_client = latest_client
+local return_lobby_cleanup_calls = latest_client.cleanup_before_exit_calls or 0
+latest_client.team_info = {
+    team_id = 778899,
+    captain = latest_client.aid,
+    members = { { aid = latest_client.aid } },
+}
 local return_lobby_result = y3.lobby.return_lobby({
     level_id = 'lobby-level',
     game_mode = 902,
@@ -1875,17 +1780,16 @@ local return_lobby_result = y3.lobby.return_lobby({
     custom_param = 'return-param',
 })
 assert_equal(return_lobby_result.accepted, true, 'return_lobby should be accepted')
-assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'level-included', 'return_lobby should wait for cleanup before platform request')
-latest_client.cleanup_before_exit_callback(true, nil)
+assert_equal(latest_client.cleanup_before_exit_calls or 0, return_lobby_cleanup_calls, 'return_lobby must not run exit cleanup')
+assert_equal(state_api.runtime.client, return_lobby_client, 'return_lobby must preserve the current lobby client')
+assert_equal(latest_client.team_info.team_id, 778899, 'return_lobby must preserve cached team state')
+assert_equal(#private_dungeon_requests, before_return_lobby_requests + 1, 'return_lobby should request platform immediately')
 assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'lobby-level', 'return_lobby forwards level_id')
 assert_equal(private_dungeon_requests[#private_dungeon_requests].custom_param, 'return-param', 'return_lobby forwards custom_param')
-if completion_payloads[#completion_payloads].request_id ~= return_lobby_result.request_id and #frame_callbacks > 0 then
-    frame_callbacks[#frame_callbacks]()
-end
-assert_equal(completion_payloads[#completion_payloads].request_id, return_lobby_result.request_id, 'return_lobby completion request_id')
-assert_equal(completion_payloads[#completion_payloads].result_data.platform_requested, true, 'return_lobby reports platform request')
-assert_equal(completion_payloads[#completion_payloads].result_data.entered_target, 'unknown', 'return_lobby does not claim target entry')
-assert_equal(completion_payloads[#completion_payloads].result_data.confirm_by, 'platform_request_sent', 'return_lobby confirmation source')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].argc, 4, 'return_lobby with custom_param uses four arguments')
+assert_equal(return_lobby_result.request_id, '', 'return_lobby has no awaitable request id')
+assert_equal(return_lobby_result.result_data.cross_map_tracking, 'degraded', 'return_lobby reports degraded cross-map tracking')
+assert_equal(#completion_payloads, before_return_lobby_completions, 'return_lobby must not publish completion')
 
 connect_ready_with_cleanup({})
 local requests_before_split_excluded = #private_dungeon_requests

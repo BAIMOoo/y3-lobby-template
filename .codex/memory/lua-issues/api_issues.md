@@ -392,3 +392,28 @@ y3.eca.def('示例')
 **预防建议**：ECA 可见的同步返回值声明为 `table` 并直接返回 Lua 表；只在明确要求 Python 对象的底层 API 边界使用 `py.Dict`。合同测试应让 `y3.helper.py_dict` 抛错，以防公开返回路径重新引入包装。
 
 *补充时间: 2026-07-30*
+
+---
+
+## 14. 返回大厅不能复用退出游戏清理
+
+### 错误用法
+```lua
+client:cleanup_before_exit(function()
+    client_api.release_for_terminal()
+    request_create_private_dungeon(local_player, lobby_level_id, lobby_mode, max_player)
+end)
+```
+
+### 正确用法
+```lua
+request_create_private_dungeon(local_player, lobby_level_id, lobby_mode, max_player)
+```
+
+**现象**：副本关卡点击返回大厅后，BOB 被销毁，服务端队伍被主动退出，本地 `team_info` 也被清空。
+
+**根因**：`cleanup_before_exit` 的合同是取消匹配、离队、删除玩家信息并关闭客户端，只适用于真正退出游戏。返回大厅只是跨图请求，复用该清理会破坏需要跨关卡保留的组队状态。
+
+**预防建议**：`return_lobby` 只提交 `request_create_private_dungeon`，提交成功或失败后恢复原连接状态；`exit_game` 才调用 `cleanup_before_exit`。合同测试必须断言返回大厅不会增加清理调用次数，并保持当前客户端与队伍缓存。
+
+*补充时间: 2026-08-11*

@@ -731,6 +731,17 @@ local disconnect_setup = lobby.connect(TEST_GAME_PLAY_ID)
 assert_equal(disconnect_setup.accepted, true, 'disconnect setup connect accepted')
 latest_client.event_callbacks[3].callback(nil, 'disconnect')
 assert_equal(lobby.get_state().result_data.status, 'disconnected', 'connected client disconnect updates status')
+local disconnected_client = latest_client
+local disconnected_requests = #private_dungeon_requests
+local disconnected_return = lobby.return_lobby({
+    level_id = 'official-disconnected-return',
+    game_mode = 1201,
+    max_player = 8,
+})
+assert_equal(disconnected_return.accepted, true, 'return_lobby accepts from disconnected status')
+assert_equal(#private_dungeon_requests, disconnected_requests + 1, 'return_lobby submits platform request while disconnected')
+assert_equal(client.get(), disconnected_client, 'return_lobby preserves disconnected client')
+assert_equal(lobby.get_state().result_data.status, 'disconnected', 'return_lobby restores disconnected status')
 local reconnect_after_disconnect = lobby.connect(TEST_GAME_PLAY_ID)
 assert_equal(reconnect_after_disconnect.accepted, true, 'reconnect after disconnect accepted')
 latest_client.event_callbacks[1].callback()
@@ -738,108 +749,28 @@ assert_equal(lobby.get_state().result_data.status, 'connected', 'reconnect after
 
 local return_connected_before_requests = #private_dungeon_requests
 local return_connected_before_completions = #completion_payloads
+local return_connected_client = latest_client
+local return_connected_cleanup_calls = latest_client.cleanup_before_exit_calls
+latest_client.team_info = {
+    team_id = 77221,
+    captain = latest_client.aid,
+    members = { { aid = latest_client.aid } },
+}
 local return_connected = lobby.return_lobby({
     level_id = 'official-connected-return',
     game_mode = 1202,
     max_player = 8,
 })
-local return_connected_timer = timeout_timers[#timeout_timers]
 assert_equal(return_connected.accepted, true, 'return_lobby connected accepted')
-assert_equal(#private_dungeon_requests, return_connected_before_requests, 'return_lobby connected waits for cleanup before platform request')
-assert_equal(type(latest_client.cleanup_before_exit_callback), 'function', 'return_lobby connected installs cleanup callback')
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, return_connected_before_requests + 1, 'return_lobby cleanup callback requests platform once')
-assert_equal(#completion_payloads, return_connected_before_completions + 1, 'return_lobby cleanup callback completes once')
-assert_equal(completion_payloads[#completion_payloads].request_id, return_connected.request_id, 'return_lobby cleanup completion request_id')
-assert_equal(completion_payloads[#completion_payloads].result_data.cleanup.code, 'ok', 'return_lobby cleanup diagnostic code')
-assert_equal(completion_payloads[#completion_payloads].result_data.platform_requested, true, 'return_lobby reports platform request')
-assert_equal(completion_payloads[#completion_payloads].result_data.entered_target, 'unknown', 'return_lobby does not claim target entry')
-assert_equal(completion_payloads[#completion_payloads].result_data.confirm_by, 'platform_request_sent', 'return_lobby confirmation source')
-assert_equal(return_connected_timer.removed, true, 'return_lobby cleanup removes request timer')
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, return_connected_before_requests + 1, 'return_lobby repeated cleanup callback is ignored')
-
-local function find_timeout(delay)
-    for index = #timeout_timers, 1, -1 do
-        if timeout_timers[index].delay == delay then
-            return timeout_timers[index], timeout_callbacks[index]
-        end
-    end
-    return nil, nil
-end
-
-local return_failed_before_requests = #private_dungeon_requests
-local return_failed_before_completions = #completion_payloads
-local reconnect_for_return_failed = lobby.connect(TEST_GAME_PLAY_ID)
-assert_equal(reconnect_for_return_failed.accepted, true, 'return_lobby cleanup failed reconnect accepted')
-latest_client.event_callbacks[1].callback()
-return_failed_before_completions = #completion_payloads
-local return_failed = lobby.return_lobby({
-    level_id = 'official-cleanup-failed-return',
-    game_mode = 1203,
-    max_player = 8,
-})
-local return_failed_timer = timeout_timers[#timeout_timers]
-assert_equal(return_failed.accepted, true, 'return_lobby cleanup failed accepted')
-assert_equal(#private_dungeon_requests, return_failed_before_requests, 'return_lobby cleanup failed waits for callback before platform request')
-latest_client.cleanup_before_exit_callback(false, 'cleanup_failed')
-assert_equal(#private_dungeon_requests, return_failed_before_requests + 1, 'return_lobby cleanup failed requests platform once')
-assert_equal(#completion_payloads, return_failed_before_completions + 1, 'return_lobby cleanup failed completes once')
-assert_equal(completion_payloads[#completion_payloads].result_data.cleanup.code, 'cleanup_failed', 'return_lobby cleanup failed diagnostic code')
-assert_equal(return_failed_timer.removed, true, 'return_lobby cleanup failed removes request timer')
-
-local return_delayed_before_requests = #private_dungeon_requests
-local return_delayed_before_completions = #completion_payloads
-local reconnect_for_return_delayed = lobby.connect(TEST_GAME_PLAY_ID)
-assert_equal(reconnect_for_return_delayed.accepted, true, 'return_lobby cleanup delayed reconnect accepted')
-latest_client.event_callbacks[1].callback()
-return_delayed_before_completions = #completion_payloads
-latest_client.cleanup_before_exit_returns_false = true
-local return_delayed = lobby.return_lobby({
-    level_id = 'official-delayed-cleanup-return',
-    game_mode = 1204,
-    max_player = 8,
-})
-local delayed_watchdog_timer, delayed_watchdog_callback = find_timeout(8)
-local delayed_request_timer = find_timeout(10)
-assert_equal(return_delayed.accepted, true, 'return_lobby cleanup false then callback accepted')
-assert_equal(#private_dungeon_requests, return_delayed_before_requests, 'return_lobby cleanup false must wait for callback or watchdog')
-assert_equal(type(delayed_watchdog_callback), 'function', 'return_lobby cleanup false installs watchdog')
-assert_equal(delayed_watchdog_timer.delay < delayed_request_timer.delay, true, 'return_lobby cleanup watchdog is earlier than request timeout')
-latest_client.cleanup_before_exit_callback(false, 'cleanup_failed')
-assert_equal(#private_dungeon_requests, return_delayed_before_requests + 1, 'return_lobby delayed cleanup callback requests platform once')
-assert_equal(#completion_payloads, return_delayed_before_completions + 1, 'return_lobby delayed cleanup callback completes once')
-assert_equal(completion_payloads[#completion_payloads].result_data.cleanup.code, 'cleanup_failed', 'return_lobby delayed cleanup callback diagnostic code')
-assert_equal(delayed_watchdog_timer.removed, true, 'return_lobby delayed cleanup callback removes watchdog timer')
-assert_equal(delayed_request_timer.removed, true, 'return_lobby delayed cleanup callback removes request timer')
-delayed_watchdog_callback()
-assert_equal(#private_dungeon_requests, return_delayed_before_requests + 1, 'return_lobby delayed cleanup callback wins watchdog race')
-
-local return_watchdog_before_requests = #private_dungeon_requests
-local return_watchdog_before_completions = #completion_payloads
-local reconnect_for_return_watchdog = lobby.connect(TEST_GAME_PLAY_ID)
-assert_equal(reconnect_for_return_watchdog.accepted, true, 'return_lobby cleanup watchdog reconnect accepted')
-latest_client.event_callbacks[1].callback()
-return_watchdog_before_completions = #completion_payloads
-latest_client.cleanup_before_exit_returns_false = true
-local return_watchdog = lobby.return_lobby({
-    level_id = 'official-watchdog-cleanup-return',
-    game_mode = 1205,
-    max_player = 8,
-})
-local watchdog_timer, watchdog_callback = find_timeout(8)
-local watchdog_request_timer = find_timeout(10)
-assert_equal(return_watchdog.accepted, true, 'return_lobby cleanup watchdog accepted')
-assert_equal(#private_dungeon_requests, return_watchdog_before_requests, 'return_lobby cleanup watchdog waits before platform request')
-watchdog_callback()
-assert_equal(#private_dungeon_requests, return_watchdog_before_requests + 1, 'return_lobby cleanup watchdog requests platform once')
-assert_equal(#completion_payloads, return_watchdog_before_completions + 1, 'return_lobby cleanup watchdog completes once')
-assert_equal(completion_payloads[#completion_payloads].result_data.cleanup.code, 'cleanup_watchdog', 'return_lobby cleanup watchdog diagnostic code')
-assert_equal(watchdog_timer.removed, true, 'return_lobby cleanup watchdog removes watchdog timer')
-assert_equal(watchdog_request_timer.removed, true, 'return_lobby cleanup watchdog removes request timer')
-latest_client.cleanup_before_exit_callback(true, nil)
-assert_equal(#private_dungeon_requests, return_watchdog_before_requests + 1, 'return_lobby late callback after watchdog is ignored')
-latest_client.cleanup_before_exit_returns_false = nil
+assert_equal(return_connected.result_data.platform_requested, true, 'return_lobby connected reports platform request')
+assert_equal(return_connected.result_data.cross_map_tracking, 'degraded', 'return_lobby connected reports degraded tracking')
+assert_equal(#private_dungeon_requests, return_connected_before_requests + 1, 'return_lobby connected requests platform immediately')
+assert_equal(#completion_payloads, return_connected_before_completions, 'return_lobby connected does not publish completion')
+assert_equal(return_connected.request_id, '', 'return_lobby does not expose awaitable request id')
+assert_equal(latest_client.cleanup_before_exit_calls, return_connected_cleanup_calls, 'return_lobby does not run exit cleanup')
+assert_equal(client.get(), return_connected_client, 'return_lobby preserves lobby client')
+assert_equal(latest_client.team_info.team_id, 77221, 'return_lobby preserves cached team state')
+assert_equal(lobby.get_state().result_data.status, 'connected', 'return_lobby preserves connected status')
 
 local function reset_contract_runtime()
     client._reset_for_test()
@@ -1100,7 +1031,7 @@ assert_equal(pending_return.accepted, true, 'return_lobby accepts while connect 
 assert_equal(pending_return_client.cleanup_before_exit_calls, 0, 'return_lobby must not cleanup half-initialized pending client')
 assert_equal(count_completion(pending_return_connect.request_id, 'cancelled_by_terminal'), 1, 'pending connect cancelled exactly once by return_lobby')
 drain_frames()
-assert_equal(count_completion(pending_return.request_id, 'ok'), 1, 'return_lobby terminal completes after cancelling connect')
+assert_equal(count_completion(pending_return.request_id, 'ok'), 0, 'return_lobby does not publish completion after cancelling connect')
 assert_equal(#private_dungeon_requests, 1, 'return_lobby terminal still requests platform once')
 assert_equal(lobby.get_state().result_data.status, 'idle', 'return_lobby after pending connect ends idle')
 assert_equal(client.get(), nil, 'return_lobby clears pending client')
@@ -1152,9 +1083,10 @@ local terminal_during_operation = lobby.return_lobby({
 })
 assert_equal(terminal_during_operation.accepted, true, 'terminal bypasses ordinary operation lock')
 assert_equal(count_completion(pending_operation.request_id, 'cancelled_by_terminal'), 1, 'ordinary operation cancelled exactly once by terminal')
-pending_operation_client.cleanup_before_exit_callback(true, nil)
-drain_frames()
-assert_equal(count_completion(terminal_during_operation.request_id, 'ok'), 1, 'terminal completes after cancelling ordinary operation')
+assert_equal(pending_operation_client.cleanup_before_exit_calls, 0, 'return_lobby does not cleanup client during pending operation')
+assert_equal(client.get(), pending_operation_client, 'return_lobby preserves client during pending operation')
+assert_equal(lobby.get_state().result_data.status, 'connected', 'return_lobby restores connected status after cancelling operation')
+assert_equal(count_completion(terminal_during_operation.request_id, 'ok'), 0, 'return_lobby does not complete after cancelling ordinary operation')
 local after_operation_terminal_count = #completion_payloads
 pending_operation_client.set_score_callbacks[1].callback(nil, nil)
 assert_equal(#completion_payloads, after_operation_terminal_count, 'late ordinary operation callback is no-op after terminal cancellation')
@@ -1185,24 +1117,25 @@ drain_frames()
 reset_contract_runtime()
 local connected_for_terminal_lock = lobby.connect(TEST_GAME_PLAY_ID)
 assert_equal(connected_for_terminal_lock.accepted, true, 'connect for terminal lock accepted')
-latest_client.cleanup_before_exit_returns_false = true
-local active_terminal = lobby.return_lobby({
+local retry_client = latest_client
+local retry_cleanup_calls = latest_client.cleanup_before_exit_calls
+local retry_requests_before = #private_dungeon_requests
+local first_return = lobby.return_lobby({
     level_id = 'official-active-terminal',
     game_mode = 1304,
     max_player = 8,
 })
-assert_equal(active_terminal.accepted, true, 'first terminal accepted')
-assert_equal(lobby.get_state().result_data.status, 'closing', 'terminal enters closing status')
-emit_client_event(latest_client, '准备就绪')
-assert_equal(lobby.get_state().result_data.status, 'closing', 'late ready must not restore connected during terminal cleanup')
-emit_client_event(latest_client, '在线状态变化', 'login')
-assert_equal(lobby.get_state().result_data.status, 'closing', 'late login must not restore connected during terminal cleanup')
-local ordinary_during_terminal = lobby.set_score(456)
-assert_equal(ordinary_during_terminal.accepted, false, 'ordinary operation rejected during terminal')
-assert_equal(ordinary_during_terminal.code, 'terminal_in_progress', 'ordinary operation reports terminal_in_progress')
-local second_terminal = lobby.exit_game()
-assert_equal(second_terminal.accepted, false, 'second terminal rejected during terminal')
-assert_equal(second_terminal.code, 'terminal_locked', 'second terminal reports terminal_locked')
+local second_return = lobby.return_lobby({
+    level_id = 'official-active-terminal',
+    game_mode = 1304,
+    max_player = 8,
+})
+assert_equal(first_return.accepted, true, 'first return_lobby request accepted')
+assert_equal(second_return.accepted, true, 'return_lobby remains retryable')
+assert_equal(#private_dungeon_requests, retry_requests_before + 2, 'return_lobby retry submits platform request again')
+assert_equal(latest_client.cleanup_before_exit_calls, retry_cleanup_calls, 'return_lobby retry does not run exit cleanup')
+assert_equal(client.get(), retry_client, 'return_lobby retry preserves client')
+assert_equal(lobby.get_state().result_data.status, 'connected', 'return_lobby retry preserves connected status')
 
 reset_contract_runtime()
 local connected_for_completion_listener_lock = lobby.connect(TEST_GAME_PLAY_ID)
@@ -1248,26 +1181,6 @@ assert_equal(#private_dungeon_requests, 0, 'same-frame terminal reentry must not
 assert_exit_terminal_settled(same_frame_exit, same_frame_completion_count_before, same_frame_exit_calls_before, 'same-frame terminal lock')
 
 reset_contract_runtime()
-next_client_options = { cleanup_before_exit_immediate = true }
-local connected_for_deferred_terminal = lobby.connect(TEST_GAME_PLAY_ID)
-assert_equal(connected_for_deferred_terminal.accepted, true, 'connect for deferred terminal completion accepted')
-local deferred_terminal_before_completions = #completion_payloads
-local deferred_terminal_factory_before = factory_calls
-local deferred_terminal = lobby.return_lobby({
-    level_id = 'official-deferred-terminal',
-    game_mode = 1305,
-    max_player = 8,
-})
-assert_equal(deferred_terminal.accepted, true, 'return_lobby synchronous cleanup accepted')
-assert_equal(#completion_payloads, deferred_terminal_before_completions, 'return_lobby synchronous cleanup defers terminal completion')
-local connect_during_deferred_terminal = lobby.connect(TEST_GAME_PLAY_ID)
-assert_equal(connect_during_deferred_terminal.accepted, false, 'connect during deferred terminal completion rejected')
-assert_equal(connect_during_deferred_terminal.code, 'connection_closing', 'connect during deferred terminal completion reports connection_closing')
-assert_equal(factory_calls, deferred_terminal_factory_before, 'connect during deferred terminal completion does not create client')
-drain_frames()
-assert_equal(count_completion(deferred_terminal.request_id, 'ok'), 1, 'deferred terminal completion publishes once')
-
-reset_contract_runtime()
 local connected_for_platform_failure = lobby.connect(TEST_GAME_PLAY_ID)
 assert_equal(connected_for_platform_failure.accepted, true, 'connect for platform failure accepted')
 platform_return_error = 'platform return failed'
@@ -1276,13 +1189,13 @@ local platform_failure = lobby.return_lobby({
     game_mode = 1306,
     max_player = 8,
 })
-assert_equal(platform_failure.accepted, true, 'return_lobby platform failure accepted')
-latest_client.cleanup_before_exit_callback(true, nil)
-drain_frames()
-local _, platform_failure_payload = count_completion(platform_failure.request_id)
-assert_equal(platform_failure_payload.success, false, 'platform failure completes as failed')
-assert_equal(lobby.get_state().result_data.status ~= 'connected', true, 'platform failure after cleanup must not leave connected status')
-assert_equal(client.get(), nil, 'platform failure after cleanup clears runtime client')
+assert_equal(platform_failure.accepted, false, 'return_lobby platform failure rejected synchronously')
+assert_equal(platform_failure.code, 'request_error', 'return_lobby platform failure code')
+local platform_failure_completion_count = count_completion(platform_failure.request_id)
+assert_equal(platform_failure_completion_count, 0, 'platform failure does not fabricate return_lobby completion')
+assert_equal(latest_client.cleanup_before_exit_calls, 0, 'platform failure does not run exit cleanup')
+assert_equal(lobby.get_state().result_data.status, 'connected', 'platform failure preserves connected status')
+assert_equal(client.get(), latest_client, 'platform failure preserves runtime client')
 
 captured_logs = {}
 require 'y3.game.lobby.bob'

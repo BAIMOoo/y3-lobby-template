@@ -35,7 +35,7 @@ y3.lobby.connect(190356, false, 'pre')
 
 组队、匹配、聊天、跨房合流和高级查询接口必须在连接成功后调用。未连接时会立即返回失败，常见 `code` 为 `not_connected` 或 `connection_pending`。同房分流、加入口令和获取口令不要求预先连接。
 
-`return_lobby(params)` 和 `exit_game()` 不要求预先连接。目标玩法关卡如果只需要返回大厅或退出游戏，不需要为此调用 `connect()`；已有连接时，框架会先尽力清理大厅状态。
+`return_lobby(params)` 和 `exit_game()` 不要求预先连接。目标玩法关卡如果只需要返回大厅或退出游戏，不需要为此调用 `connect()`。两者语义不同：返回大厅只提交跨图请求，保留队伍、匹配和 BOB 连接；退出游戏才会尽力清理大厅状态。
 
 ## 完成回调
 
@@ -49,11 +49,13 @@ local listener = y3.lobby.on_complete(function(payload)
 end)
 ```
 
-同一个请求只会完成一次。同步失败不会再触发完成回调。
+同一个普通异步请求只会完成一次。同步失败不会再触发完成回调。
+
+`same_room_split()`、`join_by_token()` 和 `return_lobby()` 是请求提交型跨图接口。引擎没有提供平台最终结果回调，因此这三项不会触发 `on_complete`；其 `accepted = true` 只表示当前客户端已发出引擎请求。必须等待新地图实际加载并重新查询状态，才能确认成功。
 
 如果建立连接或其他对外调用接口的请求尚未完成，此时又调用 `return_lobby()` 或 `exit_game()`，旧请求会被取消，并且只会收到一次 `success = false`、`code = cancelled_by_terminal` 的完成结果。旧请求即使之后返回，也不会再改变结果。
 
-返回大厅的完成结果可通过 `result_data.cleanup` 查看是否执行了清理以及失败原因。需要取消订阅时调用：
+返回大厅的立即结果通过 `result_data.platform_requested` 表示是否已调用引擎换图方法；该接口不返回 `cleanup_pending`。需要取消订阅时调用：
 
 ```lua
 listener:remove()
@@ -107,7 +109,7 @@ end)
 | --- | --- |
 | `accepted` | 请求是否已发出 |
 | `action` | 操作名称 |
-| `request_id` | 请求编号，用于对应后续完成结果 |
+| `request_id` | 普通异步请求编号；三项请求提交型跨图接口为空 |
 | `reason` | 失败原因或补充说明 |
 | `code` | 便于程序判断的结果码 |
 | `sync` | 是否为同步结果 |
@@ -149,7 +151,7 @@ end)
 | 跨房合流 | `y3.lobby.cross_room_merge(params)` | `game_map_id`、`level_id`、`game_mode`、`players` 必填 |
 | 加入口令 | `y3.lobby.join_by_token(token)` | 使用口令进入目标关卡 |
 | 获取口令 | `y3.lobby.get_token()` | 获取当前目标关卡口令 |
-| 返回大厅 | `y3.lobby.return_lobby(params)` | `level_id`、`game_mode`、`max_player` 必填；无需预先连接；已有连接时先清理 |
+| 返回大厅 | `y3.lobby.return_lobby(params)` | `level_id`、`game_mode`、`max_player` 必填；无需预先连接；不清理队伍、匹配或 BOB |
 | 退出游戏 | `y3.lobby.exit_game()` | 无需预先连接；已有连接时先清理 |
 | 获取状态快照 | `y3.lobby.request_state()` / `y3.lobby.get_state()` | 同步获取状态 |
 | 获取队伍信息 | `y3.lobby.get_team_info(aid)` | 异步查询指定 AID 的队伍信息；`aid` 可选，省略时查询自己 |
@@ -277,15 +279,15 @@ y3.lobby.return_lobby({
 y3.lobby.exit_game()
 ```
 
-`return_lobby(params)` 和 `exit_game()` 都可以在未连接时直接调用。已连接时，框架会先清理队伍、匹配等大厅状态，再执行返回或退出。返回大厅成功时，完成结果包含 `platform_requested = true`、`entered_target = 'unknown'`、`confirm_by = 'platform_request_sent'`。
+`return_lobby(params)` 和 `exit_game()` 都可以在未连接时直接调用。`return_lobby(params)` 会立即提交引擎换图请求，不执行取消匹配、离队、删除玩家信息或销毁 BOB；当前地图未成功切换时，原连接和队伍缓存仍可使用，并可再次提交返回请求。实际加载大厅地图后需要重新连接并查询远端队伍状态。
 
-返回或退出正在处理时：
+`exit_game()` 才会进入异步终态清理，依次尽力取消匹配、离队、删除玩家信息并释放客户端。退出正在处理时：
 
 - 新的 `connect()` 会立即失败，`code = connection_closing`。
 - 新的队伍、匹配、聊天、同房分流、跨房合流、口令等操作会立即失败，`code = terminal_in_progress`。
 - 第二个返回或退出请求会立即失败，`code = terminal_locked`。
 
-`return_lobby()` 请求结束后，状态会恢复为 `idle`。`exit_game()` 会先发出请求完成结果，再退出游戏。
+`return_lobby()` 提交后会恢复调用前的连接状态：原本已连接则仍为 `connected`，未连接则为 `idle`。`exit_game()` 会先发出请求完成结果，再退出游戏。
 
 ## 状态快照与失败处理
 
@@ -311,9 +313,9 @@ end
 | `code = local_player_missing` / `local_aid_missing` | 当前客户端是否能读取本地玩家及其平台 AID |
 | `code = rpc_failed` | 远端调用失败；原始错误值会保留在 `result_data.remote_error_code` |
 | `code = cancelled_by_terminal` | 旧请求被返回大厅或退出游戏取消，不需要再处理旧请求结果 |
-| `code = connection_closing` | 正在返回大厅或退出游戏，当前不能建立连接 |
-| `code = terminal_in_progress` | 正在返回大厅或退出游戏，当前不能发起其他功能请求 |
-| `code = terminal_locked` | 已有返回大厅或退出游戏请求正在处理，不要重复点击 |
+| `code = connection_closing` | 终态操作正在占用连接，当前不能建立连接 |
+| `code = terminal_in_progress` | 终态操作正在处理，当前不能发起其他功能请求 |
+| `code = terminal_locked` | 已有终态操作正在处理，不要重复提交 |
 | `failed_events` 非空 | Lua 完成回调或 ECA 完成事件是否处理失败 |
 
 [下一篇：ECA 功能使用](./04-ECA功能使用.md)
