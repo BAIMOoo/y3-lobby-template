@@ -557,11 +557,15 @@ local function run_case(path)
     assert_equal(
         private_dungeon_params.game_map_id,
         'test-game-map-id',
-        path .. ' private dungeon target map')
+        path .. ' private dungeon current map version id')
     assert_equal(
         private_dungeon_params.level_id,
         '50377054694119407947881484918402159964',
         path .. ' private dungeon target level')
+    assert_equal(
+        private_dungeon_params.engine_level_id,
+        '25e6448f-7e73-11f1-88ae-03dc5a85955c',
+        path .. ' private dungeon engine target level')
     assert_equal(private_dungeon_params.game_mode, 1003, path .. ' private dungeon target mode')
     assert_equal(private_dungeon_params.max_player, 2, path .. ' private dungeon player limit')
     assert_log_contains(log_entries, 'info', {

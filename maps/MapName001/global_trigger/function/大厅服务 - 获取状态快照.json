@@ -78,7 +78,7 @@
     "event": [],
     "func_category": "t_function",
     "func_comment": "",
-    "func_des": "请求获取大厅、连接、队伍、匹配、聊天、同房分流和跨房合流状态快照",
+    "func_des": "请求获取大厅、连接、队伍、匹配、聊天和局内私人副本状态快照",
     "func_id": "06baf266d22b5844b236f6a8dea1828e",
     "func_name": "大厅服务 - 获取状态快照",
     "group_id": 0,

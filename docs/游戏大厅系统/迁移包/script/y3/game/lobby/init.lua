@@ -8,7 +8,7 @@ local M = {}
 local PLAYER_VERSION = '2.0'
 local REQUEST_TIMEOUT = 10
 local EXIT_CLEANUP_WATCHDOG_TIMEOUT = 8
-local CROSS_MAP_TRANSITION_LOCK = 'cross_map_transition'
+local TEAM_PRIVATE_DUNGEON_FAILURE_REASON = '组队局内私人副本请求失败，所有人留在原地，请队长重试'
 
 local listeners = {}
 local LOCAL_REJECTION = {}
@@ -78,16 +78,6 @@ local function caught_error_handler(action, redact_error)
         pcall(log.error, '[Lobby] 调用异常 | action=' .. action .. ' | error=' .. reason)
         return reason
     end
-end
-
-local function reject_if_cross_map_pending(action)
-    local pending_request_id = state.runtime.locks[CROSS_MAP_TRANSITION_LOCK]
-    if not pending_request_id then
-        return nil
-    end
-    return result.rejected(action, 'cross_map_pending', '关卡切换请求已发出，请等待目标关卡加载', {
-        pending_request_id = pending_request_id,
-    })
 end
 
 local function remove_resource(resource)
@@ -287,12 +277,12 @@ local function new_request(action, lock)
     return request
 end
 
-local function not_connected_result(action, code)
+local function not_connected_result(action, code, result_data)
     if state.runtime.locks.terminal then
         return result.rejected(action, 'terminal_in_progress', '正在返回大厅或退出游戏')
     end
     local reason = code == 'connection_pending' and '大厅连接正在建立' or '大厅尚未连接'
-    return result.rejected(action, code, reason)
+    return result.rejected(action, code, reason, result_data)
 end
 
 local function reject_if_not_connected(action)
@@ -314,7 +304,7 @@ local function run_async(action, lock, starter, options)
     if options.require_connected ~= false then
         local client, code = client_api.require_ready()
         if not client then
-            return not_connected_result(action, code)
+            return not_connected_result(action, code, options.rejected_result_data)
         end
         options.client = client
     else
@@ -341,7 +331,11 @@ local function run_async(action, lock, starter, options)
     end, caught_error_handler(action, options.redact_error))
     if not ok then
         reject_request(request)
-        return result.rejected(action, 'request_error', sent)
+        return result.rejected(
+            action,
+            'request_error',
+            options.request_error_reason or sent,
+            options.rejected_result_data)
     end
     if sent == false then
         reject_request(request)
@@ -352,7 +346,11 @@ local function run_async(action, lock, starter, options)
                 send_failure.reason,
                 send_failure.result_data)
         end
-        return result.rejected(action, 'request_failed', send_failure or '请求未发送')
+        return result.rejected(
+            action,
+            'request_failed',
+            options.request_failed_reason or send_failure or '请求未发送',
+            options.rejected_result_data)
     end
     starter_returned = true
     if deferred_done then
@@ -364,6 +362,9 @@ local function run_async(action, lock, starter, options)
         else
             finish_request(request, table.unpack(args, 1, args.n))
         end
+    end
+    if type(options.accepted_result_data) == 'table' then
+        options.accepted_result_data.request_id = request.id
     end
     return result.accepted(action, request.id, {
         result_data = options.accepted_result_data,
@@ -497,7 +498,7 @@ local function rpc_done(done, success_reason, result_data)
     end
 end
 
-local function state_done(request, client, event_name, predicate, done, success_reason, result_data)
+local function state_done(request, client, event_name, predicate, done, success_reason, result_data, failure_reason)
     local rpc_succeeded = false
     local function check_state()
         if request.done or not rpc_succeeded then
@@ -522,7 +523,7 @@ local function state_done(request, client, event_name, predicate, done, success_
     end
     return function(_, err)
         if err then
-            done(false, 'rpc_failed', tostring(err), remote_error_data(err))
+            done(false, 'rpc_failed', failure_reason or tostring(err), remote_error_data(err))
             return
         end
         rpc_succeeded = true
@@ -541,8 +542,9 @@ end
 
 ---@param game_play_id integer
 ---@param in_game boolean?
+---@param endpoint_env string?
 ---@return table
-function M.connect(game_play_id, in_game)
+function M.connect(game_play_id, in_game, endpoint_env)
     local valid_game_play_id = validate_game_play_id(game_play_id)
     if not valid_game_play_id then
         return result.rejected('建立连接', 'invalid_game_play_id', '请传入有效的玩法 ID game_play_id')
@@ -550,9 +552,12 @@ function M.connect(game_play_id, in_game)
     if in_game ~= nil and type(in_game) ~= 'boolean' then
         return result.rejected('建立连接', 'invalid_argument', '是否在游戏关卡必须是布尔值')
     end
+    if endpoint_env ~= nil and endpoint_env ~= 'qa' and endpoint_env ~= 'pre' and endpoint_env ~= 'prod' then
+        return result.rejected('建立连接', 'invalid_argument', 'endpoint_env must be qa, pre, or prod')
+    end
     return client_api.connect(valid_game_play_id, function(request, success, code, reason, data)
         notify_complete(result.completed(request.id, request.action, success, code, reason, data))
-    end, in_game == true)
+    end, in_game == true, endpoint_env)
 end
 
 function M.get_connection_status()
@@ -941,8 +946,57 @@ function M.get_chat_message(index, channel)
     })
 end
 
-function M.same_room_split(params)
-    local action = '同房分流'
+local function private_dungeon_result_data(route, completion_mode, level_id, game_mode, max_player)
+    return {
+        route = route,
+        completion_mode = completion_mode,
+        request_id = '',
+        selected_players = {},
+        skipped_in_game_players = {},
+        unknown_status_players = {},
+        platform_requested = false,
+        entered_target = 'not_entered',
+        level_id = level_id,
+        game_mode = game_mode,
+        max_player = max_player,
+    }
+end
+
+local function build_players_from_members(members)
+    local players = {}
+    local selected_players = {}
+    local skipped_in_game_players = {}
+    local unknown_status_players = {}
+    for _, member in ipairs(members or {}) do
+        local public_member = state.public_player(member)
+        if member.in_game == false then
+            players[#players + 1] = {
+                aid = tostring(public_member.aid),
+                version = PLAYER_VERSION,
+            }
+            selected_players[#selected_players + 1] = public_member
+        elseif member.in_game == true or member.state == '游戏中' then
+            skipped_in_game_players[#skipped_in_game_players + 1] = public_member
+        else
+            unknown_status_players[#unknown_status_players + 1] = public_member
+        end
+    end
+    return players, selected_players, skipped_in_game_players, unknown_status_players
+end
+
+function M._private_dungeon_completion_mode_for_eca(params)
+    if type(params) ~= 'table' then
+        return 'request_only'
+    end
+    local client = client_api.get()
+    if client and client:is_in_team() then
+        return 'async'
+    end
+    return 'request_only'
+end
+
+function M.private_dungeon(params)
+    local action = '局内私人副本'
     if type(params) ~= 'table' then
         return result.rejected(action, 'invalid_argument', 'params must be a table')
     end
@@ -952,134 +1006,79 @@ function M.same_room_split(params)
     if level_id == '' or not game_mode or not max_player or max_player <= 0 then
         return result.rejected(action, 'invalid_argument', 'level_id, integer game_mode and positive max_player are required')
     end
-    local local_player = get_local_player()
-    local current_aid = get_local_player_aid(local_player)
     if params.players ~= nil then
-        if type(params.players) ~= 'table' then
-            return result.rejected(action, 'invalid_argument', 'players must be a table')
-        end
-        if #params.players > 0 then
-            if not current_aid then
-                return result.rejected(action, 'local_aid_missing', '无法读取本地玩家平台 AID')
-            end
-            local selected = false
-            for _, player in ipairs(params.players) do
-                if type(player) ~= 'table' then
-                    return result.rejected(action, 'invalid_argument', 'each player must be a table')
-                end
-                local aid = to_integer(player.aid)
-                if not aid then
-                    return result.rejected(action, 'invalid_argument', 'each player must contain integer aid')
-                end
-                if aid == current_aid then
-                    selected = true
-                end
-            end
-            if not selected then
-                return result.rejected(action, 'player_not_selected', 'local player is not selected', {
-                    local_aid = current_aid,
-                    players = params.players,
-                })
-            end
-        end
+        return result.rejected(action, 'invalid_argument', 'players 由框架根据队伍成员状态自动筛选，不支持外部传入')
     end
-    local pending = reject_if_cross_map_pending(action)
-    if pending then
-        return pending
+    local engine_level_id = trim(params.engine_level_id)
+    if engine_level_id == '' then
+        engine_level_id = level_id
     end
-    local request_data = {
-        level_id = level_id,
-        game_mode = game_mode,
-        max_player = max_player,
-        platform_requested = false,
-        entered_target = 'unknown',
-        confirm_by = 'platform_request_sent',
-        transition_pending = false,
-    }
-    return run_async(action, 'operation', function(_, request, done)
-        if not local_player or not local_player.handle then
-            return local_rejection('local_player_missing', 'local player not found', request_data)
+    local client = client_api.get()
+    if client and client:is_in_team() then
+        local game_map_id = trim(params.game_map_id)
+        if game_map_id == '' then
+            return result.rejected(action, 'invalid_argument', 'game_map_id is required for team private dungeon')
         end
-        local_player.handle:request_create_private_dungeon(
-            level_id,
-            game_mode,
-            max_player,
-            params.custom_param)
-        request_data.platform_requested = true
-        request_data.transition_pending = true
-        state.runtime.locks[CROSS_MAP_TRANSITION_LOCK] = request.id
-        done(true, 'ok', '同房分流请求已提交，等待关卡切换', request_data)
-        return true
-    end, {
-        require_connected = false,
-        accepted_result_data = request_data,
+        local players, selected, skipped, unknown = build_players_from_members(client.team_info and client.team_info.members or {})
+        local request_data = private_dungeon_result_data('team_bob', 'async_event', level_id, game_mode, max_player)
+        request_data.game_map_id = game_map_id
+        request_data.engine_level_id = engine_level_id
+        request_data.selected_players = selected
+        request_data.skipped_in_game_players = skipped
+        request_data.unknown_status_players = unknown
+        if #players == 0 then
+            request_data.route = 'rejected'
+            request_data.completion_mode = 'sync_rejected'
+            return result.rejected(action, 'no_eligible_players', '没有明确可进入的队伍成员', request_data)
+        end
+        return run_async(action, 'operation', function(team_client, request, done)
+            if not team_client:is_captain() then
+                request_data.route = 'rejected'
+                request_data.completion_mode = 'sync_rejected'
+                return local_rejection('not_captain', '只有队长可以发起局内私人副本', request_data)
+            end
+            local starter = team_client.start_private_dungeon_game_filtered
+            if type(starter) ~= 'function' then
+                request_data.route = 'rejected'
+                request_data.completion_mode = 'sync_rejected'
+                return local_rejection('request_failed', 'BOB 私人副本接口不可用', request_data)
+            end
+            return starter(team_client, {
+                game_map_id = game_map_id,
+                level_id = level_id,
+                game_mode = game_mode,
+            }, players, state_done(request, team_client, '启动状态变化', function()
+                return team_client:is_launching()
+            end, done, 'private dungeon requested', request_data,
+                TEAM_PRIVATE_DUNGEON_FAILURE_REASON))
+        end, {
+            accepted_result_data = request_data,
+            rejected_result_data = request_data,
+            request_error_reason = TEAM_PRIVATE_DUNGEON_FAILURE_REASON,
+            request_failed_reason = TEAM_PRIVATE_DUNGEON_FAILURE_REASON,
+        })
+    end
+
+    local local_player = get_local_player()
+    local request_data = private_dungeon_result_data('solo_engine', 'request_only', engine_level_id, game_mode, max_player)
+    request_data.platform_level_id = level_id
+    request_data.entered_target = 'unknown'
+    request_data.cross_map_tracking = 'degraded'
+    if not local_player or not local_player.handle then
+        return result.rejected(action, 'local_player_missing', 'local player not found', request_data)
+    end
+    local requested, request_error = xpcall(function()
+        request_create_private_dungeon(local_player, engine_level_id, game_mode, max_player, params.custom_param)
+    end, caught_error_handler(action))
+    if not requested then
+        return result.rejected(action, 'request_error', request_error, request_data)
+    end
+    request_data.platform_requested = true
+    return result.accepted(action, nil, {
+        sync = true,
+        reason = '局内私人副本请求已提交，等待关卡切换',
+        result_data = request_data,
     })
-end
-
-local function build_players(params)
-    local players = {}
-    for _, player in ipairs(params.players or {}) do
-        if type(player) ~= 'table' then
-            return nil, 'each player must be a table'
-        end
-        local aid = to_integer(player.aid)
-        if not aid then
-            return nil, 'each player must contain integer aid'
-        end
-        players[#players + 1] = {
-            aid = tostring(aid),
-            version = PLAYER_VERSION,
-        }
-    end
-    return players
-end
-
-function M.cross_room_merge(params)
-    local action = '跨房合流'
-    local rejected = reject_if_not_connected(action)
-    if rejected then
-        return rejected
-    end
-    if type(params) ~= 'table' then
-        return result.rejected(action, 'invalid_argument', 'params must be a table')
-    end
-    local game_map_id = trim(params.game_map_id)
-    local level_id = trim(params.level_id)
-    local game_mode = to_integer(params.game_mode)
-    if game_map_id == '' or level_id == '' or not game_mode then
-        return result.rejected(action, 'invalid_argument', 'game_map_id, level_id and integer game_mode are required')
-    end
-    if type(params.players) ~= 'table' or #params.players == 0 then
-        return result.rejected(action, 'invalid_argument', 'players is required')
-    end
-    local players, player_error = build_players(params)
-    if not players then
-        return result.rejected(action, 'invalid_argument', player_error)
-    end
-    return run_async(action, 'operation', function(client, request, done)
-        if not client:is_in_team() then
-            return local_rejection('not_in_team', '当前不在队伍中')
-        end
-        if not client:is_captain() then
-            return local_rejection('not_captain', '只有队长可以发起跨房合流')
-        end
-        local can_start, reason = client:can_match()
-        if not can_start then
-            return local_rejection(state_conflict_code(reason), reason)
-        end
-        return client:start_privat_dungeon_game({
-            game_map_id = game_map_id,
-            level_id = level_id,
-            game_mode = game_mode,
-        }, players, state_done(request, client, '启动状态变化', function()
-            return client:is_launching()
-        end, done, 'cross room merge requested', {
-            players = players,
-            platform_requested = true,
-            entered_target = 'unknown',
-            confirm_by = 'launching_state',
-        }))
-    end)
 end
 
 function M.join_by_token(token)
@@ -1088,25 +1087,28 @@ function M.join_by_token(token)
     if token == '' then
         return result.rejected(action, 'invalid_argument', '请输入口令')
     end
+    pcall(log.info, '[Lobby][PrivateDungeonDiag] 加入口令请求 | token=' .. token)
     local request_data = {
         token = token,
         platform_requested = false,
+        cross_map_tracking = 'degraded',
         entered_target = 'unknown',
-        confirm_by = 'platform_request_sent',
     }
-    return run_async(action, 'operation', function(_, _, done)
-        local local_player = get_local_player()
-        if not local_player or not local_player.handle then
-            return local_rejection('local_player_missing', '未找到本地玩家', request_data)
-        end
+    local local_player = get_local_player()
+    if not local_player or not local_player.handle then
+        return result.rejected(action, 'local_player_missing', '未找到本地玩家', request_data)
+    end
+    local requested, request_error = xpcall(function()
         local_player.handle:request_join_private_dungeon(token)
-        request_data.platform_requested = true
-        done(true, 'ok', '平台已受理加入口令请求', request_data)
-        return true
-    end, {
-        require_connected = false,
-        accepted_result_data = request_data,
-        redact_error = true,
+    end, caught_error_handler(action, true))
+    if not requested then
+        return result.rejected(action, 'request_error', request_error, request_data)
+    end
+    request_data.platform_requested = true
+    return result.accepted(action, nil, {
+        sync = true,
+        reason = '加入口令请求已提交，等待关卡切换',
+        result_data = request_data,
     })
 end
 
@@ -1183,8 +1185,7 @@ function M.get_token()
     if state.runtime.locks.terminal then
         return result.rejected('获取口令', 'terminal_in_progress', '正在返回大厅或退出游戏')
     end
-    local game_api = rawget(_G, 'GameAPI')
-    local info = game_api and game_api.get_dungeon_info and game_api.get_dungeon_info() or nil
+    local info = GameAPI.get_dungeon_info()
     local token = info and (info.space_id or info.spaceId) or ''
     return result.accepted('获取口令', nil, {
         sync = true,

@@ -6,7 +6,7 @@ local LOBBY_GAME_MODE = 1001
 local MATCH_GAME_MODE = 1002
 local PRIVATE_GAME_MODE = 1003
 local MATCH_LEVEL_ID = '50377054694119407947881484918402159964'
-local SAME_ROOM_LEVEL_ID = '25e6448f-7e73-11f1-88ae-03dc5a85955c'
+local ENGINE_PRIVATE_LEVEL_ID = '25e6448f-7e73-11f1-88ae-03dc5a85955c'
 local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
 local EXPECTED_PRIVATE_PLAYERS = 2
 local MAX_MEMBER_ROWS = 4
@@ -549,6 +549,7 @@ local function request_private_dungeon()
     return api({
         game_map_id = snapshot.game_map_id,
         level_id = MATCH_LEVEL_ID,
+        engine_level_id = ENGINE_PRIVATE_LEVEL_ID,
         game_mode = PRIVATE_GAME_MODE,
         max_player = EXPECTED_PRIVATE_PLAYERS,
     })

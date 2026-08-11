@@ -62,32 +62,47 @@ local function is_valid_client(client)
     return client.client ~= nil
 end
 
-local function get_endpoint()
-    local game_api = rawget(_G, 'GameAPI')
-    local dungeon_info = game_api and game_api.get_dungeon_info and game_api.get_dungeon_info() or nil
-    local env = dungeon_info and dungeon_info.env or nil
+local function validate_endpoint_env(value)
+    return value == nil or value == 'qa' or value == 'pre' or value == 'prod'
+end
+
+local function current_dungeon_token()
+    local dungeon_info = GameAPI.get_dungeon_info()
+    local token = dungeon_info and (dungeon_info.space_id or dungeon_info.spaceId) or ''
+    token = tostring(token or '')
+    if token == '' then
+        return '<missing>', 'missing'
+    end
+    return token, 'ok'
+end
+
+local function log_current_dungeon_token(reason)
+    local token, status = current_dungeon_token()
+    pcall(log.info, string.format(
+        '[Lobby][PrivateDungeonDiag] 当前关卡口令 | reason=%s | status=%s | token=%s',
+        tostring(reason),
+        status,
+        token))
+end
+
+local function get_endpoint(endpoint_env)
+    local dungeon_info = GameAPI.get_dungeon_info()
+    local platform_env = dungeon_info and dungeon_info.env or nil
     local debug_mode = y3 and y3.game and y3.game.is_debug_mode and y3.game.is_debug_mode() or false
-    if env == 'qa' or env == 'debug' or debug_mode then
+    local env
+    if platform_env == 'qa' or platform_env == 'debug' or debug_mode then
         env = 'qa'
-    elseif env ~= 'pre' then
+    elseif endpoint_env ~= nil then
+        env = endpoint_env
+    elseif platform_env == 'pre' then
+        env = 'pre'
+    else
         env = 'prod'
     end
     return ENDPOINTS[env], PORT, env
 end
 
-local function ensure_protocol_loaded()
-    local ok, proto_or_error = pcall(require, 'y3.game.lobby.proto.proto_helper')
-    if not ok then
-        return false, tostring(proto_or_error)
-    end
-    return proto_or_error.load_all()
-end
-
-local function default_factory(game_play_id, in_game)
-    local ok, err = ensure_protocol_loaded()
-    if not ok then
-        return nil, 'protocol_missing', err
-    end
+local function default_factory(game_play_id, in_game, endpoint_env)
     require 'y3.game.lobby.bob'
     local created, bob_or_error = pcall(function()
         return New 'LobbyBob' (game_play_id)
@@ -100,7 +115,7 @@ local function default_factory(game_play_id, in_game)
         return nil, 'connect_failed', reason
     end
     local bob = bob_or_error
-    bob.ip, bob.port, bob.env = get_endpoint()
+    bob.ip, bob.port, bob.env = get_endpoint(endpoint_env)
     state.runtime.endpoint_env = bob.env
     bob:set_in_game(in_game == true)
     return bob
@@ -132,9 +147,13 @@ local function request_is_current(request)
         and state.runtime.pending[request.id] == request
 end
 
----@param factory fun(game_play_id: integer, in_game: boolean): any, string?
+---@param factory fun(game_play_id: integer, in_game: boolean, endpoint_env: string?): any, string?
 function M._set_factory_for_test(factory)
     test_factory = factory
+end
+
+function M._resolve_endpoint_for_test(endpoint_env)
+    return get_endpoint(endpoint_env)
 end
 
 function M._reset_for_test()
@@ -159,14 +178,18 @@ end
 ---@param game_play_id integer
 ---@param finish fun(request: table, success: boolean, code: string, reason: string?, data: table?)
 ---@param in_game boolean?
+---@param endpoint_env string?
 ---@return table
-function M.connect(game_play_id, finish, in_game)
+function M.connect(game_play_id, finish, in_game, endpoint_env)
     game_play_id = validate_game_play_id(game_play_id)
     if not game_play_id then
         return result.rejected('建立连接', 'invalid_game_play_id', '请传入有效的玩法 ID game_play_id')
     end
     if in_game ~= nil and type(in_game) ~= 'boolean' then
         return result.rejected('建立连接', 'invalid_argument', '是否在游戏关卡必须是布尔值')
+    end
+    if not validate_endpoint_env(endpoint_env) then
+        return result.rejected('建立连接', 'invalid_argument', 'endpoint_env must be qa, pre, or prod')
     end
     in_game = in_game == true
     local status = state.runtime.status
@@ -257,7 +280,7 @@ function M.connect(game_play_id, finish, in_game)
     end
 
     local factory = test_factory or default_factory
-    local ok, client_or_error, fail_code, fail_reason = pcall(factory, game_play_id, in_game)
+    local ok, client_or_error, fail_code, fail_reason = pcall(factory, game_play_id, in_game, endpoint_env)
     if not ok then
         local reason = tostring(client_or_error)
         reject_connect_request(request)
@@ -280,6 +303,9 @@ function M.connect(game_play_id, finish, in_game)
 
     if client.event_on then
         local ready = client:event_on('准备就绪', function()
+            if in_game then
+                log_current_dungeon_token('ready')
+            end
             restore_connected('connection is ready')
         end)
         local unavailable = client:event_on('匹配服务不可用', function(_, error_message)

@@ -80,6 +80,15 @@ local SYNC_ACTIONS = {
     ['获取状态快照'] = true,
 }
 
+local REQUEST_ONLY_ACTIONS = {
+    ['加入口令'] = true,
+    ['返回大厅'] = true,
+}
+
+local ROUTE_AWARE_ACTIONS = {
+    ['局内私人副本'] = lobby._private_dungeon_completion_mode_for_eca,
+}
+
 local function is_valid_game_play_id(value)
     if type(value) ~= 'number' then
         return false
@@ -91,7 +100,12 @@ end
 local function call_for_eca(action, fn, ...)
     local args = table.pack(...)
     local invalid_connect = action == '建立连接' and not is_valid_game_play_id(args[1])
-    if not invalid_connect and not SYNC_ACTIONS[action] and not has_completion_event() then
+    local completion_mode = nil
+    if ROUTE_AWARE_ACTIONS[action] then
+        completion_mode = ROUTE_AWARE_ACTIONS[action](table.unpack(args, 1, args.n))
+    end
+    local request_only = REQUEST_ONLY_ACTIONS[action] or completion_mode == 'request_only'
+    if not invalid_connect and not SYNC_ACTIONS[action] and not request_only and not has_completion_event() then
         return result.rejected(action, 'event_missing', '请先在主关卡创建自定义事件：大厅服务请求完成，参数：回调数据')
     end
     local previous_origin = state.runtime.current_call_origin
@@ -124,8 +138,7 @@ local DEFINITIONS = {
     { '大厅服务 - 发送队伍聊天', '发送队伍聊天', lobby.send_team_chat, { { '消息', 'string' } } },
     { '大厅服务 - 发送世界聊天', '发送世界聊天', lobby.send_world_chat, { { '消息', 'string' } } },
     { '大厅服务 - 获取聊天记录', '获取聊天记录', lobby.get_chat_history, { { '频道', 'string?' } } },
-    { '大厅服务 - 同房分流', '同房分流', lobby.same_room_split, { { '分流参数', 'table' } } },
-    { '大厅服务 - 跨房合流', '跨房合流', lobby.cross_room_merge, { { '合流参数', 'table' } } },
+    { '大厅服务 - 局内私人副本', '局内私人副本', lobby.private_dungeon, { { '副本参数', 'table' } } },
     { '大厅服务 - 加入口令', '加入口令', lobby.join_by_token, { { '口令', 'string' } } },
     { '大厅服务 - 获取口令', '获取口令', lobby.get_token },
     { '大厅服务 - 返回大厅', '返回大厅', lobby.return_lobby, { { '大厅参数', 'table' } } },

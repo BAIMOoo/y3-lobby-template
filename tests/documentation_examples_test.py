@@ -32,7 +32,7 @@ ENTRYMAP_Y3_ROOT = ROOT / "maps" / "EntryMap" / "script" / "y3"
 CHILD_MAP_Y3_ROOT = ROOT / "maps" / "MapName001" / "script" / "y3"
 PUBLISHED_Y3_ROOTS = [WORKTREE, ENTRYMAP_Y3_ROOT, CHILD_MAP_Y3_ROOT, PACKAGE_Y3_ROOT]
 FUNCTION_DSL = ROOT / "tools" / "eca" / "lobby_service_functions.json"
-TEST_GAME_PLAY_ID = 10209075
+TEST_GAME_PLAY_ID = 190356
 
 EXPECTED_ECA_NAMES = [
     "大厅服务 - 建立连接",
@@ -223,12 +223,12 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertIn("内部", corpus)
         self.assertNotRegex(corpus, r"version\s*[=:]")
 
-    def test_example_maps_use_prod_lobby_endpoints(self):
+    def test_example_maps_use_pre_lobby_endpoints(self):
         lobby_entry = read_text(ROOT / "maps" / "EntryMap" / "script" / "main.lua")
         target_entry = read_text(ROOT / "maps" / "MapName001" / "script" / "main.lua")
         self.assertIn(f"local GAME_PLAY_ID = {TEST_GAME_PLAY_ID}", lobby_entry)
-        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'prod')", lobby_entry)
-        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, true, 'prod')", target_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'pre')", lobby_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, true, 'pre')", target_entry)
         self.assertIn("y3.lobby.get_connection_status()", target_entry)
         self.assertNotIn("include 'pub.init'", lobby_entry)
         self.assertNotIn("include 'pub.init'", target_entry)
@@ -244,10 +244,8 @@ class DocumentationExamplesTest(unittest.TestCase):
     def test_docs_explain_required_game_play_id_for_connection(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
         self.assertIn(f"y3.lobby.connect({TEST_GAME_PLAY_ID})", corpus)
-        self.assertIn("玩法 ID", corpus)
-        self.assertIn("不是调试参数", corpus)
-        self.assertIn("不是 UUID 格式的 `map_id`", corpus)
-        self.assertIn("不会自动从运行环境读取", corpus)
+        self.assertIn("玩法固定 ID", corpus)
+        self.assertIn("不要使用 `GameAPI.get_dungeon_info().game_play_id`", corpus)
         self.assertIn("平台审核后台", corpus)
         self.assertIn("它不写在 `gamemode.json`、`match.json` 或 `dungeon.json` 中", corpus)
         self.assertIn("invalid_game_play_id", corpus)
@@ -341,9 +339,14 @@ class DocumentationExamplesTest(unittest.TestCase):
                 )
                 self.assertEqual(0, process.returncode, process.stdout + process.stderr)
                 for relative_path in synchronized_files:
+                    expected = (WORKTREE / relative_path).read_bytes()
+                    actual = (lualib_root / relative_path).read_bytes()
+                    if Path(relative_path).suffix != ".pb":
+                        expected = expected.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+                        actual = actual.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
                     self.assertEqual(
-                        (WORKTREE / relative_path).read_bytes(),
-                        (lualib_root / relative_path).read_bytes(),
+                        expected,
+                        actual,
                         f"大厅协议发布副本不一致: {lualib_root / relative_path}",
                     )
 

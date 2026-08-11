@@ -335,6 +335,7 @@ for _, function_name in ipairs(expected_lua_functions) do
 end
 assert_equal(y3.lobby.same_room_split, nil, 'old y3.lobby.same_room_split must not be public API')
 assert_equal(y3.lobby.cross_room_merge, nil, 'old y3.lobby.cross_room_merge must not be public API')
+assert_equal(y3.lobby.start_private_dungeon, nil, 'private_dungeon must be the only public private-dungeon entry')
 
 assert_equal(client_factory_calls, 0, 'lobby module registration must not create BOB client')
 assert_equal(pb_load_calls, 0, 'lobby module registration must not call pb.load')
@@ -1304,12 +1305,13 @@ end, 'private_dungeon player aid non-integer')
 local solo_before_requests = #private_dungeon_requests
 local solo_private = y3.lobby.private_dungeon({
     level_id = 'solo-private',
+    engine_level_id = 'engine-solo-private',
     game_mode = 9404,
     max_player = 2,
 })
 assert_equal(solo_private.accepted, true, 'private_dungeon solo accepts without team')
 assert_equal(#private_dungeon_requests, solo_before_requests + 1, 'private_dungeon solo calls platform')
-assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'solo-private', 'private_dungeon solo forwards level_id')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'engine-solo-private', 'private_dungeon solo forwards engine level id')
 assert_equal(private_dungeon_requests[#private_dungeon_requests].argc, 3, 'private_dungeon solo without custom_param uses three arguments')
 assert_equal(solo_private.request_id, '', 'private_dungeon solo has no awaitable request id')
 assert_equal(solo_private.result_data.route, 'solo_engine', 'private_dungeon solo route')
@@ -1334,7 +1336,7 @@ end)
 local eca_pending_connect = registered[expected_eca_names[1]].callback(TEST_GAME_PLAY_ID)
 local eca_pending_client = latest_client
 local eca_pending_timeout_callback = timeout_callbacks[#timeout_callbacks]
-local eca_return_result = registered[expected_eca_names[20]].callback(terminal_params)
+local eca_return_result = registered[expected_eca_names[19]].callback(terminal_params)
 assert_equal(eca_return_result.accepted, true, 'ECA return_lobby should accept while connect is pending')
 assert_completion(completion_payloads[1], eca_pending_connect.request_id, eca_pending_connect.action, false, 'cancelled_by_terminal', 'pending ECA connect cancelled by return_lobby')
 assert_equal(emitted_events[1].payload.request_id, eca_pending_connect.request_id, 'ECA pending connect cancellation should emit completion event')
@@ -1666,7 +1668,8 @@ local bob_payloads_before = #latest_client.cross_room_payloads
 local private_requests_before_team = #private_dungeon_requests
 local private_team = y3.lobby.private_dungeon({
     game_map_id = 'map-team',
-    level_id = 'level-team',
+    level_id = 'platform-level-team',
+    engine_level_id = 'engine-level-team',
     game_mode = 801,
     max_player = 2,
 })
@@ -1674,7 +1677,11 @@ assert_equal(private_team.accepted, true, 'private_dungeon captain accepts filte
 assert_equal(#latest_client.cross_room_payloads, bob_payloads_before + 1, 'private_dungeon captain sends one BOB request')
 assert_equal(#private_dungeon_requests, private_requests_before_team, 'private_dungeon team path must not call solo engine request')
 assert_equal(#latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players, 1, 'private_dungeon filters to eligible players')
-assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players[1].aid, latest_client.aid, 'private_dungeon keeps explicit false in_game player')
+assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players[1].aid, tostring(latest_client.aid), 'private_dungeon serializes eligible player aid as protocol string')
+assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].dungeon_info.game_map_id, 'map-team', 'private_dungeon team forwards platform map config id')
+assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].dungeon_info.level_id, 'platform-level-team', 'private_dungeon team forwards dungeon config level id')
+assert_equal(private_team.result_data.level_id, 'platform-level-team', 'private_dungeon team keeps platform config level id in diagnostics')
+assert_equal(private_team.result_data.engine_level_id, 'engine-level-team', 'private_dungeon team reports engine level UUID')
 assert_equal(private_team.result_data.route, 'team_bob', 'private_dungeon team route')
 assert_equal(private_team.result_data.completion_mode, 'async_event', 'private_dungeon team completion mode')
 assert_equal(#private_team.result_data.selected_players, 1, 'private_dungeon selected count')
@@ -1682,6 +1689,9 @@ assert_equal(private_team.result_data.skipped_in_game_players[1].aid, 99002, 'pr
 assert_equal(private_team.result_data.unknown_status_players[1].aid, 99003, 'private_dungeon records unknown member')
 assert_equal(can_match_calls, 0, 'private_dungeon filtered BOB path does not run whole-team can_match')
 latest_client.cross_room_callback(nil, nil)
+latest_client.launching = true
+latest_client:emit('启动状态变化')
+latest_client.launching = false
 split_completion_count = #completion_payloads
 
 latest_client.team_info.members = {
@@ -1764,6 +1774,38 @@ assert_equal(bob_exception.result_data.platform_requested, false, 'private_dunge
 assert_equal(bob_exception.result_data.entered_target, 'not_entered', 'private_dungeon BOB exception leaves everyone in place')
 assert_equal(#private_dungeon_requests, exception_bob_private_before, 'private_dungeon BOB exception does not downgrade to solo')
 latest_client.start_private_dungeon_game_filtered = original_start_private
+
+local async_failure_platform_before = #private_dungeon_requests
+local async_failure = y3.lobby.private_dungeon({
+    game_map_id = 'map-async-failure',
+    level_id = 'level-async-failure',
+    game_mode = 801,
+    max_player = 2,
+})
+assert_equal(async_failure.accepted, true, 'private_dungeon accepts BOB request before async failure')
+latest_client.cross_room_callback(nil, 'rpc unavailable')
+local async_failure_completion = completion_payloads[#completion_payloads]
+assert_equal(async_failure_completion.request_id, async_failure.request_id, 'private_dungeon async failure completion request id')
+assert_equal(async_failure_completion.success, false, 'private_dungeon async failure reports failure')
+assert_true(async_failure_completion.reason:find('所有人留在原地，请队长重试', 1, true) ~= nil, 'private_dungeon async failure prompts captain retry')
+assert_equal(#private_dungeon_requests, async_failure_platform_before, 'private_dungeon async failure never downgrades to solo')
+split_completion_count = #completion_payloads
+
+local disconnected_team_bob_before = #latest_client.cross_room_payloads
+local disconnected_team_platform_before = #private_dungeon_requests
+state_api.set_status('failed')
+assert_equal(y3.lobby._private_dungeon_completion_mode_for_eca({}), 'async', 'cached team keeps async ECA route while disconnected')
+local disconnected_team = y3.lobby.private_dungeon({
+    game_map_id = 'map-disconnected-team',
+    level_id = 'level-disconnected-team',
+    game_mode = 801,
+    max_player = 2,
+})
+assert_equal(disconnected_team.accepted, false, 'disconnected cached team must reject')
+assert_equal(disconnected_team.code, 'not_connected', 'disconnected cached team rejection code')
+assert_equal(#latest_client.cross_room_payloads, disconnected_team_bob_before, 'disconnected cached team sends no BOB request')
+assert_equal(#private_dungeon_requests, disconnected_team_platform_before, 'disconnected cached team never downgrades to solo')
+state_api.set_status('connected')
 
 do
 local previous_player_api = y3.player
@@ -2199,6 +2241,9 @@ y3.eca.call = function()
     error('eca completion send failed')
 end
 latest_client.cross_room_callback(nil, nil)
+latest_client.launching = true
+latest_client:emit('启动状态变化')
+latest_client.launching = false
 assert_equal(table_size(state_api.runtime.failed_events), 1, 'ECA private_dungeon team records completion send failure')
 
 latest_client.team_info = nil

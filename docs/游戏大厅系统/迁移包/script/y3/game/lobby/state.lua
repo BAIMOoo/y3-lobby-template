@@ -42,6 +42,12 @@ function M.public_player(player)
     if type(player) ~= 'table' then
         return {}
     end
+    local in_game = player.in_game
+    local in_game_known = type(in_game) == 'boolean'
+    local public_in_game
+    if in_game_known then
+        public_in_game = in_game
+    end
     return {
         aid = public_scalar(player.aid, 0),
         name = tostring(public_scalar(player.name or player.nickname, '') or ''),
@@ -49,7 +55,8 @@ function M.public_player(player)
         team_id = public_scalar(player.team_id, 0),
         score = public_scalar(player.score, 0),
         state = tostring(public_scalar(player.state, '') or ''),
-        in_game = player.in_game == true,
+        in_game = public_in_game,
+        in_game_known = in_game_known,
         map_id = public_scalar(player.map_id, ''),
         game_play_id = public_scalar(player.game_play_id, ''),
     }
@@ -174,8 +181,7 @@ function M.snapshot()
     local team_info = client and client.team_info or nil
     local team = M.public_team(team_info)
     local members = team.members or {}
-    local game_api = rawget(_G, 'GameAPI')
-    local dungeon_info = game_api and game_api.get_dungeon_info and game_api.get_dungeon_info() or {}
+    local dungeon_info = GameAPI.get_dungeon_info()
     local token = dungeon_info and (dungeon_info.space_id or dungeon_info.spaceId) or ''
     return {
         status = runtime.status,

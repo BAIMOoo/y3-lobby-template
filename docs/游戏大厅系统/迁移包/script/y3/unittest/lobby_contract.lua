@@ -121,6 +121,12 @@ local function assert_not_contains(haystack, needle, message)
     end
 end
 
+local function assert_contains(haystack, needle, message)
+    if not tostring(haystack):find(tostring(needle), 1, true) then
+        error((message or 'assert_contains failed') .. ': missing ' .. tostring(needle), 2)
+    end
+end
+
 local TEST_GAME_PLAY_ID = 10190356
 local eca_names = {}
 local eca_definitions = {}
@@ -128,6 +134,7 @@ local bind = {}
 local factory_calls = 0
 local factory_game_play_ids = {}
 local factory_in_games = {}
+local factory_endpoint_envs = {}
 local private_dungeon_requests = {}
 local exit_game_calls = 0
 local frame_callbacks = {}
@@ -154,8 +161,7 @@ local expected_eca = {
     { name = '大厅服务 - 发送队伍聊天', params = { { '消息', 'string' } } },
     { name = '大厅服务 - 发送世界聊天', params = { { '消息', 'string' } } },
     { name = '大厅服务 - 获取聊天记录', params = { { '频道', 'string?' } } },
-    { name = '大厅服务 - 同房分流', params = { { '分流参数', 'table' } } },
-    { name = '大厅服务 - 跨房合流', params = { { '合流参数', 'table' } } },
+    { name = '大厅服务 - 局内私人副本', params = { { '副本参数', 'table' } } },
     { name = '大厅服务 - 加入口令', params = { { '口令', 'string' } } },
     { name = '大厅服务 - 获取口令', params = {} },
     { name = '大厅服务 - 返回大厅', params = { { '大厅参数', 'table' } } },
@@ -346,15 +352,17 @@ _G.y3 = {
         with_local = function(callback)
             callback({
                 handle = {
-                    request_create_private_dungeon = function(_, level_id, game_mode, max_player, custom_param)
+                    request_create_private_dungeon = function(_, ...)
+                        local args = table.pack(...)
                         if platform_return_error then
                             error(platform_return_error)
                         end
                         private_dungeon_requests[#private_dungeon_requests + 1] = {
-                            level_id = level_id,
-                            game_mode = game_mode,
-                            max_player = max_player,
-                            custom_param = custom_param,
+                            level_id = args[1],
+                            game_mode = args[2],
+                            max_player = args[3],
+                            custom_param = args[4],
+                            argc = args.n,
                         }
                     end,
                     request_join_private_dungeon = function()
@@ -374,11 +382,36 @@ local completion_listener = lobby.on_complete(function(payload)
 end)
 local client = require 'y3.game.lobby.client'
 local state_api = require 'y3.game.lobby.state'
+local original_get_dungeon_info = GameAPI.get_dungeon_info
+local original_game = y3.game
+local endpoint_platform_env = 'prod'
+local endpoint_debug_mode = false
+GameAPI.get_dungeon_info = function()
+    return { env = endpoint_platform_env }
+end
+y3.game = {
+    is_debug_mode = function()
+        return endpoint_debug_mode
+    end,
+}
+local _, _, explicit_pre_env = client._resolve_endpoint_for_test('pre')
+assert_equal(explicit_pre_env, 'pre', 'explicit endpoint_env selects pre outside debug mode')
+local _, _, default_prod_env = client._resolve_endpoint_for_test()
+assert_equal(default_prod_env, 'prod', 'missing endpoint_env follows platform environment')
+endpoint_platform_env = 'pre'
+local _, _, default_pre_env = client._resolve_endpoint_for_test()
+assert_equal(default_pre_env, 'pre', 'platform pre environment remains pre by default')
+endpoint_debug_mode = true
+local _, _, debug_env = client._resolve_endpoint_for_test('pre')
+assert_equal(debug_env, 'qa', 'debug mode overrides explicit endpoint_env with qa')
+GameAPI.get_dungeon_info = original_get_dungeon_info
+y3.game = original_game
 local function install_fake_factory()
-client._set_factory_for_test(function(game_play_id, in_game)
+client._set_factory_for_test(function(game_play_id, in_game, endpoint_env)
     factory_calls = factory_calls + 1
     factory_game_play_ids[#factory_game_play_ids + 1] = game_play_id
     factory_in_games[#factory_in_games + 1] = in_game
+    factory_endpoint_envs[#factory_endpoint_envs + 1] = endpoint_env or false
     local options = next_client_options
     next_client_options = {}
     latest_client = {
@@ -488,12 +521,6 @@ client._set_factory_for_test(function(game_play_id, in_game)
             self.start_match_callback = callback
             return true
         end,
-        start_privat_dungeon_game = function(self, dungeon_info, players, callback)
-            self.last_dungeon_info = dungeon_info
-            self.last_dungeon_players = players
-            self.start_dungeon_callback = callback
-            return true
-        end,
         get_team_info = function(self, aid, callback)
             self.last_get_team_info_aid = aid
             self.get_team_info_callback = callback
@@ -540,6 +567,11 @@ for index, expected in ipairs(expected_eca) do
     assert_equal(#definition.returns, 1, expected.name .. ' 返回数量')
     assert_equal(definition.returns[1][2], 'table', expected.name .. ' 返回类型')
 end
+assert_equal(eca_definitions['大厅服务 - 同房分流'], nil, '旧同房分流 ECA 接口必须不存在')
+assert_equal(eca_definitions['大厅服务 - 跨房合流'], nil, '旧跨房合流 ECA 接口必须不存在')
+assert_equal(lobby.same_room_split, nil, '旧 same_room_split Lua 接口必须不存在')
+assert_equal(lobby.cross_room_merge, nil, '旧 cross_room_merge Lua 接口必须不存在')
+assert_equal(lobby.start_private_dungeon, nil, 'private_dungeon 必须是唯一的私人副本 Lua 入口')
 assert_equal(lobby._get_player_version_for_test(), '2.0', '玩家协议版本')
 for _, function_name in ipairs({
     'on_event',
@@ -607,6 +639,7 @@ local connect_result = lobby.connect(TEST_GAME_PLAY_ID)
 assert_equal(connect_result.accepted, true, 'connect accepted')
 assert_equal(factory_calls, 1, 'connect 创建客户端')
 assert_equal(factory_game_play_ids[#factory_game_play_ids], TEST_GAME_PLAY_ID, 'connect forwards game_play_id to factory')
+assert_equal(factory_endpoint_envs[#factory_endpoint_envs], false, 'connect defaults to the platform endpoint environment')
 assert_equal(factory_in_games[#factory_in_games], false, 'connect 默认不按游戏关卡连接')
 
 local duplicate = lobby.connect(TEST_GAME_PLAY_ID)
@@ -710,14 +743,65 @@ all_event_listener.remove()
 
 client._reset_for_test()
 install_fake_factory()
-local in_game_connect = lobby.connect(TEST_GAME_PLAY_ID, true)
+local raw_game_api = rawget(_G, 'GameAPI')
+local global_metatable = getmetatable(_G)
+local injected_game_api = {
+    get_dungeon_info = function()
+        return {
+            env = 'debug',
+            level_id = 'metatable-level',
+            space_id = 'current-dungeon-token',
+        }
+    end,
+}
+rawset(_G, 'GameAPI', nil)
+setmetatable(_G, {
+    __index = function(_, key)
+        if key == 'GameAPI' then
+            return injected_game_api
+        end
+        local inherited_index = global_metatable and global_metatable.__index
+        if type(inherited_index) == 'function' then
+            return inherited_index(_G, key)
+        end
+        if type(inherited_index) == 'table' then
+            return inherited_index[key]
+        end
+        return nil
+    end,
+})
+local in_game_connect = lobby.connect(TEST_GAME_PLAY_ID, true, 'pre')
+assert_equal(factory_endpoint_envs[#factory_endpoint_envs], 'pre', 'connect forwards endpoint_env to client factory')
 assert_equal(in_game_connect.accepted, true, 'connect 支持 in_game 布尔参数')
 assert_equal(factory_in_games[#factory_in_games], true, 'connect 转发 in_game 到客户端工厂')
+latest_client.event_callbacks[1].callback()
+local metatable_token = lobby.get_token()
+assert_equal(metatable_token.result_data.token, 'current-dungeon-token', 'get_token 支持元表注入的 GameAPI')
+local metatable_snapshot = lobby.get_state().result_data
+assert_equal(metatable_snapshot.token, 'current-dungeon-token', '状态快照支持元表注入的 GameAPI')
+assert_equal(metatable_snapshot.level_id, 'metatable-level', '状态快照读取元表 GameAPI 的关卡信息')
+local _, _, metatable_endpoint_env = client._resolve_endpoint_for_test()
+assert_equal(metatable_endpoint_env, 'qa', '连接环境解析支持元表注入的 GameAPI')
+local join_log_token = 'join-dungeon-token'
+local join_log_result = lobby.join_by_token(' ' .. join_log_token .. ' ')
+assert_equal(join_log_result.accepted, true, 'join_by_token 诊断日志测试请求已提交')
+local private_dungeon_log_output = table.concat(captured_logs, '\n')
+assert_contains(private_dungeon_log_output, '当前关卡口令', '游戏关卡准备就绪后记录当前关卡口令')
+assert_contains(private_dungeon_log_output, 'token=current-dungeon-token', '当前关卡口令日志保留完整口令')
+assert_contains(private_dungeon_log_output, '加入口令请求', '提交加入口令时记录诊断日志')
+assert_contains(private_dungeon_log_output, 'token=' .. join_log_token, '加入口令日志保留完整输入口令')
+setmetatable(_G, global_metatable)
+rawset(_G, 'GameAPI', raw_game_api)
 client._reset_for_test()
 install_fake_factory()
 local table_options_connect = lobby.connect(TEST_GAME_PLAY_ID, { in_game = true })
 assert_equal(table_options_connect.accepted, false, 'connect 不公开 options table')
 assert_equal(table_options_connect.code, 'invalid_argument', 'connect options table code')
+local factory_calls_before_invalid_endpoint = factory_calls
+local invalid_endpoint_connect = lobby.connect(TEST_GAME_PLAY_ID, false, 'staging')
+assert_equal(invalid_endpoint_connect.accepted, false, 'connect rejects unsupported endpoint_env')
+assert_equal(invalid_endpoint_connect.code, 'invalid_argument', 'connect endpoint_env code')
+assert_equal(factory_calls, factory_calls_before_invalid_endpoint, 'invalid endpoint_env does not create client')
 
 local eca_connect_invalid = bind['大厅服务 - 建立连接']()
 assert_equal(eca_connect_invalid.accepted, false, 'ECA connect 缺少玩法 ID 被拒绝')
@@ -952,29 +1036,14 @@ assert_equal(merged_history[8].message, 'time-twenty-alpha', 'chat history missi
 
 local saved_with_local = y3.player.with_local
 reset_contract_runtime()
-y3.player.with_local = function(callback)
-    callback({
-        handle = {
-            request_create_private_dungeon = function()
-            end,
-        },
-    })
-end
-local split_without_aid = lobby.same_room_split({
-    level_id = 'missing-aid',
-    game_mode = 1402,
-    max_player = 2,
-    players = { { aid = 10086 } },
-})
-assert_equal(split_without_aid.code, 'local_aid_missing', 'same_room_split missing local aid code')
 y3.player.with_local = function()
 end
-local split_without_player = lobby.same_room_split({
+local split_without_player = lobby.private_dungeon({
     level_id = 'missing-player',
     game_mode = 1403,
     max_player = 2,
 })
-assert_equal(split_without_player.code, 'local_player_missing', 'same_room_split missing local player code')
+assert_equal(split_without_player.code, 'local_player_missing', 'private_dungeon missing local player code')
 y3.player.with_local = saved_with_local
 
 reset_contract_runtime()
@@ -996,24 +1065,25 @@ assert_sync_invalid_without_platform(function()
     return lobby.return_lobby({ level_id = 'invalid-max-player', game_mode = 1404, max_player = 0 })
 end, 'return_lobby non-positive max_player')
 assert_sync_invalid_without_platform(function()
-    return lobby.same_room_split({ level_id = 'split-invalid-players', game_mode = 1405, max_player = 2, players = 'bad' })
-end, 'same_room_split players non-table')
-assert_sync_invalid_without_platform(function()
-    return lobby.same_room_split({ level_id = 'split-invalid-player-entry', game_mode = 1405, max_player = 2, players = { 10086 } })
-end, 'same_room_split player entry non-table')
-assert_sync_invalid_without_platform(function()
-    return lobby.same_room_split({ level_id = 'split-invalid-aid', game_mode = 1405, max_player = 2, players = { { aid = 10086.5 } } })
-end, 'same_room_split player aid non-integer')
-local split_all_before_requests = #private_dungeon_requests
-local split_all_players = lobby.same_room_split({
-    level_id = 'split-all-players',
+    return lobby.private_dungeon({ level_id = 'explicit-players', game_mode = 1405, max_player = 2, players = {} })
+end, 'private_dungeon rejects externally supplied players')
+local solo_before_requests = #private_dungeon_requests
+local solo_private = lobby.private_dungeon({
+    level_id = 'solo-private',
     game_mode = 1405,
     max_player = 2,
-    players = {},
 })
-assert_equal(split_all_players.accepted, true, 'same_room_split empty players means no filtering')
-assert_equal(#private_dungeon_requests, split_all_before_requests + 1, 'same_room_split empty players calls platform')
-assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'split-all-players', 'same_room_split empty players forwards level_id')
+assert_equal(solo_private.accepted, true, 'private_dungeon solo accepts without team')
+assert_equal(#private_dungeon_requests, solo_before_requests + 1, 'private_dungeon solo calls platform')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'solo-private', 'private_dungeon solo forwards level_id')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].argc, 3, 'private_dungeon without custom_param uses three arguments')
+assert_equal(solo_private.result_data.route, 'solo_engine', 'private_dungeon solo route')
+assert_equal(solo_private.result_data.completion_mode, 'request_only', 'private_dungeon solo completion mode')
+assert_equal(solo_private.request_id, '', 'private_dungeon solo has no awaitable request id')
+assert_equal(lobby.get_state().result_data.pending_count, 0, 'private_dungeon solo leaves no pending request')
+local solo_retry = lobby.private_dungeon({ level_id = 'solo-retry', game_mode = 1405, max_player = 2 })
+assert_equal(solo_retry.accepted, true, 'private_dungeon solo remains retryable when platform does not switch map')
+assert_equal(#private_dungeon_requests, solo_before_requests + 2, 'private_dungeon solo retry calls platform again')
 
 reset_contract_runtime()
 next_client_options = { valid = false }

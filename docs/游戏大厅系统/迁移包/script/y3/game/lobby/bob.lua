@@ -1063,6 +1063,40 @@ function M:can_match()
     return true
 end
 
+---@param players DungeonPlayerField[]?
+---@return boolean
+---@return ('不是队长' | '正在匹配' | '失去连接' | '有人在匹配' | '正在启动' | '没有合格玩家')?
+function M:can_start_private_dungeon_filtered(players)
+    if not self:is_in_team() then
+        return false, '当前不在队伍中'
+    end
+    if not self:is_captain() then
+        return false, '不是队长'
+    end
+    if self:is_matching() then
+        return false, '正在匹配'
+    end
+    if self:is_launching() then
+        return false, '正在启动'
+    end
+    if not self:is_valid() then
+        return false, '失去连接'
+    end
+    if type(players) ~= 'table' or #players == 0 then
+        return false, '没有合格玩家'
+    end
+    local selected = {}
+    for _, player in ipairs(players) do
+        selected[tostring(player.aid)] = true
+    end
+    for _, member in ipairs(self.team_info and self.team_info.members or {}) do
+        if selected[tostring(member.aid)] and member.state == '匹配中' then
+            return false, '有人在匹配'
+        end
+    end
+    return true
+end
+
 ---@private
 M._matching_state = false
 
@@ -1231,22 +1265,22 @@ function M:send_world_chat(message, done)
     return self:send_chat_to_channel(message, WORLD_CHANNEL_TYPE, WORLD_CHANNEL_ID, done)
 end
 
---多人切换副本
+--多人局内私人副本：players 已由业务层过滤，只校验发起条件和选中子集状态。
 ---@param dungeon_info DungeonSpaceField
 ---@param players DungeonPlayerField[] 每项必须包含 aid 和 version，version 当前固定传 '2.0'
 ---@param done? fun(result: any?, err: any?)
-function M:start_privat_dungeon_game(dungeon_info, players, done)
-    if not self:is_in_team() then
-        return false, '当前不在队伍中'
-    end
-    if not self:is_captain() then
-        return false, '只有队长可以进入多人副本'
-    end
-    local can_start, reason = self:can_match()
+function M:start_private_dungeon_game_filtered(dungeon_info, players, done)
+    local can_start, reason = self:can_start_private_dungeon_filtered(players)
     if not can_start then
         return false, reason
     end
-    log.debug('【BOB】发送跨房合流消息', dungeon_info, players)
+    log.debug('【BOB】发送局内私人副本消息', string.format(
+        'game_play_id=%s game_map_id=%s level_id=%s game_mode=%s player_count=%d',
+        tostring(self.game_play_id or ''),
+        tostring(dungeon_info and dungeon_info.game_map_id or ''),
+        tostring(dungeon_info and dungeon_info.level_id or ''),
+        tostring(dungeon_info and dungeon_info.game_mode or ''),
+        #players))
     local send_ok, send_err
     local accepted = self:request('DungeonManager_StartMatchPrivateDungeonGame', function()
         send_ok, send_err = self.client:DungeonManager_StartMatchPrivateDungeonGame(dungeon_info, players)
