@@ -53,7 +53,7 @@ callbacks['玩家-加入游戏'](nil, { player = local_player })
 assert_equal(#connect_calls, 1, 'local player starts one connection')
 assert_equal(connect_calls[1].game_play_id, 190356, 'required game play id')
 assert_equal(connect_calls[1].in_game, false, 'entry map connects as lobby')
-assert_equal(connect_calls[1].endpoint_env, 'pre', 'entry map explicitly connects to pre')
+assert_equal(connect_calls[1].endpoint_env, 'prod', 'entry map explicitly connects to prod')
 
 callbacks['玩家-加入游戏'](nil, { player = other_player })
 assert_equal(#connect_calls, 1, 'later joins do not reconnect the local client')

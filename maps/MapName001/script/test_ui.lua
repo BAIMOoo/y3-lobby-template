@@ -11,7 +11,7 @@ local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
 local EXPECTED_PRIVATE_PLAYERS = 2
 local MAX_MEMBER_ROWS = 4
 local MAX_CHAT_LINES = 5
-local UI_LAYOUT_VERSION = 19
+local UI_LAYOUT_VERSION = 21
 
 local COLOR_TEXT = { 244, 234, 213, 255 }
 local COLOR_MUTED = { 197, 185, 159, 255 }
@@ -23,7 +23,7 @@ local COLOR_PANEL = { 30, 25, 18, 236 }
 local COLOR_PANEL_SOFT = { 35, 29, 21, 226 }
 local COLOR_PANEL_DEEP = { 21, 18, 14, 244 }
 local COLOR_BACKDROP = { 255, 255, 255, 255 }
-local BACKDROP_IMAGE = 134217745
+local BACKDROP_IMAGE = 134230328
 
 local runtime = rawget(_G, '__LOBBY_TEST_UI_RUNTIME') or {}
 _G.__LOBBY_TEST_UI_RUNTIME = runtime
@@ -617,10 +617,6 @@ local function refresh()
     runtime.battle_world_button:set_button_enable(ready)
     runtime.battle_chat_text:set_text(chat_history_text())
     runtime.battle_notice_text:set_text(runtime.battle_notice or '等待消息')
-    if runtime.expedition_phase_text then
-        runtime.expedition_phase_text:set_text(
-            launching and '启动中' or (matching and '匹配中' or '准备阶段'))
-    end
     if runtime.action_team_text then
         runtime.action_team_text:set_text(string.format(
             '队伍就绪  %s/%s    当前身份  %s    %s',
@@ -833,7 +829,6 @@ local function build(player)
     runtime.full_panel = panel
 
     add_panel(panel, 24, 936, 430, 120, COLOR_PANEL, true)
-    add_text(panel, 42, 1022, 280, 18, '方案 B · 沉浸远征', 12, COLOR_WARNING)
     add_text(panel, 42, 978, 320, 38, '大厅服务测试系统', 24, COLOR_TEXT)
     add_text(panel, 42, 952, 320, 22, '组队、匹配与关卡切换', 13, COLOR_MUTED)
 
@@ -927,21 +922,6 @@ local function build(player)
         end, 'danger')
         runtime.member_rows[index] = row
     end
-
-    runtime.expedition_panel = add_panel(panel, 650, 438, 620, 358, COLOR_PANEL, true)
-    add_text(panel, 676, 750, 180, 20, '当前远征', 12, COLOR_WARNING)
-    runtime.expedition_phase_text = add_text(
-        panel, 1050, 744, 194, 28, '准备阶段', 13, COLOR_SUCCESS, '右', '中')
-    add_panel(panel, 670, 472, 580, 250, COLOR_PANEL_SOFT)
-    add_text(panel, 696, 670, 180, 18, '本轮远征', 11, COLOR_WARNING)
-    add_text(panel, 696, 622, 360, 42, '暮潮遗迹', 28, COLOR_TEXT)
-    add_text(panel, 696, 580, 520, 36, '匹配、口令与局内私人副本状态验证', 13, COLOR_MUTED)
-    add_text(panel, 696, 526, 120, 18, '预计席位', 11, COLOR_MUTED)
-    add_text(panel, 696, 494, 120, 26, tostring(EXPECTED_PRIVATE_PLAYERS), 17, COLOR_TEXT)
-    add_text(panel, 854, 526, 120, 18, '队伍上限', 11, COLOR_MUTED)
-    add_text(panel, 854, 494, 120, 26, tostring(MAX_MEMBER_ROWS), 17, COLOR_TEXT)
-    add_text(panel, 1012, 526, 160, 18, '启动方式', 11, COLOR_MUTED)
-    add_text(panel, 1012, 494, 190, 26, '匹配 / 口令', 17, COLOR_TEXT)
 
     runtime.action_panel = add_panel(panel, 1340, 24, 556, 390, COLOR_PANEL, true)
     add_image(panel, 1343, 350, 550, 61, 109589, COLOR_PANEL_SOFT)

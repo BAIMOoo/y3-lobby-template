@@ -7,6 +7,7 @@ import re
 import subprocess
 import sys
 import unittest
+import zipfile
 from pathlib import Path
 from typing import Optional
 from urllib.parse import unquote
@@ -27,6 +28,7 @@ ALL_DOCS = ["README.md", *TOPIC_FILES]
 MIGRATION_PACKAGE = DOCS / "迁移包"
 PACKAGE_Y3_ROOT = MIGRATION_PACKAGE / "script" / "y3"
 PACKAGE_PROTOCOL = MIGRATION_PACKAGE / "需要合并到项目" / "custom" / "protocol" / "protocol.pb"
+PACKAGE_ECA_TRIGGER = MIGRATION_PACKAGE / "大厅服务ECA触发包.zip"
 WORKTREE = ROOT / ".omx" / "worktrees" / "y3-lualib-lobby"
 ENTRYMAP_Y3_ROOT = ROOT / "maps" / "EntryMap" / "script" / "y3"
 CHILD_MAP_Y3_ROOT = ROOT / "maps" / "MapName001" / "script" / "y3"
@@ -205,10 +207,13 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertIn("获取聊天消息", eca_doc)
         self.assertIn("刷新玩家信息", eca_doc)
 
-    def test_docs_explain_eca_bind_call_path_without_importing_generator_json(self):
+    def test_docs_explain_eca_trigger_package_import_without_generator_json(self):
         eca_doc = read_text(DOCS / "04-ECA功能使用.md")
         migration_doc = read_text(DOCS / "02-迁移.md")
-        self.assertIn("Bind['大厅服务 - 建立连接']", eca_doc)
+        self.assertIn("导入迁移包中的 `大厅服务ECA触发包.zip`", eca_doc)
+        self.assertIn("从函数列表中选择导入的“大厅服务 - 接口名”", eca_doc)
+        self.assertNotIn("执行 Lua 代码", eca_doc)
+        self.assertNotIn("Bind['大厅服务 - 建立连接']", eca_doc)
         self.assertNotIn("tools/eca/lobby_service_functions.json", eca_doc)
         self.assertNotIn("tools/eca/lobby_service_tests.json", eca_doc)
         self.assertNotIn("tools/eca/lobby_service_functions.json", migration_doc)
@@ -223,15 +228,22 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertIn("内部", corpus)
         self.assertNotRegex(corpus, r"version\s*[=:]")
 
-    def test_example_maps_use_pre_lobby_endpoints(self):
+    def test_example_maps_use_prod_lobby_endpoints(self):
         lobby_entry = read_text(ROOT / "maps" / "EntryMap" / "script" / "main.lua")
         target_entry = read_text(ROOT / "maps" / "MapName001" / "script" / "main.lua")
         self.assertIn(f"local GAME_PLAY_ID = {TEST_GAME_PLAY_ID}", lobby_entry)
-        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'pre')", lobby_entry)
-        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, true, 'pre')", target_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, false, 'prod')", lobby_entry)
+        self.assertIn("y3.lobby.connect(GAME_PLAY_ID, true, 'prod')", target_entry)
         self.assertIn("y3.lobby.get_connection_status()", target_entry)
         self.assertNotIn("include 'pub.init'", lobby_entry)
         self.assertNotIn("include 'pub.init'", target_entry)
+
+    def test_external_docs_only_expose_qa_and_prod_lobby_environments(self):
+        corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
+        self.assertIn("`qa`", corpus)
+        self.assertIn("`prod`", corpus)
+        self.assertNotIn("`pre`", corpus)
+        self.assertNotIn("'pre'", corpus)
 
     def test_example_maps_do_not_keep_legacy_pub_lobby(self):
         for map_name in ["EntryMap", "MapName001"]:
@@ -246,8 +258,8 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertIn(f"y3.lobby.connect({TEST_GAME_PLAY_ID})", corpus)
         self.assertIn("玩法固定 ID", corpus)
         self.assertIn("不要使用 `GameAPI.get_dungeon_info().game_play_id`", corpus)
-        self.assertIn("平台审核后台", corpus)
-        self.assertIn("它不写在 `gamemode.json`、`match.json` 或 `dungeon.json` 中", corpus)
+        self.assertIn("作者之家后台", corpus)
+        self.assertIn("它不是地图模式配置项，也不写在 `match.json` 或 `dungeon.json` 中", corpus)
         self.assertIn("invalid_game_play_id", corpus)
         self.assertNotIn("connect()` 无参数", corpus)
         self.assertNotIn("由平台运行环境提供，不是调用参数", corpus)
@@ -270,7 +282,7 @@ class DocumentationExamplesTest(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertNotIn(value, corpus)
 
-    def test_migration_package_contains_only_official_lualib_and_protocol_to_merge(self):
+    def test_migration_package_contains_only_official_lualib_protocol_and_eca_trigger(self):
         files = [path for path in MIGRATION_PACKAGE.rglob("*") if path.is_file()]
         unexpected = []
         for path in files:
@@ -279,12 +291,51 @@ class DocumentationExamplesTest(unittest.TestCase):
                 continue
             if rel == "需要合并到项目/custom/protocol/protocol.pb":
                 continue
+            if rel == "大厅服务ECA触发包.zip":
+                continue
             unexpected.append(rel)
         self.assertEqual([], unexpected, "迁移包存在白名单之外的文件：\n" + "\n".join(unexpected))
         self.assertTrue(PACKAGE_Y3_ROOT.is_dir())
         self.assertTrue((PACKAGE_Y3_ROOT / "game" / "lobby" / "proto" / "service_pb.lua").is_file())
         self.assertTrue(PACKAGE_PROTOCOL.is_file())
+        self.assertTrue(PACKAGE_ECA_TRIGGER.is_file())
         self.assertFalse((MIGRATION_PACKAGE / "script" / "pub").exists())
+
+    def test_migration_eca_trigger_contains_event_and_all_functions(self):
+        with zipfile.ZipFile(PACKAGE_ECA_TRIGGER) as archive:
+            self.assertEqual(
+                {"attr.json", "cus_event.json", "ReadMe.md", "trigger_data.json", "version_info.json"},
+                set(archive.namelist()),
+            )
+            event_data = json.loads(archive.read("cus_event.json"))
+            trigger_data = json.loads(archive.read("trigger_data.json"))
+
+        events = {
+            event["name"]: event["conf"]
+            for event in event_data["cus_event"].values()
+        }
+        self.assertEqual(
+            {
+                "大厅服务请求完成": [["回调数据", 100011]],
+                "大厅服务状态变化": [["事件数据", 100011]],
+            },
+            events,
+        )
+
+        function_names = set()
+
+        def collect_functions(value):
+            if isinstance(value, dict):
+                if isinstance(value.get("func_name"), str):
+                    function_names.add(value["func_name"])
+                for child in value.values():
+                    collect_functions(child)
+            elif isinstance(value, list):
+                for child in value:
+                    collect_functions(child)
+
+        collect_functions(trigger_data)
+        self.assertEqual(set(EXPECTED_ECA_NAMES), function_names)
 
     def test_migration_package_does_not_include_eca_json_or_project_specific_files(self):
         forbidden_suffixes = [
@@ -320,6 +371,17 @@ class DocumentationExamplesTest(unittest.TestCase):
         self.assertTrue((WORKTREE / "init.lua").is_file())
         if (WORKTREE / "util" / "log.lua").is_file():
             self.assertFalse((WORKTREE / "util" / "log.lua").read_text(encoding="utf-8").startswith("-- lobby"))
+
+    def test_published_lualib_uses_role_names_in_log_files(self):
+        expected = (WORKTREE / "util" / "log.lua").read_bytes()
+        expected = expected.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+        for lualib_root in PUBLISHED_Y3_ROOTS:
+            with self.subTest(root=lualib_root):
+                actual = (lualib_root / "util" / "log.lua").read_bytes()
+                actual = actual.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+                self.assertEqual(expected, actual)
+                self.assertIn(b"get_role__unique_name", actual)
+                self.assertIn(b"lua_player%02d_%s.log", actual)
 
     def test_embedded_service_protocol_is_current(self):
         synchronized_files = [

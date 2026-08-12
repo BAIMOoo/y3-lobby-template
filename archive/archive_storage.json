@@ -7,16 +7,16 @@
     "test_account1": {
         "archive": {},
         "platform_prop": {},
-        "role_id": -2
+        "role_id": -1
     },
     "test_account2": {
         "archive": {},
         "platform_prop": {},
-        "role_id": -3
+        "role_id": -2
     },
     "乐不思蜀": {
         "archive": {},
         "platform_prop": {},
-        "role_id": -4
+        "role_id": -3
     }
 }

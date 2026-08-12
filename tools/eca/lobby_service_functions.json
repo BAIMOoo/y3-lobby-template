@@ -107,7 +107,7 @@
         {
             "name": "大厅服务 - 局内私人副本",
             "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
-            "description": "按统一参数表{副本参数}发起局内私人副本请求；参数表使用 action=private_dungeon，可包含 level_id、game_mode、max_player、game_map_id、custom_param",
+            "description": "按参数表{副本参数}发起局内私人副本请求；必须包含 level_id、game_mode、max_player，可选 engine_level_id、game_map_id、team_game_mode、custom_param；players 由框架生成，不要传入",
             "params": [{"name": "副本参数", "type": "TABLE", "required": true}],
             "returns": [{"name": "result", "type": "TABLE", "var": "t"}],
             "lua_bind": true

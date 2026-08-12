@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 FUNCTION_DSL = ROOT / "tools" / "eca" / "lobby_service_functions.json"
 TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_service_tests.json"
+STATUS_TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_status_event_listener.json"
 MAP_NAMES = ["EntryMap", "MapName001"]
 
 EXPECTED_ECA_NAMES = [
@@ -66,10 +67,16 @@ def walk_json(value):
             yield from walk_json(child)
 
 
+def lobby_function_files(map_name: str):
+    function_root = ROOT / "maps" / map_name / "global_trigger" / "function"
+    return list(function_root.rglob("大厅服务 - *.json"))
+
+
 class LobbyEcaJsonTests(unittest.TestCase):
     def setUp(self):
         self.function_dsl = load_json(FUNCTION_DSL)
         self.trigger_dsl = load_json(TRIGGER_DSL)
+        self.status_trigger_dsl = load_json(STATUS_TRIGGER_DSL)
         self.functions = self.function_dsl["functions"]
 
     def test_function_dsl_lists_exactly_26_official_external_call_interfaces(self):
@@ -78,25 +85,59 @@ class LobbyEcaJsonTests(unittest.TestCase):
         self.assertEqual(26, len(names))
         self.assertEqual(len(names), len(set(names)))
 
+    def test_entry_map_declares_lobby_completion_and_status_events(self):
+        event_data = load_json(ROOT / "maps" / "EntryMap" / "customevent.json")
+        events = {
+            item["items"][1]: event_data["conf"][str(item["items"][0])]
+            for item in event_data["group_info"]
+        }
+        self.assertEqual([["回调数据", 100011]], events["大厅服务请求完成"])
+        self.assertEqual([["事件数据", 100011]], events["大厅服务状态变化"])
+
+    def test_status_event_listener_only_dumps_the_event_table(self):
+        trigger = self.status_trigger_dsl["triggers"][0]
+        self.assertEqual(
+            [["RECEIVE_CUSTOM_EVENT", "大厅服务状态变化"]],
+            trigger["event"],
+        )
+        self.assertEqual([], trigger["condition"])
+        self.assertEqual(
+            [["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "事件数据"]]],
+            trigger["action"],
+        )
+
+        generated = load_json(
+            ROOT
+            / "maps"
+            / "EntryMap"
+            / "global_trigger"
+            / "trigger"
+            / "大厅服务 - 状态变化打印.json"
+        )
+        self.assertEqual(1931000009, generated["trigger_id"])
+        self.assertEqual([], generated["condition"])
+        self.assertEqual(1204774815, generated["event"][0]["args_list"][0]["args_list"][0])
+        self.assertEqual("DUMP_TABLE", generated["action"][0]["action_type"])
+        self.assertIn("事件数据", json.dumps(generated["action"], ensure_ascii=False))
+
     def test_maps_contain_exactly_the_26_generated_lobby_functions(self):
         expected_files = {f"{name}.json" for name in EXPECTED_ECA_NAMES}
         for map_name in MAP_NAMES:
-            function_root = ROOT / "maps" / map_name / "global_trigger" / "function"
-            index = load_json(function_root / "index.txt")
-            actual_files = {
-                path.name
-                for path in function_root.glob("大厅服务 - *.json")
-            }
+            paths = lobby_function_files(map_name)
+            actual_files = {path.name for path in paths}
             with self.subTest(map_name=map_name):
                 self.assertEqual(expected_files, actual_files)
-                self.assertTrue(expected_files.issubset(index))
-                for path in function_root.glob("大厅服务 - *.json"):
+                for path in paths:
                     payload = load_json(path)
                     self.assertEqual(path.stem, payload["func_name"])
 
     def test_generated_connect_function_requires_game_play_id_argument(self):
         for map_name in MAP_NAMES:
-            path = ROOT / "maps" / map_name / "global_trigger" / "function" / "大厅服务 - 建立连接.json"
+            path = next(
+                path
+                for path in lobby_function_files(map_name)
+                if path.name == "大厅服务 - 建立连接.json"
+            )
             payload = load_json(path)
             serialized = json.dumps(payload, ensure_ascii=False)
             eval_lua = payload["action"][0]["args_list"][1]

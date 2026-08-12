@@ -134,5 +134,13 @@
         "name": "scheme_b_backdrop%ID134217745", 
         "path": "ui/134217745", 
         "uid": "res_icon_ui/134217745"
+    }, 
+    "ui/134230328": {
+        "default_editor_id": 134230328, 
+        "describe": "", 
+        "key": "ui/134230328", 
+        "name": "private-dungeon-backdrop-gpt-image-2-v1-1920x1080", 
+        "path": "ui/134230328", 
+        "uid": "res_icon_ui/134230328"
     }
 }

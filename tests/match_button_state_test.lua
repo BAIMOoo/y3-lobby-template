@@ -477,7 +477,7 @@ local function run_case(path)
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.full_panel.height, 1080, path .. ' lobby uses full design height')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.width, 1920, path .. ' backdrop uses full design width')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.height, 1080, path .. ' backdrop uses full design height')
-    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image, 134217745, path .. ' backdrop uses custom Scheme B art')
+    assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image, 134230328, path .. ' backdrop uses generated expedition art')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[1], 255, path .. ' backdrop keeps original red channel')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[2], 255, path .. ' backdrop keeps original green channel')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.backdrop.image_color[3], 255, path .. ' backdrop keeps original blue channel')
@@ -635,7 +635,10 @@ local function run_case(path)
     assert_equal(battle_panel.y, 24, path .. ' battle chat keeps bottom safe margin')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.team_panel.x, 24, path .. ' team panel stays on the left edge')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.team_panel.y, 426, path .. ' team panel clears lobby chat')
-    assert_equal(_G.__BOB_TEST_UI_RUNTIME.expedition_panel.x, 650, path .. ' expedition summary anchors centrally')
+    assert_equal(
+        _G.__BOB_TEST_UI_RUNTIME.expedition_panel,
+        nil,
+        path .. ' omits the expedition summary')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.action_panel.x, 1340, path .. ' action panel stays on the right edge')
 
     current_mode = 1003
@@ -817,9 +820,9 @@ local function run_case(path)
     assert_equal(button.text, '取消匹配', path .. ' matching label')
     assert_equal(button.enabled, true, path .. ' captain can cancel matching')
     assert_equal(
-        _G.__BOB_TEST_UI_RUNTIME.expedition_phase_text.text,
-        '匹配中',
-        path .. ' expedition summary follows matching state')
+        _G.__BOB_TEST_UI_RUNTIME.expedition_phase_text,
+        nil,
+        path .. ' omits the expedition phase text')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 按钮不可用',
         'action=局内私人副本',

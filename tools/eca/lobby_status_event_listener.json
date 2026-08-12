@@ -1,0 +1,12 @@
+{
+    "map": "EntryMap",
+    "triggers": [
+        {
+            "name": "大厅服务 - 状态变化打印",
+            "id": 1931000009,
+            "event": [["RECEIVE_CUSTOM_EVENT", "大厅服务状态变化"]],
+            "condition": [],
+            "action": [["DUMP_TABLE", ["GET_CUS_EVENT_PARAM", "事件数据"]]]
+        }
+    ]
+}

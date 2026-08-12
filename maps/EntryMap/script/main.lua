@@ -15,7 +15,7 @@ y3.game:event('玩家-加入游戏', function (_, data)
         if not data or data.player ~= local_player then
             return
         end
-        local result = y3.lobby.connect(GAME_PLAY_ID, false, 'pre')
+        local result = y3.lobby.connect(GAME_PLAY_ID, false, 'prod')
         if not result.accepted then
             print('大厅服务连接请求未发出：' .. tostring(result.reason))
         end

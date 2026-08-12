@@ -25,10 +25,10 @@ end
 y3.lobby.connect(190356, true)
 ```
 
-第三个参数可选，用于让特定项目覆盖上传平台后的服务环境，只接受 `'qa'`、`'pre'` 或 `'prod'`。本地调试始终优先连接 `qa`；省略第三个参数时仍按平台提供的环境自动选择，因此普通作者原有调用无需修改。例如仅让某个测试项目在平台连接 `pre`：
+第三个参数可选，用于指定服务环境。外部项目只需要使用 `'qa'` 和 `'prod'`：本地调试始终连接 `qa`，即使显式传入其他值也不会改变；项目在线上发布时应显式传入 `'prod'`：
 
 ```lua
-y3.lobby.connect(190356, false, 'pre')
+y3.lobby.connect(190356, false, 'prod')
 ```
 
 重复调用时，框架会返回当前连接请求或当前连接状态，不会创建多个客户端。
@@ -132,7 +132,7 @@ end)
 
 | 能力 | Lua 对外调用接口 | 说明 |
 | --- | --- | --- |
-| 建立连接 | `y3.lobby.connect(game_play_id, in_game, endpoint_env)` | `game_play_id` 为正整数玩法 ID，必填；`in_game`、`endpoint_env` 可选，后者仅接受 `qa`、`pre`、`prod` |
+| 建立连接 | `y3.lobby.connect(game_play_id, in_game, endpoint_env)` | `game_play_id` 为正整数玩法 ID，必填；`in_game`、`endpoint_env` 可选；外部项目本地使用 `qa`，线上使用 `prod` |
 | 获取连接状态 | `y3.lobby.get_connection_status()` | 同步查询当前连接状态 |
 | 设置匹配分数 | `y3.lobby.set_score(score)` | `score` 为整数 |
 | 创建队伍 | `y3.lobby.create_team(member_limit)` | `member_limit` 为队伍人数上限，必填 |
