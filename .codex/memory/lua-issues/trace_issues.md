@@ -91,9 +91,9 @@
 - 时间：2026-08-11
 - 场景：大厅测试 UI 将“同房分流”和“跨房合流”合并为一个“局内私人副本”按钮后，组队和单人路径分别报错。
 - Trace：组队路径先报 `string expected for field 'aid', got number`，修正后又报 `err = 4, data = dungeonLevelConf is nil`；无队伍路径曾报 `ValueError: badly formed hexadecimal UUID string`。首次组队编码异常还会令后续同类 BOB 请求提示“不能重入”。
-- 根因：统一入口涉及三类不能互换的标识：BOB 连接使用上传平台后的玩法固定 ID，组队 `DungeonSpaceField.game_map_id` 使用当前地图版本 UUID，`level_id` 使用 `dungeon.json` 的 38 位配置键；单人引擎 `request_create_private_dungeon` 使用目标关卡 UUID。重构时曾把运行时 `game_play_id=10209075` 当成旧版玩法固定 ID `190356`，导致服务端登录上下文无法查到 `DungeonLevelConf`；后续又混用了两种关卡 ID 表示。成员筛选重建 protobuf `players` 时也遗漏了旧实现的 `tostring(aid)` 转换。
-- 解决方案：两张地图连接 BOB 时恢复传入平台玩法固定 ID `190356` 和对应 `pre` 服务环境；组队 BOB 使用当前地图 UUID `game_map_id` 与 `dungeon.json` 十进制 `level_id`，单人引擎使用目标 UUID `engine_level_id`。写入 protobuf 前将成员 `aid` 转成字符串，并在发送日志中同时输出玩法 ID、两个关卡字段、模式和人数。
-- 预防建议：不要从 `GameAPI.get_dungeon_info().game_play_id` 推导 BOB 的玩法固定 ID。回归测试必须分别锁定连接玩法 ID、服务环境、组队地图 UUID、组队平台关卡 ID、单人引擎 UUID 和 protobuf 字符串 AID。
+- 根因：统一入口涉及三类不能互换的标识：BOB 连接使用上传平台后的玩法固定 ID，组队 `DungeonSpaceField.game_map_id` 使用当前地图版本 UUID，`level_id` 使用 `dungeon.json` 的 38 位配置键；单人引擎 `request_create_private_dungeon` 使用目标关卡 UUID。重构时曾把运行时 `game_play_id=10209075` 当成旧版玩法固定 ID `190356`，导致服务端登录上下文无法查到 `DungeonLevelConf`；后续又混用了两种关卡 ID 表示。合并按钮时还把单人引擎模式 `1003` 复用于组队 BOB，而参照项目的 `DungeonManager_StartMatchPrivateDungeonGame` 使用 `1002`；同时新增的 `in_game` 三态过滤偏离了参照项目全量传递 `team_info.members` 的契约。
+- 解决方案：两张地图连接 BOB 时恢复传入平台玩法固定 ID `190356` 和对应 `pre` 服务环境；组队 BOB 使用当前地图 UUID `game_map_id`、`dungeon.json` 十进制 `level_id` 和组队模式 `1002`，单人引擎使用目标 UUID `engine_level_id` 和单人模式 `1003`。组队 `players` 按 `team_info.members` 全量构建，每项 `aid` 转成字符串并保留必要的 `version = '2.0'`，同时在发送日志中输出玩法 ID、两个关卡字段、模式和人数。
+- 预防建议：不要从 `GameAPI.get_dungeon_info().game_play_id` 推导 BOB 的玩法固定 ID，也不要因为对外按钮合并就合并两条底层路由的模式参数和成员规则。回归测试必须分别锁定连接玩法 ID、服务环境、组队地图 UUID、组队平台关卡 ID、单人引擎 UUID、单人/组队模式、全量成员和 protobuf 字符串 AID/version。
 
 *补充时间: 2026-08-11*
 

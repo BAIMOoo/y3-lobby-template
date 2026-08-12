@@ -235,9 +235,7 @@ end
 local function private_dungeon_summary(data)
     data = type(data) == 'table' and data or {}
     local selected = count_items(result_field(data, 'selected_players'))
-    local skipped = count_items(result_field(data, 'skipped_in_game_players'))
-    local unknown = count_items(result_field(data, 'unknown_status_players'))
-    return string.format('筛选：入选 %d，游戏中跳过 %d，状态未知排除 %d', selected, skipped, unknown)
+    return string.format('队伍成员：传递 %d', selected)
 end
 
 local function write_log(level, message)
@@ -551,6 +549,7 @@ local function request_private_dungeon()
         level_id = MATCH_LEVEL_ID,
         engine_level_id = ENGINE_PRIVATE_LEVEL_ID,
         game_mode = PRIVATE_GAME_MODE,
+        team_game_mode = MATCH_GAME_MODE,
         max_player = EXPECTED_PRIVATE_PLAYERS,
     })
 end

@@ -1085,6 +1085,27 @@ local solo_retry = lobby.private_dungeon({ level_id = 'solo-retry', game_mode = 
 assert_equal(solo_retry.accepted, true, 'private_dungeon solo remains retryable when platform does not switch map')
 assert_equal(#private_dungeon_requests, solo_before_requests + 2, 'private_dungeon solo retry calls platform again')
 
+latest_client.team_info = {
+    team_id = 456,
+    captain = latest_client.aid,
+    members = {
+        { aid = latest_client.aid, in_game = false },
+    },
+}
+local one_member_before_requests = #private_dungeon_requests
+assert_equal(lobby._private_dungeon_completion_mode_for_eca({}), 'request_only', 'one-member team uses request-only ECA route')
+local one_member_private = lobby.private_dungeon({
+    level_id = 'platform-one-member',
+    engine_level_id = 'engine-one-member',
+    game_mode = 1405,
+    max_player = 2,
+})
+assert_equal(one_member_private.accepted, true, 'private_dungeon one-member team accepts through engine route')
+assert_equal(#private_dungeon_requests, one_member_before_requests + 1, 'private_dungeon one-member team calls engine request')
+assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'engine-one-member', 'private_dungeon one-member team forwards engine level id')
+assert_equal(one_member_private.result_data.route, 'solo_engine', 'private_dungeon one-member team route')
+assert_equal(one_member_private.result_data.completion_mode, 'request_only', 'private_dungeon one-member team completion mode')
+
 reset_contract_runtime()
 next_client_options = { valid = false }
 local pending_return_connect = lobby.connect(TEST_GAME_PLAY_ID)

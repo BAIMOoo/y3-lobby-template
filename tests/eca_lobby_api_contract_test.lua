@@ -1320,6 +1320,32 @@ assert_equal(solo_private.result_data.platform_requested, true, 'private_dungeon
 assert_equal(solo_private.result_data.entered_target, 'unknown', 'private_dungeon solo does not claim target entry synchronously')
 assert_equal(y3.lobby.get_state().result_data.pending_count, 0, 'private_dungeon solo leaves no pending request')
 
+do
+    latest_client.team_info = {
+        team_id = 7003,
+        captain = latest_client.aid,
+        members = {
+            { aid = latest_client.aid, in_game = false },
+        },
+    }
+    local one_member_bob_before = #latest_client.cross_room_payloads
+    local one_member_private_before = #private_dungeon_requests
+    assert_equal(y3.lobby._private_dungeon_completion_mode_for_eca({}), 'request_only', 'one-member team uses request-only ECA route')
+    local one_member_private = y3.lobby.private_dungeon({
+        level_id = 'platform-one-member',
+        engine_level_id = 'engine-one-member',
+        game_mode = 9404,
+        max_player = 2,
+    })
+    assert_equal(one_member_private.accepted, true, 'private_dungeon accepts one-member team through engine route')
+    assert_equal(#latest_client.cross_room_payloads, one_member_bob_before, 'one-member team must not send BOB request')
+    assert_equal(#private_dungeon_requests, one_member_private_before + 1, 'one-member team calls engine private dungeon request')
+    assert_equal(private_dungeon_requests[#private_dungeon_requests].level_id, 'engine-one-member', 'one-member team forwards engine level id')
+    assert_equal(one_member_private.result_data.route, 'solo_engine', 'one-member team uses solo engine route')
+    assert_equal(one_member_private.result_data.completion_mode, 'request_only', 'one-member team completion mode')
+    latest_client.team_info = nil
+end
+
 reset_lobby_with_factory(function()
     factory_calls = factory_calls + 1
     latest_client = new_fake_client()
@@ -1659,10 +1685,11 @@ latest_client.team_info = {
         { aid = 99003 },
     },
 }
+assert_equal(y3.lobby._private_dungeon_completion_mode_for_eca({}), 'async', 'multi-member team uses async ECA route')
 local can_match_calls = 0
 latest_client.can_match = function()
     can_match_calls = can_match_calls + 1
-    error('private_dungeon must not ask whole-team can_match after filtering')
+    error('private_dungeon must not ask whole-team can_match before BOB request')
 end
 local bob_payloads_before = #latest_client.cross_room_payloads
 local private_requests_before_team = #private_dungeon_requests
@@ -1671,23 +1698,33 @@ local private_team = y3.lobby.private_dungeon({
     level_id = 'platform-level-team',
     engine_level_id = 'engine-level-team',
     game_mode = 801,
+    team_game_mode = 1002,
     max_player = 2,
 })
-assert_equal(private_team.accepted, true, 'private_dungeon captain accepts filtered team')
+assert_equal(private_team.accepted, true, 'private_dungeon captain accepts full team')
 assert_equal(#latest_client.cross_room_payloads, bob_payloads_before + 1, 'private_dungeon captain sends one BOB request')
 assert_equal(#private_dungeon_requests, private_requests_before_team, 'private_dungeon team path must not call solo engine request')
-assert_equal(#latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players, 1, 'private_dungeon filters to eligible players')
-assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players[1].aid, tostring(latest_client.aid), 'private_dungeon serializes eligible player aid as protocol string')
-assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].dungeon_info.game_map_id, 'map-team', 'private_dungeon team forwards platform map config id')
-assert_equal(latest_client.cross_room_payloads[#latest_client.cross_room_payloads].dungeon_info.level_id, 'platform-level-team', 'private_dungeon team forwards dungeon config level id')
+local private_team_payload = latest_client.cross_room_payloads[#latest_client.cross_room_payloads]
+assert_equal(#private_team_payload.players, 3, 'private_dungeon forwards every team member')
+assert_equal(private_team_payload.players[1].aid, tostring(latest_client.aid), 'private_dungeon serializes captain aid as protocol string')
+assert_equal(private_team_payload.players[2].aid, '99002', 'private_dungeon keeps in-game member in protocol players')
+assert_equal(private_team_payload.players[3].aid, '99003', 'private_dungeon keeps unknown-state member in protocol players')
+assert_equal(private_team_payload.players[1].version, '2.0', 'private_dungeon keeps required captain version')
+assert_equal(private_team_payload.players[2].version, '2.0', 'private_dungeon keeps required in-game member version')
+assert_equal(private_team_payload.players[3].version, '2.0', 'private_dungeon keeps required unknown-state member version')
+assert_equal(private_team_payload.dungeon_info.game_map_id, 'map-team', 'private_dungeon team forwards platform map config id')
+assert_equal(private_team_payload.dungeon_info.level_id, 'platform-level-team', 'private_dungeon team forwards dungeon config level id')
+assert_equal(private_team_payload.dungeon_info.game_mode, 1002, 'private_dungeon team uses reference BOB game mode')
 assert_equal(private_team.result_data.level_id, 'platform-level-team', 'private_dungeon team keeps platform config level id in diagnostics')
 assert_equal(private_team.result_data.engine_level_id, 'engine-level-team', 'private_dungeon team reports engine level UUID')
+assert_equal(private_team.result_data.game_mode, 801, 'private_dungeon keeps solo engine game mode in diagnostics')
+assert_equal(private_team.result_data.team_game_mode, 1002, 'private_dungeon reports BOB game mode in diagnostics')
 assert_equal(private_team.result_data.route, 'team_bob', 'private_dungeon team route')
 assert_equal(private_team.result_data.completion_mode, 'async_event', 'private_dungeon team completion mode')
-assert_equal(#private_team.result_data.selected_players, 1, 'private_dungeon selected count')
-assert_equal(private_team.result_data.skipped_in_game_players[1].aid, 99002, 'private_dungeon records skipped in-game member')
-assert_equal(private_team.result_data.unknown_status_players[1].aid, 99003, 'private_dungeon records unknown member')
-assert_equal(can_match_calls, 0, 'private_dungeon filtered BOB path does not run whole-team can_match')
+assert_equal(#private_team.result_data.selected_players, 3, 'private_dungeon reports every forwarded member')
+assert_equal(#private_team.result_data.skipped_in_game_players, 0, 'private_dungeon skips no in-game members')
+assert_equal(#private_team.result_data.unknown_status_players, 0, 'private_dungeon skips no unknown-state members')
+assert_equal(can_match_calls, 0, 'private_dungeon BOB path does not run whole-team can_match')
 latest_client.cross_room_callback(nil, nil)
 latest_client.launching = true
 latest_client:emit('启动状态变化')
@@ -1698,22 +1735,23 @@ latest_client.team_info.members = {
     { aid = latest_client.aid, in_game = true },
     { aid = 99003 },
 }
-local no_eligible_bob_before = #latest_client.cross_room_payloads
-local no_eligible_private_before = #private_dungeon_requests
-local no_eligible = y3.lobby.private_dungeon({
-    game_map_id = 'map-no-eligible',
-    level_id = 'level-no-eligible',
+local all_statuses_bob_before = #latest_client.cross_room_payloads
+local all_statuses_private_before = #private_dungeon_requests
+local all_statuses = y3.lobby.private_dungeon({
+    game_map_id = 'map-all-statuses',
+    level_id = 'level-all-statuses',
     game_mode = 801,
+    team_game_mode = 1002,
     max_player = 2,
 })
-assert_equal(no_eligible.accepted, false, 'private_dungeon rejects when no eligible players remain')
-assert_equal(no_eligible.code, 'no_eligible_players', 'private_dungeon no eligible code')
-assert_equal(no_eligible.result_data.route, 'rejected', 'private_dungeon no eligible route')
-assert_equal(no_eligible.result_data.completion_mode, 'sync_rejected', 'private_dungeon no eligible completion mode')
-assert_equal(no_eligible.result_data.platform_requested, false, 'private_dungeon no eligible no platform request')
-assert_equal(no_eligible.result_data.entered_target, 'not_entered', 'private_dungeon no eligible does not enter target')
-assert_equal(#latest_client.cross_room_payloads, no_eligible_bob_before, 'private_dungeon no eligible sends no BOB request')
-assert_equal(#private_dungeon_requests, no_eligible_private_before, 'private_dungeon no eligible sends no solo request')
+assert_equal(all_statuses.accepted, true, 'private_dungeon accepts team members regardless of in-game metadata')
+assert_equal(#latest_client.cross_room_payloads, all_statuses_bob_before + 1, 'private_dungeon all statuses sends one BOB request')
+assert_equal(#latest_client.cross_room_payloads[#latest_client.cross_room_payloads].players, 2, 'private_dungeon all statuses forwards every member')
+assert_equal(#private_dungeon_requests, all_statuses_private_before, 'private_dungeon all statuses sends no solo request')
+latest_client.cross_room_callback(nil, nil)
+latest_client.launching = true
+latest_client:emit('启动状态变化')
+latest_client.launching = false
 
 latest_client.team_info = {
     team_id = 778899,
@@ -1723,6 +1761,7 @@ latest_client.team_info = {
         { aid = 99002, in_game = false },
     },
 }
+assert_equal(y3.lobby._private_dungeon_completion_mode_for_eca({}), 'async', 'two-member team uses async ECA route')
 local member_bob_before = #latest_client.cross_room_payloads
 local member_private_before = #private_dungeon_requests
 local member_result = y3.lobby.private_dungeon({

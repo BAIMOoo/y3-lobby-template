@@ -4,7 +4,7 @@
 
 本文面向 ECA 作者，只说明 26 个 ECA 对外调用接口、返回字段和请求完成事件。迁移步骤见 [迁移](./02-迁移.md)。
 
-退出游戏和普通异步请求的取消结果通过已有的 `大厅服务请求完成` 事件接收，不新增 ECA 对外调用接口。局内私人副本会先判断路由：无队伍单人路径是请求提交型跨图接口，不产生完成事件；有队伍路径是组队异步接口，必须能发送 `大厅服务请求完成`。加入口令和返回大厅仍是请求提交型跨图接口，不产生完成事件。
+退出游戏和普通异步请求的取消结果通过已有的 `大厅服务请求完成` 事件接收，不新增 ECA 对外调用接口。局内私人副本会先判断路由：无队伍或一人队伍路径是请求提交型跨图接口，不产生完成事件；多人队伍路径是组队异步接口，必须能发送 `大厅服务请求完成`。加入口令和返回大厅仍是请求提交型跨图接口，不产生完成事件。
 
 ## 准备
 
@@ -128,7 +128,7 @@ return call(args[1])
 | `大厅服务 - 发送世界聊天` | `消息: string` | 发送世界聊天 |
 | `大厅服务 - 获取聊天记录` | `频道: string`，可不填 | 同步返回聊天记录 |
 | `大厅服务 - 获取聊天消息` | `序号: integer`；`频道: string`，可不填 | 同步返回第 N 条聊天消息 |
-| `大厅服务 - 局内私人副本` | `副本参数: table` | 必须包含 `level_id`、`game_mode`、`max_player`；有队伍时由框架筛选成员并走组队异步路由 |
+| `大厅服务 - 局内私人副本` | `副本参数: table` | 必须包含 `level_id`、`game_mode`、`max_player`；`team_game_mode` 可选；多人队伍时全量传递成员并走组队异步路由 |
 | `大厅服务 - 加入口令` | `口令: string` | 使用口令进入目标关卡 |
 | `大厅服务 - 获取口令` | 无 | 同步返回当前目标关卡口令 |
 | `大厅服务 - 返回大厅` | `大厅参数: table` | 必须包含 `level_id`、`game_mode`、`max_player`；无需预先连接；不清理队伍、匹配或 BOB |
@@ -145,12 +145,12 @@ return call(args[1])
 | 参数表 | 必填字段 | 可选字段 | 说明 |
 | --- | --- | --- | --- |
 | `匹配参数` | `level_id`、`game_mode` | `score` | `level_id` 和 `game_mode` 应与 `match.json` 对应 |
-| `副本参数` | `level_id`、`game_mode`、`max_player` | `engine_level_id`、`game_map_id`、`custom_param` | `level_id` 使用 `dungeon.json` 的 38 位配置键；`game_map_id` 使用当前地图版本 UUID；`engine_level_id` 是无队伍引擎请求使用的目标关卡 UUID；调用者不传 `players` |
+| `副本参数` | `level_id`、`game_mode`、`max_player` | `engine_level_id`、`game_map_id`、`team_game_mode`、`custom_param` | `level_id` 使用 `dungeon.json` 的 38 位配置键；`game_map_id` 使用当前地图版本 UUID；`engine_level_id` 是无队伍或一人队伍引擎请求使用的目标关卡 UUID；`team_game_mode` 是多人 BOB 请求使用的模式；调用者不传 `players` |
 | `大厅参数` | `level_id`、`game_mode`、`max_player` | `custom_param` | 用于返回大厅 |
 
 `version` 字段由框架内部写入固定字符串 `"2.0"`，ECA 作者不需要传。
 
-局内私人副本不要求 ECA 作者提供 `players`。无队伍时框架走单人引擎请求；有队伍时仅队长可发起，框架从队伍快照中只选择明确 `in_game == false` 的成员，跳过 `in_game == true` 的成员，并排除状态未知成员。
+局内私人副本不要求 ECA 作者提供 `players`。无队伍或一人队伍时框架走单人引擎请求；多人队伍时仅队长可发起，框架按 `team_info.members` 全量传递成员，不依据 `in_game` 或展示状态过滤。`game_mode` 用于单人引擎路由；`team_game_mode` 用于多人 BOB 路由，省略时兼容沿用 `game_mode`。
 
 无队伍的局内私人副本、加入口令和获取口令不要求预先连接 BOB。组队、匹配、聊天、有队伍的局内私人副本和高级查询接口仍需先建立连接。
 
@@ -161,13 +161,13 @@ return call(args[1])
 | `route` | `solo_engine`、`team_bob` 或 `rejected` |
 | `completion_mode` | `request_only`、`async_event` 或 `sync_rejected` |
 | `request_id` | 组队异步请求编号；单人和同步拒绝为空字符串 |
-| `selected_players` | 明确 `in_game == false` 并被带入的成员 |
-| `skipped_in_game_players` | 明确 `in_game == true` 而跳过的成员 |
-| `unknown_status_players` | `in_game` 缺失或非布尔而排除的成员 |
+| `selected_players` | 多人 BOB 路由中全量传递的队伍成员 |
+| `skipped_in_game_players` | 兼容字段；当前全量传递契约下为空 |
+| `unknown_status_players` | 兼容字段；当前全量传递契约下为空 |
 | `platform_requested` | 是否已调用平台或引擎请求 |
 | `entered_target` | 当前可确认的进入状态；单人提交后通常为 `unknown`，同步拒绝为 `not_entered` |
 
-有队伍但过滤后没有合格成员时，同步返回 `accepted = false`、`code = no_eligible_players`、`result_data.route = 'rejected'`、`result_data.completion_mode = 'sync_rejected'`、`result_data.platform_requested = false`、`result_data.entered_target = 'not_entered'`，并保留完整跳过摘要。组队路径失败不会降级为单人引擎请求。
+组队路径失败不会降级为单人引擎请求；失败结果保持 `platform_requested = false`、`entered_target = 'not_entered'`。
 
 加入口令和返回大厅的立即结果会包含 `cross_map_tracking = 'degraded'` 和 `entered_target = 'unknown'`。`platform_requested = true` 只表示引擎方法已调用，不表示平台最终接受。返回大厅不执行退出清理，也不返回 `cleanup_pending`。
 
@@ -205,7 +205,6 @@ ECA 调用建议按这个顺序处理：
 | `not_connected` | 是否先调用“大厅服务 - 建立连接”并等待成功 |
 | `connection_pending` | 连接还在进行，等待后再操作 |
 | `invalid_argument` | 是否缺少必填字段，例如人数上限、`level_id`、`game_mode`、`max_player` |
-| `no_eligible_players` | 有队伍但没有明确 `in_game == false` 的可带入成员 |
 | `not_in_team` / `not_captain` | 是否已在队伍中，以及当前玩家是否为队长 |
 | `not_matching` / `state_conflict` | 当前匹配、启动或队伍状态是否允许该操作 |
 | `member_not_found` / `player_not_found` | 目标 AID 是否属于当前队伍，或服务端是否能找到该玩家 |
@@ -217,7 +216,7 @@ ECA 调用建议按这个顺序处理：
 | `terminal_locked` | 已有返回大厅或退出游戏请求正在处理，不要重复点击 |
 | 队伍操作失败 | 队伍编号、目标 AID、队长权限 |
 | 匹配失败 | `gamemode.json`、`match.json`、`dungeon.json` 是否对应 |
-| 局内私人副本失败 | 目标模式、人数、队长权限、成员 `in_game` 状态、关卡是否允许进入 |
+| 局内私人副本失败 | 单人/组队目标模式、人数、队长权限、全量成员参数、关卡是否允许进入 |
 | 加入口令失败 | 口令、人数上限、中途加入时间 |
 
 [下一篇：验证与故障排查](./05-验证与故障排查.md)

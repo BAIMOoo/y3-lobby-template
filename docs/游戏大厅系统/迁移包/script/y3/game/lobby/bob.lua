@@ -1265,9 +1265,9 @@ function M:send_world_chat(message, done)
     return self:send_chat_to_channel(message, WORLD_CHANNEL_TYPE, WORLD_CHANNEL_ID, done)
 end
 
---多人局内私人副本：players 已由业务层过滤，只校验发起条件和选中子集状态。
+--多人局内私人副本：players 由业务层按 team_info.members 全量构建。
 ---@param dungeon_info DungeonSpaceField
----@param players DungeonPlayerField[] 每项必须包含 aid 和 version，version 当前固定传 '2.0'
+---@param players DungeonPlayerField[] 每项只包含字符串 aid 和固定 version '2.0'
 ---@param done? fun(result: any?, err: any?)
 function M:start_private_dungeon_game_filtered(dungeon_info, players, done)
     local can_start, reason = self:can_start_private_dungeon_filtered(players)

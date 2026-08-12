@@ -51,9 +51,9 @@ end)
 
 同一个普通异步请求只会完成一次。同步失败不会再触发完成回调。
 
-`private_dungeon()` 在无队伍时、`join_by_token()` 和 `return_lobby()` 是请求提交型跨图接口。引擎没有提供平台最终结果回调，因此这些 request-only 路由不会触发 `on_complete`；其 `accepted = true` 只表示当前客户端已发出引擎请求。必须等待新地图实际加载并重新查询状态，才能确认成功。
+`private_dungeon()` 在无队伍或一人队伍时、`join_by_token()` 和 `return_lobby()` 是请求提交型跨图接口。引擎没有提供平台最终结果回调，因此这些 request-only 路由不会触发 `on_complete`；其 `accepted = true` 只表示当前客户端已发出引擎请求。必须等待新地图实际加载并重新查询状态，才能确认成功。
 
-`private_dungeon()` 在有队伍时走组队异步路由：只有队长可发起，框架只带明确 `in_game == false` 的成员，完成结果仍通过 `on_complete` 返回。组队路由失败时不会降级调用单人引擎路径。
+`private_dungeon()` 在多人队伍时走组队异步路由：只有队长可发起，框架按 `team_info.members` 全量传递成员，完成结果仍通过 `on_complete` 返回。组队路由失败时不会降级调用单人引擎路径。一人队伍与无队伍相同，走单人引擎请求。
 
 如果建立连接或其他对外调用接口的请求尚未完成，此时又调用 `return_lobby()` 或 `exit_game()`，旧请求会被取消，并且只会收到一次 `success = false`、`code = cancelled_by_terminal` 的完成结果。旧请求即使之后返回，也不会再改变结果。
 
@@ -149,7 +149,7 @@ end)
 | 发送世界聊天 | `y3.lobby.send_world_chat(message)` | 连接成功后调用 |
 | 获取聊天记录 | `y3.lobby.get_chat_history(channel)` | `channel` 可传 `nil` |
 | 获取聊天消息 | `y3.lobby.get_chat_message(index, channel)` | 同步按序号和可选频道返回单条消息 |
-| 局内私人副本 | `y3.lobby.private_dungeon(params)` | `level_id`、`game_mode`、`max_player` 必填；有队伍时由框架筛选成员并走组队异步路由 |
+| 局内私人副本 | `y3.lobby.private_dungeon(params)` | `level_id`、`game_mode`、`max_player` 必填；`team_game_mode` 可选；多人队伍时全量传递成员并走组队异步路由 |
 | 加入口令 | `y3.lobby.join_by_token(token)` | 使用口令进入目标关卡 |
 | 获取口令 | `y3.lobby.get_token()` | 获取当前目标关卡口令 |
 | 返回大厅 | `y3.lobby.return_lobby(params)` | `level_id`、`game_mode`、`max_player` 必填；无需预先连接；不清理队伍、匹配或 BOB |
@@ -196,19 +196,19 @@ end
 y3.lobby.private_dungeon({
     level_id = 'PLATFORM_LEVEL_ID',
     engine_level_id = 'ENGINE_LEVEL_UUID',
-    game_mode = 'TARGET_MODE_ID',
+    game_mode = 1003,
+    team_game_mode = 1002,
     max_player = 4,
     game_map_id = 'TARGET_MAP_ID',
 })
 ```
 
-`level_id` 是 `dungeon.json` 使用的 38 位关卡配置键，有队伍时原样传给 BOB 的 `DungeonSpaceField.level_id`；`engine_level_id` 是同一目标关卡的 UUID 表示，无队伍时传给 `request_create_private_dungeon`。省略 `engine_level_id` 时会兼容沿用 `level_id`。`game_map_id` 是当前地图版本 UUID，可使用状态快照中的 `game_map_id`；它和 `level_id` 不是同一种表示。`game_mode`、`max_player` 是本次发给平台的动态参数；目标关卡是否允许进入、人数上限和中途加入规则仍由 `dungeon.json` 决定。
+`level_id` 是 `dungeon.json` 使用的 38 位关卡配置键，多人队伍时原样传给 BOB 的 `DungeonSpaceField.level_id`；`engine_level_id` 是同一目标关卡的 UUID 表示，无队伍或一人队伍时传给 `request_create_private_dungeon`。省略 `engine_level_id` 时会兼容沿用 `level_id`。`game_map_id` 是当前地图版本 UUID，可使用状态快照中的 `game_map_id`；它和 `level_id` 不是同一种表示。`game_mode` 传给单人引擎路由；`team_game_mode` 传给多人 BOB 路由，省略时兼容沿用 `game_mode`。`max_player` 是单人引擎路由的房间容量；目标关卡是否允许进入、人数上限和中途加入规则仍由 `dungeon.json` 决定。
 
 调用者不再传 `players`，也不再选择“同房分流”或“跨房合流”。框架按当前队伍状态自动路由：
 
-- 无队伍：走单人引擎请求，`route = 'solo_engine'`、`completion_mode = 'request_only'`、`request_id = ''`。`accepted = true` 只表示请求已提交，不表示平台最终进入。
-- 有队伍：仅队长可发起，走组队异步请求，`route = 'team_bob'`、`completion_mode = 'async_event'`、`request_id` 非空；最终结果通过 `on_complete` 返回。
-- 有队伍但筛选后没有合格成员：同步拒绝，`code = 'no_eligible_players'`、`route = 'rejected'`、`completion_mode = 'sync_rejected'`、`platform_requested = false`、`entered_target = 'not_entered'`。
+- 无队伍或一人队伍：走单人引擎请求，`route = 'solo_engine'`、`completion_mode = 'request_only'`、`request_id = ''`。`accepted = true` 只表示请求已提交，不表示平台最终进入。
+- 多人队伍：仅队长可发起，按队伍快照全量传递成员并走组队异步请求，`route = 'team_bob'`、`completion_mode = 'async_event'`、`request_id` 非空；最终结果通过 `on_complete` 返回。
 
 局内私人副本返回的 `result_data` 至少包含：
 
@@ -217,9 +217,9 @@ y3.lobby.private_dungeon({
 | `route` | `solo_engine`、`team_bob` 或 `rejected` |
 | `completion_mode` | `request_only`、`async_event` 或 `sync_rejected` |
 | `request_id` | 组队异步请求编号；单人和同步拒绝为空字符串 |
-| `selected_players` | 明确 `in_game == false` 并被带入的成员 |
-| `skipped_in_game_players` | 明确 `in_game == true` 而跳过的成员 |
-| `unknown_status_players` | `in_game` 缺失或非布尔而排除的成员 |
+| `selected_players` | 多人 BOB 路由中全量传递的队伍成员 |
+| `skipped_in_game_players` | 兼容字段；当前全量传递契约下为空 |
+| `unknown_status_players` | 兼容字段；当前全量传递契约下为空 |
 | `platform_requested` | 是否已调用平台或引擎请求 |
 | `entered_target` | 当前可确认的进入状态；单人提交后通常为 `unknown`，同步拒绝为 `not_entered` |
 
@@ -300,7 +300,6 @@ end
 | `code = connection_pending` | 连接还未完成，等待后再重试 |
 | `code = invalid_argument` | 必填参数是否缺失 |
 | `code = timeout` | 平台回包或状态确认是否超时 |
-| `code = no_eligible_players` | 有队伍但没有明确 `in_game == false` 的可带入成员 |
 | `code = not_in_team` / `not_captain` | 是否已在队伍中，以及当前玩家是否为队长 |
 | `code = not_matching` / `state_conflict` | 当前匹配、启动或队伍状态是否允许该操作 |
 | `code = member_not_found` / `player_not_found` | 目标 AID 是否属于当前队伍，或服务端是否能找到该玩家 |

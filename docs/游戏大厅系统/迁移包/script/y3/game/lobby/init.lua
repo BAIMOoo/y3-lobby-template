@@ -965,23 +965,23 @@ end
 local function build_players_from_members(members)
     local players = {}
     local selected_players = {}
-    local skipped_in_game_players = {}
-    local unknown_status_players = {}
     for _, member in ipairs(members or {}) do
         local public_member = state.public_player(member)
-        if member.in_game == false then
-            players[#players + 1] = {
-                aid = tostring(public_member.aid),
-                version = PLAYER_VERSION,
-            }
-            selected_players[#selected_players + 1] = public_member
-        elseif member.in_game == true or member.state == '游戏中' then
-            skipped_in_game_players[#skipped_in_game_players + 1] = public_member
-        else
-            unknown_status_players[#unknown_status_players + 1] = public_member
-        end
+        players[#players + 1] = {
+            aid = tostring(public_member.aid),
+            version = PLAYER_VERSION,
+        }
+        selected_players[#selected_players + 1] = public_member
     end
-    return players, selected_players, skipped_in_game_players, unknown_status_players
+    return players, selected_players
+end
+
+local function has_multiple_team_members(client)
+    if not client or not client:is_in_team() then
+        return false
+    end
+    local members = client.team_info and client.team_info.members or {}
+    return #members >= 2
 end
 
 function M._private_dungeon_completion_mode_for_eca(params)
@@ -989,7 +989,7 @@ function M._private_dungeon_completion_mode_for_eca(params)
         return 'request_only'
     end
     local client = client_api.get()
-    if client and client:is_in_team() then
+    if has_multiple_team_members(client) then
         return 'async'
     end
     return 'request_only'
@@ -1002,35 +1002,31 @@ function M.private_dungeon(params)
     end
     local level_id = trim(params.level_id)
     local game_mode = to_integer(params.game_mode)
+    local team_game_mode = params.team_game_mode == nil and game_mode or to_integer(params.team_game_mode)
     local max_player = to_integer(params.max_player)
-    if level_id == '' or not game_mode or not max_player or max_player <= 0 then
-        return result.rejected(action, 'invalid_argument', 'level_id, integer game_mode and positive max_player are required')
+    if level_id == '' or not game_mode or not team_game_mode or not max_player or max_player <= 0 then
+        return result.rejected(action, 'invalid_argument',
+            'level_id, integer game_mode, optional integer team_game_mode and positive max_player are required')
     end
     if params.players ~= nil then
-        return result.rejected(action, 'invalid_argument', 'players 由框架根据队伍成员状态自动筛选，不支持外部传入')
+        return result.rejected(action, 'invalid_argument', 'players 由框架根据队伍快照全量生成，不支持外部传入')
     end
     local engine_level_id = trim(params.engine_level_id)
     if engine_level_id == '' then
         engine_level_id = level_id
     end
     local client = client_api.get()
-    if client and client:is_in_team() then
+    if has_multiple_team_members(client) then
         local game_map_id = trim(params.game_map_id)
         if game_map_id == '' then
             return result.rejected(action, 'invalid_argument', 'game_map_id is required for team private dungeon')
         end
-        local players, selected, skipped, unknown = build_players_from_members(client.team_info and client.team_info.members or {})
+        local players, selected = build_players_from_members(client.team_info and client.team_info.members or {})
         local request_data = private_dungeon_result_data('team_bob', 'async_event', level_id, game_mode, max_player)
         request_data.game_map_id = game_map_id
         request_data.engine_level_id = engine_level_id
+        request_data.team_game_mode = team_game_mode
         request_data.selected_players = selected
-        request_data.skipped_in_game_players = skipped
-        request_data.unknown_status_players = unknown
-        if #players == 0 then
-            request_data.route = 'rejected'
-            request_data.completion_mode = 'sync_rejected'
-            return result.rejected(action, 'no_eligible_players', '没有明确可进入的队伍成员', request_data)
-        end
         return run_async(action, 'operation', function(team_client, request, done)
             if not team_client:is_captain() then
                 request_data.route = 'rejected'
@@ -1046,7 +1042,7 @@ function M.private_dungeon(params)
             return starter(team_client, {
                 game_map_id = game_map_id,
                 level_id = level_id,
-                game_mode = game_mode,
+                game_mode = team_game_mode,
             }, players, state_done(request, team_client, '启动状态变化', function()
                 return team_client:is_launching()
             end, done, 'private dungeon requested', request_data,
