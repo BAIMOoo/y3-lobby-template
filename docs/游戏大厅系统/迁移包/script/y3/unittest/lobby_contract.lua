@@ -394,7 +394,8 @@ y3.game = {
         return endpoint_debug_mode
     end,
 }
-local _, _, explicit_pre_env = client._resolve_endpoint_for_test('pre')
+local explicit_pre_ip, _, explicit_pre_env = client._resolve_endpoint_for_test('pre')
+assert_equal(explicit_pre_ip, '42.186.213.132', 'explicit pre endpoint uses the pre server address')
 assert_equal(explicit_pre_env, 'pre', 'explicit endpoint_env selects pre outside debug mode')
 local _, _, default_prod_env = client._resolve_endpoint_for_test()
 assert_equal(default_prod_env, 'prod', 'missing endpoint_env follows platform environment')
@@ -402,8 +403,12 @@ endpoint_platform_env = 'pre'
 local _, _, default_pre_env = client._resolve_endpoint_for_test()
 assert_equal(default_pre_env, 'pre', 'platform pre environment remains pre by default')
 endpoint_debug_mode = true
-local _, _, debug_env = client._resolve_endpoint_for_test('pre')
-assert_equal(debug_env, 'qa', 'debug mode overrides explicit endpoint_env with qa')
+local debug_pre_ip, _, debug_pre_env = client._resolve_endpoint_for_test('pre')
+assert_equal(debug_pre_ip, '42.186.213.132', 'explicit pre endpoint keeps the pre server address in debug mode')
+assert_equal(debug_pre_env, 'pre', 'explicit endpoint_env overrides the debug mode default')
+local debug_default_ip, _, debug_default_env = client._resolve_endpoint_for_test()
+assert_equal(debug_default_ip, '42.186.215.253', 'debug mode defaults to the qa server address')
+assert_equal(debug_default_env, 'qa', 'missing endpoint_env still defaults to qa in debug mode')
 GameAPI.get_dungeon_info = original_get_dungeon_info
 y3.game = original_game
 local function install_fake_factory()

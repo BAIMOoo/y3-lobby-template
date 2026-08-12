@@ -90,10 +90,10 @@ local function get_endpoint(endpoint_env)
     local platform_env = dungeon_info and dungeon_info.env or nil
     local debug_mode = y3 and y3.game and y3.game.is_debug_mode and y3.game.is_debug_mode() or false
     local env
-    if platform_env == 'qa' or platform_env == 'debug' or debug_mode then
-        env = 'qa'
-    elseif endpoint_env ~= nil then
+    if endpoint_env ~= nil then
         env = endpoint_env
+    elseif platform_env == 'qa' or platform_env == 'debug' or debug_mode then
+        env = 'qa'
     elseif platform_env == 'pre' then
         env = 'pre'
     else
