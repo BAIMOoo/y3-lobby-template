@@ -565,6 +565,7 @@ local function refresh()
     local max_count = snapshot.member_limit or 0
 
     local battle_mode = not is_lobby_mode(mode)
+    runtime.backdrop:set_visible(not battle_mode)
     if runtime.game_hud then
         runtime.game_hud:set_visible(not battle_mode)
     end
