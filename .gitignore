@@ -1,0 +1,13 @@
+/.omx/
+/design-system/
+/ui-ux-showcase/
+/.codemaker/agents/hub/.agent-lock.json
+/.codex/env_setup_done
+/.codex/previews/
+/.codex/skills/y3-game-spec/report/
+/.y3-config-editor/backups/
+/lock/*.lock
+/maps/*/script/.log/
+/output/imagegen/
+**/__pycache__/
+*.py[cod]
