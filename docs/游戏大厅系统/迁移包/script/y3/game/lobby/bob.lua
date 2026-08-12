@@ -315,11 +315,19 @@ function M:request_with_token(id, sender, receiver, token, token_getter)
 end
 
 _G['_SVN_VERSION_INJECTION_STATUS'] = 'pending'
+log.info('[LobbyVersionDiag] lua injection submitted',
+    'lua_globals=', tostring(_G),
+    'player=', tostring(local_player),
+    'player_id=', tostring(local_player:get_id()),
+    'aid=', tostring(local_player:get_platform_id()),
+    'local=', tostring(_G['_SVN_VERSION']),
+    'injection=', tostring(_G['_SVN_VERSION_INJECTION_STATUS']))
 ---@diagnostic disable-next-line: redundant-parameter, undefined-field
 GameAPI.visual_pyexec([[
 import clients.G as G
 
 lua_globals = G.black_box.lua_rt.globals()
+local_version = None
 try:
     import shipping
     local_version = shipping.CUR_SVN_VERSION
@@ -327,13 +335,37 @@ try:
     lua_globals['_SVN_VERSION_INJECTION_STATUS'] = 'ok' if local_version is not None else 'empty'
 except Exception as error:
     lua_globals['_SVN_VERSION_INJECTION_STATUS'] = 'failed: ' + str(error)
+python_runtime_id = hex(id(lua_globals))
+lua_globals['_SVN_VERSION_INJECTION_RUNTIME_ID'] = python_runtime_id
+print(
+    '[LobbyVersionDiag] python injection executed'
+    f' | lua_globals_id={python_runtime_id}'
+    f' | local={local_version!r}'
+    f' | local_type={type(local_version).__name__}'
+    f" | injection={lua_globals['_SVN_VERSION_INJECTION_STATUS']}"
+)
 ]])
+
+local function log_version_observation(stage, bob, local_version, injection_status)
+    log.info('[LobbyVersionDiag] lua version observed',
+        'stage=', stage,
+        'lua_globals=', tostring(_G),
+        'python_lua_globals_id=', tostring(_G['_SVN_VERSION_INJECTION_RUNTIME_ID']),
+        'player=', tostring(local_player),
+        'player_id=', tostring(local_player:get_id()),
+        'aid=', tostring(bob and bob.aid),
+        'level_id=', tostring(bob and bob.level_id),
+        'local=', tostring(local_version),
+        'local_type=', type(local_version),
+        'injection=', tostring(injection_status))
+end
 
 ---检查客户端是否需要更新
 ---@param callback fun(need_update: boolean)
 function M:check_update(callback)
     local local_version = _G['_SVN_VERSION']
     local injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
+    log_version_observation('check-start', self, local_version, injection_status)
     if y3.game.is_debug_mode(true) then
         log.info('【BOB】【版本检查】result=skip-debug',
             'local=', tostring(local_version),
@@ -371,6 +403,7 @@ function M:check_update(callback)
         timeout:remove()
         local_version = _G['_SVN_VERSION']
         injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
+        log_version_observation('remote-response', self, local_version, injection_status)
         if not body then
             log.warn('【BOB】【版本检查】result=remote-request-empty',
                 'policy=allow',
@@ -421,6 +454,16 @@ function M:check_update(callback)
             'remote=', tostring(remote_version),
             'remote_type=', type(remote_version),
             'injection=', tostring(injection_status))
+        if result == 'local-version-missing' and y3.ctimer and y3.ctimer.wait then
+            y3.ctimer.wait(1, function()
+                log_version_observation(
+                    'post-missing-1s',
+                    self,
+                    _G['_SVN_VERSION'],
+                    _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
+                )
+            end)
+        end
         callback(need_update)
     end)
 end

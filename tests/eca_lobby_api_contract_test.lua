@@ -479,6 +479,9 @@ assert_true(not official_lobby_source:find("Class 'message_handler'", 1, true), 
 assert_true(not official_lobby_source:find('Class("message_handler")', 1, true), 'official lobby module must not register global Class("message_handler")')
 assert_true(not official_lobby_source:find('Class "message_handler"', 1, true), 'official lobby module must not register global Class "message_handler"')
 assert_true(official_lobby_source:find("Class 'LobbyBob'", 1, true) ~= nil, "official lobby module must register Class 'LobbyBob'")
+assert_true(official_lobby_source:find('[LobbyVersionDiag] lua injection submitted', 1, true) ~= nil, 'version injection submission must be diagnosable')
+assert_true(official_lobby_source:find('[LobbyVersionDiag] python injection executed', 1, true) ~= nil, 'version injection execution must be diagnosable')
+assert_true(official_lobby_source:find('[LobbyVersionDiag] lua version observed', 1, true) ~= nil, 'version observation must be diagnosable')
 assert_true(
     official_lobby_source:find("Extends('LobbyBob', 'CustomEvent')", 1, true) ~= nil
         or official_lobby_source:find("Extends('LobbyBob','CustomEvent')", 1, true) ~= nil
