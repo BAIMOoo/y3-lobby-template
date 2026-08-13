@@ -253,12 +253,15 @@ class DocumentationExamplesTest(unittest.TestCase):
                 self.assertTrue((script_root / "test_ui.lua").is_file())
                 self.assertFalse(pub_root.exists())
 
-    def test_docs_explain_required_game_play_id_for_connection(self):
+    def test_docs_explain_platform_map_id_for_connection(self):
         corpus = "\n".join(read_text(DOCS / name) for name in ALL_DOCS)
         self.assertIn(f"y3.lobby.connect({TEST_GAME_PLAY_ID})", corpus)
-        self.assertIn("玩法固定 ID", corpus)
+        self.assertIn("平台地图 ID", corpus)
+        self.assertIn("地图上传到平台后获得的正整数地图编号", corpus)
+        self.assertIn("接口中的参数名仍为 `game_play_id`", corpus)
+        self.assertIn("ECA 的现有参数名仍显示为“玩法ID”", corpus)
         self.assertIn("不要使用 `GameAPI.get_dungeon_info().game_play_id`", corpus)
-        self.assertIn("作者之家后台", corpus)
+        self.assertIn("地图上传后，在平台后台查看该地图对应的数字 ID", corpus)
         self.assertIn("它不是地图模式配置项，也不写在 `match.json` 或 `dungeon.json` 中", corpus)
         self.assertIn("invalid_game_play_id", corpus)
         self.assertNotIn("connect()` 无参数", corpus)

@@ -17,9 +17,9 @@ if not result.accepted then
 end
 ```
 
-`connect(玩法ID, 是否在游戏关卡, 服务环境)` 的第一个参数是正整数玩法固定 ID，必填。当前示例项目使用 `190356`；迁移到自己的项目时，填写目标项目上传平台后供 BOB 服务识别的玩法固定 ID。不要用运行时 `GameAPI.get_dungeon_info().game_play_id` 代替它。
+`connect(平台地图ID, 是否在游戏关卡, 服务环境)` 的第一个参数是地图上传到平台后获得的正整数地图编号，必填。当前示例项目使用 `190356`；迁移到自己的项目时，填写目标地图上传后获得的平台地图 ID。Lua 参数名虽然是 `game_play_id`，但作者应把它理解为这里所说的平台地图 ID。不要用运行时 `GameAPI.get_dungeon_info().game_play_id` 代替它。
 
-第二个参数可选，默认为 `false`。如果当前关卡已经是目标玩法关卡，并且仍需要连接大厅服务，可传 `true`：
+第二个参数可选，默认为 `false`。如果当前关卡已经是目标游戏关卡，并且仍需要连接大厅服务，可传 `true`：
 
 ```lua
 y3.lobby.connect(190356, true)
@@ -35,7 +35,7 @@ y3.lobby.connect(190356, false, 'prod')
 
 组队、匹配、聊天、高级查询和有队伍的局内私人副本接口必须在连接成功后调用。未连接时会立即返回失败，常见 `code` 为 `not_connected` 或 `connection_pending`。无队伍的局内私人副本、加入口令和获取口令不要求预先连接。
 
-`return_lobby(params)` 和 `exit_game()` 不要求预先连接。目标玩法关卡如果只需要返回大厅或退出游戏，不需要为此调用 `connect()`。两者语义不同：返回大厅只提交跨图请求，保留队伍、匹配和 BOB 连接；退出游戏才会尽力清理大厅状态。
+`return_lobby(params)` 和 `exit_game()` 不要求预先连接。目标游戏关卡如果只需要返回大厅或退出游戏，不需要为此调用 `connect()`。两者语义不同：返回大厅只提交跨图请求，保留队伍、匹配和 BOB 连接；退出游戏才会尽力清理大厅状态。
 
 ## 完成回调
 
@@ -132,7 +132,7 @@ end)
 
 | 能力 | Lua 对外调用接口 | 说明 |
 | --- | --- | --- |
-| 建立连接 | `y3.lobby.connect(game_play_id, in_game, endpoint_env)` | `game_play_id` 为正整数玩法 ID，必填；`in_game`、`endpoint_env` 可选；外部项目本地使用 `qa`，线上使用 `prod` |
+| 建立连接 | `y3.lobby.connect(game_play_id, in_game, endpoint_env)` | `game_play_id` 填地图上传后获得的正整数平台地图 ID，必填；`in_game`、`endpoint_env` 可选；外部项目本地使用 `qa`，线上使用 `prod` |
 | 获取连接状态 | `y3.lobby.get_connection_status()` | 同步查询当前连接状态 |
 | 设置匹配分数 | `y3.lobby.set_score(score)` | `score` 为整数 |
 | 创建队伍 | `y3.lobby.create_team(member_limit)` | `member_limit` 为队伍人数上限，必填 |
@@ -295,8 +295,8 @@ end
 
 | 现象 | 先检查 |
 | --- | --- |
-| `code = invalid_game_play_id` | 建立连接时是否传入正整数玩法 ID |
-| `code = not_connected` | 是否先调用并完成 `y3.lobby.connect(玩法ID)` |
+| `code = invalid_game_play_id` | 建立连接时是否传入地图上传后获得的正整数平台地图 ID |
+| `code = not_connected` | 是否先调用并完成 `y3.lobby.connect(平台地图ID)` |
 | `code = connection_pending` | 连接还未完成，等待后再重试 |
 | `code = invalid_argument` | 必填参数是否缺失 |
 | `code = timeout` | 平台回包或状态确认是否超时 |

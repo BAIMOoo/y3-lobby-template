@@ -30,6 +30,12 @@ $matchRule = @($matchConfig | Where-Object { [int] $_.game_mode -eq $matchMode }
 Assert-Equal $matchRule.Count 1 'match rule count'
 Assert-Equal ([int] $matchRule[0].sections[0].min_player_num) 2 'minimum match players'
 
+$lobbyMatchRule = @($matchConfig | Where-Object { [int] $_.game_mode -eq $lobbyMode })
+Assert-Equal $lobbyMatchRule.Count 1 'lobby match rule count'
+Assert-Equal @($lobbyMatchRule[0].sections).Count 1 'lobby match section count'
+Assert-Equal ([int] $lobbyMatchRule[0].sections[0].max_score) 2147483647 'lobby match maximum score'
+Assert-Equal ([int] $lobbyMatchRule[0].sections[0].min_player_num) 4 'lobby minimum match players'
+
 $configuredModes = $gameModeConfig.game_modes.PSObject.Properties.Name
 Assert-Equal ($configuredModes -contains [string] $lobbyMode) $true 'lobby mode registration'
 Assert-Equal ($configuredModes -contains [string] $matchMode) $true 'match mode registration'
