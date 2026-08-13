@@ -1,6 +1,9 @@
 /.omx/
 /design-system/
 /ui-ux-showcase/
+/openspec/
+/docs/*-完整备份-*/
+/docs/*-完整备份-*.sha256
 /.codemaker/agents/hub/.agent-lock.json
 /.codex/env_setup_done
 /.codex/previews/
