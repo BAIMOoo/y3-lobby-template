@@ -24,3 +24,8 @@
 ## 详细文档
 
 大厅系统的迁移步骤、Lua 与 ECA 使用说明、验证方法和故障排查，请阅读[游戏大厅系统文档](./docs/游戏大厅系统/README.md)。
+
+## 代码仓库
+
+- GitHub 主仓库：[https://github.com/BAIMOoo/y3-lobby-template](https://github.com/BAIMOoo/y3-lobby-template)
+- Gitee 镜像仓库：[https://gitee.com/baim00/y3-lobby-template](https://gitee.com/baim00/y3-lobby-template)
