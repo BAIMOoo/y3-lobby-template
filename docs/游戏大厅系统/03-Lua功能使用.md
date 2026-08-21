@@ -149,7 +149,7 @@ end)
 | 发送世界聊天 | `y3.lobby.send_world_chat(message)` | 连接成功后调用 |
 | 获取聊天记录 | `y3.lobby.get_chat_history(channel)` | `channel` 可传 `nil` |
 | 获取聊天消息 | `y3.lobby.get_chat_message(index, channel)` | 同步按序号和可选频道返回单条消息 |
-| 局内私人副本 | `y3.lobby.private_dungeon(params)` | `level_id`、`game_mode`、`max_player` 必填；`team_game_mode` 可选；多人队伍时全量传递成员并走组队异步路由 |
+| 局内私人副本 | `y3.lobby.private_dungeon(params)` | 框架按当前队伍人数自动选择单人引擎或多人 BOB 路径；通用调用应同时提供两条路径所需的目标参数 |
 | 加入口令 | `y3.lobby.join_by_token(token)` | 使用口令进入目标关卡 |
 | 获取口令 | `y3.lobby.get_token()` | 获取当前目标关卡口令 |
 | 返回大厅 | `y3.lobby.return_lobby(params)` | `level_id`、`game_mode`、`max_player` 必填；无需预先连接；不清理队伍、匹配或 BOB |
@@ -203,9 +203,9 @@ y3.lobby.private_dungeon({
 })
 ```
 
-`level_id` 是 `dungeon.json` 使用的 38 位关卡配置键，多人队伍时原样传给 BOB 的 `DungeonSpaceField.level_id`；`engine_level_id` 是同一目标关卡的 UUID 表示，无队伍或一人队伍时传给 `request_create_private_dungeon`。省略 `engine_level_id` 时会兼容沿用 `level_id`。`game_map_id` 是当前地图版本 UUID，可使用状态快照中的 `game_map_id`；它和 `level_id` 不是同一种表示。`game_mode` 传给单人引擎路由；`team_game_mode` 传给多人 BOB 路由，省略时兼容沿用 `game_mode`。`max_player` 是单人引擎路由的房间容量；目标关卡是否允许进入、人数上限和中途加入规则仍由 `dungeon.json` 决定。
+框架根据当前队伍人数自动选择路径，调用方不传路由开关。为了让同一份调用在单人和组队状态下都能工作，应同时提供 `level_id`、`engine_level_id`、`game_mode`、`game_map_id`、`team_game_mode` 和 `max_player`。`level_id` 是 `dungeon.json` 使用的 38 位关卡配置键，多人队伍时原样传给 BOB 的 `DungeonSpaceField.level_id`；`engine_level_id` 是同一目标关卡的 UUID 表示，无队伍或一人队伍时传给 `request_create_private_dungeon`，不能用 38 位 `level_id` 代替。`game_map_id` 是当前地图版本 UUID，可使用状态快照中的 `game_map_id`；它和 `level_id` 不是同一种表示。`game_mode` 传给单人引擎路由；`team_game_mode` 传给多人 BOB 路由。`max_player` 是单人引擎路由的房间容量；目标关卡是否允许进入、人数上限和中途加入规则仍由 `dungeon.json` 决定。
 
-调用者不再传 `players`，也不再选择“同房分流”或“跨房合流”。框架按当前队伍状态自动路由：
+调用者不再传 `players`，也不选择“同房分流”或“跨房合流”。参数表同时描述两条候选路径，框架按当前队伍状态只执行其中一条：
 
 - 无队伍或一人队伍：走单人引擎请求，`route = 'solo_engine'`、`completion_mode = 'request_only'`、`request_id = ''`。`accepted = true` 只表示请求已提交，不表示平台最终进入。
 - 多人队伍：仅队长可发起，按队伍快照全量传递成员并走组队异步请求，`route = 'team_bob'`、`completion_mode = 'async_event'`、`request_id` 非空；最终结果通过 `on_complete` 返回。

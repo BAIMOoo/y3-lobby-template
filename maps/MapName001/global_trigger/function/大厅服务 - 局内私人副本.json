@@ -91,7 +91,7 @@
     "event": [],
     "func_category": "t_function",
     "func_comment": "",
-    "func_des": "按统一参数表{副本参数}发起局内私人副本请求；参数表使用 action=private_dungeon，可包含 level_id、game_mode、max_player、game_map_id、custom_param",
+    "func_des": "按参数表{副本参数}发起局内私人副本；框架按当前队伍人数自动选择单人引擎或多人 BOB 路径。通用调用请提供 level_id、engine_level_id、game_mode、game_map_id、team_game_mode、max_player；players 由框架生成，不要传入",
     "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
     "func_name": "大厅服务 - 局内私人副本",
     "group_id": 0,

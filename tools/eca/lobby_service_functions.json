@@ -107,7 +107,7 @@
         {
             "name": "大厅服务 - 局内私人副本",
             "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
-            "description": "按参数表{副本参数}发起局内私人副本请求；必须包含 level_id、game_mode、max_player，可选 engine_level_id、game_map_id、team_game_mode、custom_param；players 由框架生成，不要传入",
+            "description": "按参数表{副本参数}发起局内私人副本；框架按当前队伍人数自动选择单人引擎或多人 BOB 路径。通用调用请提供 level_id、engine_level_id、game_mode、game_map_id、team_game_mode、max_player；players 由框架生成，不要传入",
             "params": [{"name": "副本参数", "type": "TABLE", "required": true}],
             "returns": [{"name": "result", "type": "TABLE", "var": "t"}],
             "lua_bind": true
