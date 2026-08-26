@@ -1,0 +1,202 @@
+{
+    "trigger_name": "ECA副本UI - 显示口令",
+    "trigger_id": 1943000005,
+    "p_trigger_id": null,
+    "group_id": 0,
+    "enabled": true,
+    "valid": true,
+    "call_enabled": true,
+    "event": [
+        {
+            "event_type": "TRIGGER_COMPONENT_EVENT",
+            "element_id": 1943000005000001,
+            "enable": true,
+            "args_list": [
+                {
+                    "arg_type": 100067,
+                    "sub_type": "STR_TO_UI_EVENT",
+                    "args_list": [
+                        {
+                            "arg_type": 100003,
+                            "sub_type": 1,
+                            "args_list": [
+                                "eca_dungeon_copy_token"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "condition": [],
+    "action": [
+        {
+            "action_type": "CALL_TRIGGER_FUNC",
+            "args_list": [
+                {
+                    "arg_type": 100177,
+                    "sub_type": "da0b1d8bb1f354ec8b4f91fca5c8c653",
+                    "args_list": [],
+                    "op_arg": [],
+                    "op_arg_enable": []
+                },
+                {
+                    "arg_type": 100011,
+                    "sub_type": "VARIABLE",
+                    "args_list": [
+                        {
+                            "__tuple__": true,
+                            "items": [
+                                "TABLE",
+                                "副本显示口令",
+                                "local"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "bp": false,
+            "call_rt_arg_idxes": [
+                0
+            ],
+            "element_id": 1943000005000002,
+            "enable": true
+        },
+        {
+            "action_type": "SET_UI_COMP_TEXT",
+            "element_id": 1943000005000003,
+            "enable": true,
+            "bp": false,
+            "args_list": [
+                {
+                    "arg_type": 100025,
+                    "sub_type": "TRIGGER_PLAYER",
+                    "args_list": []
+                },
+                {
+                    "arg_type": 100070,
+                    "sub_type": "GET_UI_COMP_BY_PATH",
+                    "args_list": [
+                        {
+                            "arg_type": 100025,
+                            "sub_type": "TRIGGER_PLAYER",
+                            "args_list": []
+                        },
+                        {
+                            "arg_type": 100070,
+                            "sub_type": 1,
+                            "args_list": [
+                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                            ]
+                        },
+                        {
+                            "arg_type": 100003,
+                            "sub_type": 1,
+                            "args_list": [
+                                "dungeon_chat_panel.label_token_value"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "arg_type": 100003,
+                    "sub_type": "GET_STRING_TABLE_VAR_1D",
+                    "args_list": [
+                        {
+                            "arg_type": 100011,
+                            "sub_type": "GET_TABLE_TABLE_VAR_1D",
+                            "args_list": [
+                                {
+                                    "arg_type": 100011,
+                                    "sub_type": "VARIABLE",
+                                    "args_list": [
+                                        {
+                                            "__tuple__": true,
+                                            "items": [
+                                                "TABLE",
+                                                "副本显示口令",
+                                                "local"
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "arg_type": 100003,
+                                    "sub_type": 1,
+                                    "args_list": [
+                                        "result_data"
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "arg_type": 100003,
+                            "sub_type": 1,
+                            "args_list": [
+                                "token"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "action_type": "SET_UI_COMP_TEXT",
+            "element_id": 1943000005000004,
+            "enable": true,
+            "bp": false,
+            "args_list": [
+                {
+                    "arg_type": 100025,
+                    "sub_type": "TRIGGER_PLAYER",
+                    "args_list": []
+                },
+                {
+                    "arg_type": 100070,
+                    "sub_type": "GET_UI_COMP_BY_PATH",
+                    "args_list": [
+                        {
+                            "arg_type": 100025,
+                            "sub_type": "TRIGGER_PLAYER",
+                            "args_list": []
+                        },
+                        {
+                            "arg_type": 100070,
+                            "sub_type": 1,
+                            "args_list": [
+                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                            ]
+                        },
+                        {
+                            "arg_type": 100003,
+                            "sub_type": 1,
+                            "args_list": [
+                                "dungeon_chat_panel.label_chat_result"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "arg_type": 100003,
+                    "sub_type": 1,
+                    "args_list": [
+                        "口令已显示，请手动传递给另一客户端"
+                    ]
+                }
+            ]
+        }
+    ],
+    "var_data": [
+        {
+            "TABLE": {
+                "副本显示口令": null
+            }
+        },
+        {
+            "副本显示口令": 0
+        },
+        [
+            "副本显示口令"
+        ]
+    ]
+}

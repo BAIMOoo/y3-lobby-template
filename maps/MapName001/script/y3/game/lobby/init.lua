@@ -1083,7 +1083,7 @@ function M.join_by_token(token)
     if token == '' then
         return result.rejected(action, 'invalid_argument', '请输入口令')
     end
-    pcall(log.info, '[Lobby][PrivateDungeonDiag] 加入口令请求 | token=' .. token)
+    pcall(log.info, '[Lobby][PrivateDungeonDiag] 加入口令请求 | token=<redacted>')
     local request_data = {
         token = token,
         platform_requested = false,

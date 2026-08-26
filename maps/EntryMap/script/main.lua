@@ -22,5 +22,8 @@ y3.game:event('玩家-加入游戏', function (_, data)
     end)
 end)
 
--- 测试界面只复用旧 UI 布局，所有操作直接调用 y3.lobby。
-include 'test_ui'
+-- 保留已验证的 Lua 测试界面作为对照，ECA 示例地图默认只启用 ECA 界面。
+local ENABLE_LUA_TEST_UI = false
+if ENABLE_LUA_TEST_UI then
+    include 'test_ui'
+end

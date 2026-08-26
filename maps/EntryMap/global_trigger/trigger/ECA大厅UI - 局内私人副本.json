@@ -1,0 +1,754 @@
+{
+    "action": [
+        {
+            "action_type": "SET_UI_COMP_ENABLE", 
+            "args_list": [
+                {
+                    "arg_type": 100025, 
+                    "args_list": [], 
+                    "sub_type": "TRIGGER_PLAYER"
+                }, 
+                {
+                    "arg_type": 100070, 
+                    "args_list": [
+                        {
+                            "arg_type": 100025, 
+                            "args_list": [], 
+                            "sub_type": "TRIGGER_PLAYER"
+                        }, 
+                        {
+                            "arg_type": 100070, 
+                            "args_list": [
+                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "action_panel.button_private_dungeon"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_UI_COMP_BY_PATH"
+                }, 
+                {
+                    "arg_type": 100001, 
+                    "args_list": [
+                        false
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000002, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_UI_COMP_TEXT", 
+            "args_list": [
+                {
+                    "arg_type": 100025, 
+                    "args_list": [], 
+                    "sub_type": "TRIGGER_PLAYER"
+                }, 
+                {
+                    "arg_type": 100070, 
+                    "args_list": [
+                        {
+                            "arg_type": 100025, 
+                            "args_list": [], 
+                            "sub_type": "TRIGGER_PLAYER"
+                        }, 
+                        {
+                            "arg_type": 100070, 
+                            "args_list": [
+                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "action_panel.label_action_state"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_UI_COMP_BY_PATH"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "ECA大厅UI - 局内私人副本：提交中"
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000003, 
+            "enable": true
+        }, 
+        {
+            "action_type": "CALL_TRIGGER_FUNC", 
+            "args_list": [
+                {
+                    "arg_type": 100177, 
+                    "args_list": [], 
+                    "op_arg": [], 
+                    "op_arg_enable": [], 
+                    "sub_type": "06baf266d22b5844b236f6a8dea1828e"
+                }, 
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本状态", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }
+            ], 
+            "bp": false, 
+            "call_rt_arg_idxes": [
+                0
+            ], 
+            "element_id": 1942000016000004, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_VARIABLE", 
+            "args_list": [
+                {
+                    "arg_type": 100030, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100011, 
+                    "args_list": [], 
+                    "sub_type": "GET_NEW_TABLE"
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000005, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_TABLE_VALUE_1D", 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "game_map_id"
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        {
+                            "arg_type": 100011, 
+                            "args_list": [
+                                {
+                                    "arg_type": 100011, 
+                                    "args_list": [
+                                        {
+                                            "__tuple__": true, 
+                                            "items": [
+                                                "TABLE", 
+                                                "局内私人副本状态", 
+                                                "local"
+                                            ]
+                                        }
+                                    ], 
+                                    "sub_type": "VARIABLE"
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "result_data"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "game_map_id"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000006, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_TABLE_VALUE_1D", 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "level_id"
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "50377054694119407947881484918402159964"
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000007, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_TABLE_VALUE_1D", 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "engine_level_id"
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "25e6448f-7e73-11f1-88ae-03dc5a85955c"
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000008, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_TABLE_VALUE_1D", 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "game_mode"
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100002, 
+                    "args_list": [
+                        1003
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000009, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_TABLE_VALUE_1D", 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "team_game_mode"
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100002, 
+                    "args_list": [
+                        1002
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000010, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_TABLE_VALUE_1D", 
+            "args_list": [
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "局内私人副本参数", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "max_player"
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100002, 
+                    "args_list": [
+                        2
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000011, 
+            "enable": true
+        }, 
+        {
+            "action_type": "CALL_TRIGGER_FUNC", 
+            "args_list": [
+                {
+                    "arg_type": 100177, 
+                    "args_list": [
+                        {
+                            "arg_type": 100011, 
+                            "args_list": [
+                                {
+                                    "__tuple__": true, 
+                                    "items": [
+                                        "TABLE", 
+                                        "局内私人副本参数", 
+                                        "local"
+                                    ]
+                                }
+                            ], 
+                            "sub_type": "VARIABLE"
+                        }
+                    ], 
+                    "op_arg": [], 
+                    "op_arg_enable": [], 
+                    "sub_type": "0d827eca2ea0531c83ce1d8cff4db2f1"
+                }, 
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "ECA大厅UI - 局内私人副本立即结果", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }
+            ], 
+            "bp": false, 
+            "call_rt_arg_idxes": [
+                0
+            ], 
+            "element_id": 1942000016000012, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_UI_COMP_ENABLE", 
+            "args_list": [
+                {
+                    "arg_type": 100025, 
+                    "args_list": [], 
+                    "sub_type": "TRIGGER_PLAYER"
+                }, 
+                {
+                    "arg_type": 100070, 
+                    "args_list": [
+                        {
+                            "arg_type": 100025, 
+                            "args_list": [], 
+                            "sub_type": "TRIGGER_PLAYER"
+                        }, 
+                        {
+                            "arg_type": 100070, 
+                            "args_list": [
+                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "action_panel.button_private_dungeon"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_UI_COMP_BY_PATH"
+                }, 
+                {
+                    "arg_type": 100001, 
+                    "args_list": [
+                        true
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000013, 
+            "enable": true
+        }, 
+        {
+            "action_type": "IF_THEN_ELSE", 
+            "args_list": [
+                {
+                    "arg_type": 100021, 
+                    "args_list": [
+                        {
+                            "args_list": [
+                                {
+                                    "arg_type": 100001, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100011, 
+                                            "args_list": [
+                                                {
+                                                    "__tuple__": true, 
+                                                    "items": [
+                                                        "TABLE", 
+                                                        "ECA大厅UI - 局内私人副本立即结果", 
+                                                        "local"
+                                                    ]
+                                                }
+                                            ], 
+                                            "sub_type": "VARIABLE"
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "accepted"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                }, 
+                                {
+                                    "arg_type": 100035, 
+                                    "args_list": [
+                                        "=="
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100001, 
+                                    "args_list": [
+                                        true
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "condition_type": "BOOL_COMPARE", 
+                            "element_id": 1942000016000014, 
+                            "enable": true
+                        }
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100022, 
+                    "args_list": [
+                        {
+                            "action_type": "SET_UI_COMP_TEXT", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100025, 
+                                    "args_list": [], 
+                                    "sub_type": "TRIGGER_PLAYER"
+                                }, 
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "TRIGGER_PLAYER"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "action_panel.label_action_state"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "ECA大厅UI - 局内私人副本：请求已提交，以切图结果为准"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000016000015, 
+                            "enable": true
+                        }, 
+                        {
+                            "action_type": "DUMP_TABLE", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100011, 
+                                    "args_list": [
+                                        {
+                                            "__tuple__": true, 
+                                            "items": [
+                                                "TABLE", 
+                                                "ECA大厅UI - 局内私人副本立即结果", 
+                                                "local"
+                                            ]
+                                        }
+                                    ], 
+                                    "sub_type": "VARIABLE"
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000016000016, 
+                            "enable": true
+                        }
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100022, 
+                    "args_list": [
+                        {
+                            "action_type": "SET_UI_COMP_TEXT", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100025, 
+                                    "args_list": [], 
+                                    "sub_type": "TRIGGER_PLAYER"
+                                }, 
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "TRIGGER_PLAYER"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "action_panel.label_action_state"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "ECA大厅UI - 局内私人副本：失败，请查看日志"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000016000017, 
+                            "enable": true
+                        }, 
+                        {
+                            "action_type": "DUMP_TABLE", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100011, 
+                                    "args_list": [
+                                        {
+                                            "__tuple__": true, 
+                                            "items": [
+                                                "TABLE", 
+                                                "ECA大厅UI - 局内私人副本立即结果", 
+                                                "local"
+                                            ]
+                                        }
+                                    ], 
+                                    "sub_type": "VARIABLE"
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000016000018, 
+                            "enable": true
+                        }
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000016000019, 
+            "enable": true, 
+            "fake_op": [
+                2
+            ]
+        }
+    ], 
+    "call_enabled": true, 
+    "condition": [], 
+    "enabled": true, 
+    "event": [
+        {
+            "args_list": [
+                {
+                    "arg_type": 100067, 
+                    "args_list": [
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "eca_lobby_private_dungeon"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "STR_TO_UI_EVENT"
+                }
+            ], 
+            "element_id": 1942000016000001, 
+            "enable": true, 
+            "event_type": "TRIGGER_COMPONENT_EVENT"
+        }
+    ], 
+    "group_id": 0, 
+    "p_trigger_id": null, 
+    "trigger_id": 1942000016, 
+    "trigger_name": "ECA大厅UI - 局内私人副本", 
+    "valid": true, 
+    "var_data": [
+        {
+            "TABLE": {
+                "ECA大厅UI - 局内私人副本立即结果": null, 
+                "局内私人副本参数": null, 
+                "局内私人副本状态": null
+            }
+        }, 
+        {
+            "ECA大厅UI - 局内私人副本立即结果": 0, 
+            "局内私人副本参数": 0, 
+            "局内私人副本状态": 0
+        }, 
+        [
+            "局内私人副本状态", 
+            "局内私人副本参数", 
+            "ECA大厅UI - 局内私人副本立即结果"
+        ]
+    ]
+}

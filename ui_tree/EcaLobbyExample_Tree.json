@@ -1,0 +1,526 @@
+{
+  "name": "EcaLobbyExample",
+  "uid": "c3eb744a-f544-45d2-8e24-a2e279a67662",
+  "type": 2,
+  "children": [
+    {
+      "name": "exit_confirm_overlay",
+      "uid": "d50e4469-d042-4a50-bae7-351a14b7383a",
+      "type": 7,
+      "children": [
+        {
+          "name": "exit_confirm_overlay_bg",
+          "uid": "36143f16-d96c-44d4-a885-c2b873fe547c",
+          "type": 4
+        }
+      ]
+    },
+    {
+      "name": "developer_panel",
+      "uid": "fd9fa909-f542-42d9-b3a2-aace57179fb3",
+      "type": 7,
+      "children": [
+        {
+          "name": "developer_panel_bg",
+          "uid": "bafabe7c-64fd-4476-aac8-96d8d3b3213a",
+          "type": 4
+        },
+        {
+          "name": "label_developer_title",
+          "uid": "d880a443-08f5-423d-bf85-eff4909145bc",
+          "type": 3
+        },
+        {
+          "name": "button_dev_connect",
+          "uid": "851c6489-da76-4e0b-b021-6dfe612e2d42",
+          "type": 1
+        },
+        {
+          "name": "button_dev_score",
+          "uid": "359c1478-ebed-47f7-ab89-57345cc5c3dc",
+          "type": 1
+        },
+        {
+          "name": "button_dev_team_info",
+          "uid": "910bde71-728b-4e70-96f9-e61c9a67e7f2",
+          "type": 1
+        },
+        {
+          "name": "button_dev_player_info",
+          "uid": "582882a6-7cc8-4a19-bd0c-c5ee0dc1c9fd",
+          "type": 1
+        },
+        {
+          "name": "button_dev_refresh_player",
+          "uid": "ea238015-fe1c-44b0-92cf-d0316460c57d",
+          "type": 1
+        },
+        {
+          "name": "label_developer_result",
+          "uid": "e3dba1b4-b5c2-4d1e-b8c5-2d2a52f3227e",
+          "type": 3
+        }
+      ]
+    },
+    {
+      "name": "chat_panel",
+      "uid": "bef445aa-145d-4e8d-9a30-ed99f1bc650b",
+      "type": 7,
+      "children": [
+        {
+          "name": "chat_panel_bg",
+          "uid": "131198a4-8d92-4b14-95cf-b32ce4616a03",
+          "type": 4
+        },
+        {
+          "name": "input_chat",
+          "uid": "a8198918-c325-4a01-8855-418e58c83520",
+          "type": 15
+        },
+        {
+          "name": "label_chat_history",
+          "uid": "996b4e65-21db-4ec5-9596-3cfd0f6545df",
+          "type": 3
+        },
+        {
+          "name": "label_chat_result",
+          "uid": "4cad81c1-5106-4f61-be64-246cf02dcef3",
+          "type": 3
+        },
+        {
+          "name": "label_chat_context",
+          "uid": "f8b27ce6-5611-4d6a-af79-af1e06c33b5e",
+          "type": 3
+        },
+        {
+          "name": "label_chat_scope",
+          "uid": "ff45f7dd-06bd-4829-a3ec-a7774c4ba149",
+          "type": 3
+        },
+        {
+          "name": "button_world_chat",
+          "uid": "486bc1cf-6670-4403-a475-25b8c2448c76",
+          "type": 1
+        },
+        {
+          "name": "button_team_chat",
+          "uid": "b135a3ac-2759-4af2-a3a1-85022e383dbb",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "name": "team_panel",
+      "uid": "e25ecf10-183f-472d-99f4-8f4ab8f93501",
+      "type": 7,
+      "children": [
+        {
+          "name": "team_panel_bg",
+          "uid": "c868be4d-1872-4e4c-9405-eaabecfcf980",
+          "type": 4
+        },
+        {
+          "name": "member_row_1",
+          "uid": "92aada37-e05f-4663-a4d2-cb79816dd42d",
+          "type": 7,
+          "children": [
+            {
+              "name": "member_row_1_bg",
+              "uid": "1f68ff5e-cc20-4d31-81c6-87c684f64f98",
+              "type": 4
+            },
+            {
+              "name": "label_member_1",
+              "uid": "79d7d3c4-fb03-4c35-b5a5-67e9fa171bcc",
+              "type": 3
+            },
+            {
+              "name": "button_transfer_1",
+              "uid": "8356a4b0-9bd1-4db4-8c6a-3205e75eef3e",
+              "type": 1
+            },
+            {
+              "name": "button_kick_1",
+              "uid": "58cc87af-8e7b-42e3-9870-0be4314879ae",
+              "type": 1
+            }
+          ]
+        },
+        {
+          "name": "member_row_2",
+          "uid": "d7cdd010-c143-4cee-adf8-3053bd990c6a",
+          "type": 7,
+          "children": [
+            {
+              "name": "member_row_2_bg",
+              "uid": "704f734e-5bd4-48e7-bf32-cd3fa880f5ad",
+              "type": 4
+            },
+            {
+              "name": "label_member_2",
+              "uid": "5f8843ab-6050-4c7a-866e-d484621055cb",
+              "type": 3
+            },
+            {
+              "name": "button_transfer_2",
+              "uid": "faf42e8a-4331-49f2-b2fa-89baec4ead61",
+              "type": 1
+            },
+            {
+              "name": "button_kick_2",
+              "uid": "7d70b032-a31e-4650-9129-7ed0a1c8d8eb",
+              "type": 1
+            }
+          ]
+        },
+        {
+          "name": "member_row_3",
+          "uid": "6b7b8ed3-6fde-4137-82cf-a42b09e515cd",
+          "type": 7,
+          "children": [
+            {
+              "name": "member_row_3_bg",
+              "uid": "b69d51db-5fca-44cf-b582-956240201a8a",
+              "type": 4
+            },
+            {
+              "name": "label_member_3",
+              "uid": "c83898ab-6c22-4643-89a3-74a99981d6b3",
+              "type": 3
+            },
+            {
+              "name": "button_transfer_3",
+              "uid": "410ede29-29a0-4e4b-8409-741f359c4e0d",
+              "type": 1
+            },
+            {
+              "name": "button_kick_3",
+              "uid": "2810d36d-284c-42e9-8b72-a742b387535e",
+              "type": 1
+            }
+          ]
+        },
+        {
+          "name": "member_row_4",
+          "uid": "025fc799-d079-4b93-8d06-e3db5fbc86fe",
+          "type": 7,
+          "children": [
+            {
+              "name": "member_row_4_bg",
+              "uid": "86e66620-ae64-4b47-9d20-4525d8a1c4da",
+              "type": 4
+            },
+            {
+              "name": "label_member_4",
+              "uid": "49bc37b7-2f3c-4d04-9f47-c5a93fcc219e",
+              "type": 3
+            },
+            {
+              "name": "button_transfer_4",
+              "uid": "a7d5e535-89c0-4be2-869f-016dd55096f4",
+              "type": 1
+            },
+            {
+              "name": "button_kick_4",
+              "uid": "056e18b1-d461-47d2-b235-3ed4b890d24c",
+              "type": 1
+            }
+          ]
+        },
+        {
+          "name": "input_team_id",
+          "uid": "f85826fd-5b01-4075-b60e-db27f3b066da",
+          "type": 15
+        },
+        {
+          "name": "label_member_columns",
+          "uid": "4d6696a2-84e1-46b0-8d76-0c032db79742",
+          "type": 3
+        },
+        {
+          "name": "label_team_title",
+          "uid": "baccd249-6de6-445f-993d-4d3f41696c4e",
+          "type": 3
+        },
+        {
+          "name": "label_team_hint",
+          "uid": "1275e497-2c8c-45e6-9769-78f832055dbd",
+          "type": 3
+        },
+        {
+          "name": "label_member_title",
+          "uid": "68b2c699-d785-41cc-9a46-5ebb56ce4bf6",
+          "type": 3
+        },
+        {
+          "name": "label_team_id",
+          "uid": "759221cf-8d4b-432b-95e3-e06c5289a863",
+          "type": 3
+        },
+        {
+          "name": "button_dismiss_team",
+          "uid": "bfacb960-780e-48be-8f2c-a4f058662af5",
+          "type": 1
+        },
+        {
+          "name": "button_create_team",
+          "uid": "498258c1-a3b9-4ef2-b451-19a389bc8d70",
+          "type": 1
+        },
+        {
+          "name": "button_leave_team",
+          "uid": "684f7053-e2f1-4943-a726-6704b8b385a8",
+          "type": 1
+        },
+        {
+          "name": "button_join_team",
+          "uid": "9e434280-5bff-4e84-8975-634e4ea8e488",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "name": "action_panel",
+      "uid": "4c2f8347-6b6b-4e0a-9c97-2bd2a80a9554",
+      "type": 7,
+      "children": [
+        {
+          "name": "action_panel_bg",
+          "uid": "6511f84b-e284-459f-b000-343a4e6ec35d",
+          "type": 4
+        },
+        {
+          "name": "input_token",
+          "uid": "4cdfa615-a686-4217-b9fa-bade2ca41c5f",
+          "type": 15
+        },
+        {
+          "name": "label_action_state",
+          "uid": "a2fdf2f7-01e9-4a8c-9c00-80407c570e79",
+          "type": 3
+        },
+        {
+          "name": "label_action_target",
+          "uid": "4bea68ac-5bef-4831-a4c0-f09fa30490a7",
+          "type": 3
+        },
+        {
+          "name": "label_action_title",
+          "uid": "66ac9ec3-607b-466c-b431-e0edae273ffa",
+          "type": 3
+        },
+        {
+          "name": "label_action_role",
+          "uid": "f2d07ced-7ae1-4fa8-93f2-38241091d710",
+          "type": 3
+        },
+        {
+          "name": "label_token",
+          "uid": "9c24b260-0339-4413-abb6-d016aeae4cd3",
+          "type": 3
+        },
+        {
+          "name": "button_private_dungeon",
+          "uid": "e89e9556-ded4-48d9-bf63-ce747806ce13",
+          "type": 1
+        },
+        {
+          "name": "button_match",
+          "uid": "e79b9aef-5301-4be0-8feb-935fa1d8e53e",
+          "type": 1
+        },
+        {
+          "name": "button_join_dungeon",
+          "uid": "65e63459-c3d7-43cf-af40-31d95277db96",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "name": "status_panel",
+      "uid": "6adf642e-452d-477d-b33c-6761d23d899d",
+      "type": 7,
+      "children": [
+        {
+          "name": "status_panel_bg",
+          "uid": "b7bcaf8e-c191-49cc-b395-f1b6a34d7d49",
+          "type": 4
+        },
+        {
+          "name": "status_aid",
+          "uid": "78866f01-594c-4aeb-bb1a-fdc9dc707b5a",
+          "type": 7,
+          "children": [
+            {
+              "name": "status_aid_bg",
+              "uid": "bc583e8c-38b7-498a-9f18-42fb8b4fc229",
+              "type": 4
+            },
+            {
+              "name": "label_aid_value",
+              "uid": "218161e4-0342-4694-918c-ca8ea4b717b4",
+              "type": 3
+            },
+            {
+              "name": "label_aid_key",
+              "uid": "8397ffa7-784e-4424-97ff-4c96c609ea5f",
+              "type": 3
+            }
+          ]
+        },
+        {
+          "name": "status_mode",
+          "uid": "811e99f1-4ab2-4817-a164-a05ea58b2cef",
+          "type": 7,
+          "children": [
+            {
+              "name": "status_mode_bg",
+              "uid": "ace7378a-a583-42a8-b357-bc11b1eb5c12",
+              "type": 4
+            },
+            {
+              "name": "label_mode_value",
+              "uid": "4fc3efa8-5490-4121-b251-71abb800761f",
+              "type": 3
+            },
+            {
+              "name": "label_mode_key",
+              "uid": "e945fbe6-d7ac-4bf7-b16b-25725425054c",
+              "type": 3
+            }
+          ]
+        },
+        {
+          "name": "status_connection",
+          "uid": "7f680bea-4a1f-48c4-8f58-30ccca8e78ed",
+          "type": 7,
+          "children": [
+            {
+              "name": "status_connection_bg",
+              "uid": "3b1409d4-21c6-4199-b261-e6c000ed8cf0",
+              "type": 4
+            },
+            {
+              "name": "label_connection_value",
+              "uid": "ae6bd4b7-0ae5-476f-a4a5-d376a469d2b8",
+              "type": 3
+            },
+            {
+              "name": "label_connection_key",
+              "uid": "c467ea0e-894a-4041-bb8a-163903df324c",
+              "type": 3
+            }
+          ]
+        },
+        {
+          "name": "status_team",
+          "uid": "af955317-94f5-4257-8315-341a1d502c67",
+          "type": 7,
+          "children": [
+            {
+              "name": "status_team_bg",
+              "uid": "d1adfca9-234e-4a02-8afb-962dd6a0f06d",
+              "type": 4
+            },
+            {
+              "name": "label_team_value",
+              "uid": "80603b60-d59e-43b4-b9a0-dbbabf48704d",
+              "type": 3
+            },
+            {
+              "name": "label_team_key",
+              "uid": "603b57dc-a3c7-49ad-8605-2ba3554edc09",
+              "type": 3
+            }
+          ]
+        },
+        {
+          "name": "status_match",
+          "uid": "c2260246-9786-4465-a6ae-f02e225bedfd",
+          "type": 7,
+          "children": [
+            {
+              "name": "status_match_bg",
+              "uid": "9a88b969-2bfb-4071-af17-926735dc1f44",
+              "type": 4
+            },
+            {
+              "name": "label_match_value",
+              "uid": "bf23e3d4-9455-4c8d-9772-3cbab1e72e5f",
+              "type": 3
+            },
+            {
+              "name": "label_match_key",
+              "uid": "5e851bf1-ffe7-4c64-9960-d95c4f38f249",
+              "type": 3
+            }
+          ]
+        },
+        {
+          "name": "status_launch",
+          "uid": "36880968-00f3-40be-ba90-82c21a164863",
+          "type": 7,
+          "children": [
+            {
+              "name": "status_launch_bg",
+              "uid": "3de7705a-8f22-4110-8b0a-dcd566bebf11",
+              "type": 4
+            },
+            {
+              "name": "label_launch_value",
+              "uid": "ee1c8387-50c5-4de2-8032-90c9546b8a38",
+              "type": 3
+            },
+            {
+              "name": "label_launch_key",
+              "uid": "19c9fc55-4e07-406a-986c-559fb1de08be",
+              "type": 3
+            }
+          ]
+        },
+        {
+          "name": "label_status_title",
+          "uid": "539adfe1-1e26-440d-b288-57d8c56d543d",
+          "type": 3
+        }
+      ]
+    },
+    {
+      "name": "header_panel",
+      "uid": "a96b2cda-8c35-4bff-9c23-40552e3f6eb5",
+      "type": 7,
+      "children": [
+        {
+          "name": "header_panel_bg",
+          "uid": "84ed26e7-a05d-4fdc-88f7-233dd2320627",
+          "type": 4
+        },
+        {
+          "name": "label_title",
+          "uid": "4b04cf0a-c60c-47ab-a006-0c5b3b4606c9",
+          "type": 3
+        },
+        {
+          "name": "label_subtitle",
+          "uid": "34986f99-cc86-4ce5-96a1-1948e2769513",
+          "type": 3
+        },
+        {
+          "name": "label_context",
+          "uid": "364ac1ea-cda9-4345-b240-9cdeabf68457",
+          "type": 3
+        }
+      ]
+    },
+    {
+      "name": "button_developer",
+      "uid": "d17ca7fb-756d-4041-9e20-d5f97267ed42",
+      "type": 1
+    },
+    {
+      "name": "button_exit",
+      "uid": "6a7d02c8-b5c6-4072-a36d-124bdd5b79a7",
+      "type": 1
+    }
+  ]
+}

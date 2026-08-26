@@ -1,0 +1,1066 @@
+{
+    "action": [
+        {
+            "action_type": "SET_UI_COMP_ENABLE", 
+            "args_list": [
+                {
+                    "arg_type": 100025, 
+                    "args_list": [], 
+                    "sub_type": "TRIGGER_PLAYER"
+                }, 
+                {
+                    "arg_type": 100070, 
+                    "args_list": [
+                        {
+                            "arg_type": 100025, 
+                            "args_list": [], 
+                            "sub_type": "TRIGGER_PLAYER"
+                        }, 
+                        {
+                            "arg_type": 100070, 
+                            "args_list": [
+                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "team_panel.member_row_1.button_kick_1"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_UI_COMP_BY_PATH"
+                }, 
+                {
+                    "arg_type": 100001, 
+                    "args_list": [
+                        false
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000007000002, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_UI_COMP_TEXT", 
+            "args_list": [
+                {
+                    "arg_type": 100025, 
+                    "args_list": [], 
+                    "sub_type": "TRIGGER_PLAYER"
+                }, 
+                {
+                    "arg_type": 100070, 
+                    "args_list": [
+                        {
+                            "arg_type": 100025, 
+                            "args_list": [], 
+                            "sub_type": "TRIGGER_PLAYER"
+                        }, 
+                        {
+                            "arg_type": 100070, 
+                            "args_list": [
+                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "team_panel.label_team_hint"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_UI_COMP_BY_PATH"
+                }, 
+                {
+                    "arg_type": 100003, 
+                    "args_list": [
+                        "ECA大厅UI - 移出队员1：处理中"
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000007000003, 
+            "enable": true
+        }, 
+        {
+            "action_type": "CALL_TRIGGER_FUNC", 
+            "args_list": [
+                {
+                    "arg_type": 100177, 
+                    "args_list": [
+                        {
+                            "arg_type": 100002, 
+                            "args_list": [
+                                1
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "op_arg": [], 
+                    "op_arg_enable": [], 
+                    "sub_type": "ff8d602fd5235532934fcc588f045d96"
+                }, 
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "成员操作目标1", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }
+            ], 
+            "bp": false, 
+            "call_rt_arg_idxes": [
+                0
+            ], 
+            "element_id": 1942000007000004, 
+            "enable": true
+        }, 
+        {
+            "action_type": "CALL_TRIGGER_FUNC", 
+            "args_list": [
+                {
+                    "arg_type": 100177, 
+                    "args_list": [
+                        {
+                            "arg_type": 100002, 
+                            "args_list": [
+                                {
+                                    "arg_type": 100011, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100011, 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100011, 
+                                                    "args_list": [
+                                                        {
+                                                            "__tuple__": true, 
+                                                            "items": [
+                                                                "TABLE", 
+                                                                "成员操作目标1", 
+                                                                "local"
+                                                            ]
+                                                        }
+                                                    ], 
+                                                    "sub_type": "VARIABLE"
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "result_data"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "member"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "aid"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "sub_type": "GET_INTEGER_TABLE_VAR_1D"
+                        }
+                    ], 
+                    "op_arg": [], 
+                    "op_arg_enable": [], 
+                    "sub_type": "54499d6fa32853e1870acd409a6515ea"
+                }, 
+                {
+                    "arg_type": 100011, 
+                    "args_list": [
+                        {
+                            "__tuple__": true, 
+                            "items": [
+                                "TABLE", 
+                                "ECA大厅UI - 移出队员1立即结果", 
+                                "local"
+                            ]
+                        }
+                    ], 
+                    "sub_type": "VARIABLE"
+                }
+            ], 
+            "bp": false, 
+            "call_rt_arg_idxes": [
+                0
+            ], 
+            "element_id": 1942000007000005, 
+            "enable": true
+        }, 
+        {
+            "action_type": "IF_THEN_ELSE", 
+            "args_list": [
+                {
+                    "arg_type": 100021, 
+                    "args_list": [
+                        {
+                            "args_list": [
+                                {
+                                    "arg_type": 100001, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100011, 
+                                            "args_list": [
+                                                {
+                                                    "__tuple__": true, 
+                                                    "items": [
+                                                        "TABLE", 
+                                                        "ECA大厅UI - 移出队员1立即结果", 
+                                                        "local"
+                                                    ]
+                                                }
+                                            ], 
+                                            "sub_type": "VARIABLE"
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "accepted"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                }, 
+                                {
+                                    "arg_type": 100035, 
+                                    "args_list": [
+                                        "=="
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100001, 
+                                    "args_list": [
+                                        true
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "condition_type": "BOOL_COMPARE", 
+                            "element_id": 1942000007000006, 
+                            "enable": true
+                        }
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100022, 
+                    "args_list": [
+                        {
+                            "action_type": "IF_THEN_ELSE", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100021, 
+                                    "args_list": [
+                                        {
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100011, 
+                                                            "args_list": [
+                                                                {
+                                                                    "__tuple__": true, 
+                                                                    "items": [
+                                                                        "TABLE", 
+                                                                        "ECA大厅UI - 移出队员1立即结果", 
+                                                                        "local"
+                                                                    ]
+                                                                }
+                                                            ], 
+                                                            "sub_type": "VARIABLE"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "request_id"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                }, 
+                                                {
+                                                    "arg_type": 100035, 
+                                                    "args_list": [
+                                                        "!="
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        ""
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "condition_type": "STRING_COMPARE", 
+                                            "element_id": 1942000007000007, 
+                                            "enable": true
+                                        }
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100022, 
+                                    "args_list": [
+                                        {
+                                            "action_type": "SET_UI_COMP_TEXT", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "TRIGGER_PLAYER"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "TRIGGER_PLAYER"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "team_panel.label_team_hint"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "ECA大厅UI - 移出队员1：请求已受理"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1942000007000008, 
+                                            "enable": true
+                                        }, 
+                                        1942100006
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100022, 
+                                    "args_list": [
+                                        {
+                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "TRIGGER_PLAYER"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "TRIGGER_PLAYER"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "team_panel.member_row_1.button_kick_1"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                }, 
+                                                {
+                                                    "arg_type": 100001, 
+                                                    "args_list": [
+                                                        true
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1942000007000009, 
+                                            "enable": true
+                                        }, 
+                                        {
+                                            "action_type": "SET_UI_COMP_TEXT", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "TRIGGER_PLAYER"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "TRIGGER_PLAYER"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "team_panel.label_team_hint"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "ECA大厅UI - 移出队员1：同步完成"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1942000007000010, 
+                                            "enable": true
+                                        }, 
+                                        {
+                                            "action_type": "DUMP_TABLE", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100011, 
+                                                    "args_list": [
+                                                        {
+                                                            "__tuple__": true, 
+                                                            "items": [
+                                                                "TABLE", 
+                                                                "ECA大厅UI - 移出队员1立即结果", 
+                                                                "local"
+                                                            ]
+                                                        }
+                                                    ], 
+                                                    "sub_type": "VARIABLE"
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1942000007000011, 
+                                            "enable": true
+                                        }
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000007000012, 
+                            "enable": true, 
+                            "fake_op": [
+                                2
+                            ]
+                        }
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100022, 
+                    "args_list": [
+                        {
+                            "action_type": "SET_UI_COMP_ENABLE", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100025, 
+                                    "args_list": [], 
+                                    "sub_type": "TRIGGER_PLAYER"
+                                }, 
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "TRIGGER_PLAYER"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "team_panel.member_row_1.button_kick_1"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100001, 
+                                    "args_list": [
+                                        true
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000007000013, 
+                            "enable": true
+                        }, 
+                        {
+                            "action_type": "SET_UI_COMP_TEXT", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100025, 
+                                    "args_list": [], 
+                                    "sub_type": "TRIGGER_PLAYER"
+                                }, 
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "TRIGGER_PLAYER"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "team_panel.label_team_hint"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "ECA大厅UI - 移出队员1：失败，请查看日志"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000007000014, 
+                            "enable": true
+                        }, 
+                        {
+                            "action_type": "DUMP_TABLE", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100011, 
+                                    "args_list": [
+                                        {
+                                            "__tuple__": true, 
+                                            "items": [
+                                                "TABLE", 
+                                                "ECA大厅UI - 移出队员1立即结果", 
+                                                "local"
+                                            ]
+                                        }
+                                    ], 
+                                    "sub_type": "VARIABLE"
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000007000015, 
+                            "enable": true
+                        }
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1942000007000016, 
+            "enable": true, 
+            "fake_op": [
+                2
+            ]
+        }
+    ], 
+    "call_enabled": true, 
+    "condition": [], 
+    "enabled": true, 
+    "event": [
+        {
+            "args_list": [
+                {
+                    "arg_type": 100067, 
+                    "args_list": [
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "eca_lobby_kick_1"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "STR_TO_UI_EVENT"
+                }
+            ], 
+            "element_id": 1942000007000001, 
+            "enable": true, 
+            "event_type": "TRIGGER_COMPONENT_EVENT"
+        }
+    ], 
+    "group_id": 0, 
+    "p_trigger_id": null, 
+    "sub_trigger": {
+        "1942100006": {
+            "action": [
+                {
+                    "action_type": "IF_THEN_ELSE", 
+                    "args_list": [
+                        {
+                            "arg_type": 100021, 
+                            "args_list": [
+                                {
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100011, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100240, 
+                                                            "args_list": [
+                                                                "回调数据"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_CUS_EVENT_PARAM"
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "request_id"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                        }, 
+                                        {
+                                            "arg_type": 100035, 
+                                            "args_list": [
+                                                "=="
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100011, 
+                                                    "args_list": [
+                                                        {
+                                                            "__tuple__": true, 
+                                                            "items": [
+                                                                "TABLE", 
+                                                                "ECA大厅UI - 移出队员1立即结果", 
+                                                                "local"
+                                                            ]
+                                                        }
+                                                    ], 
+                                                    "sub_type": "VARIABLE"
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "request_id"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                        }
+                                    ], 
+                                    "condition_type": "STRING_COMPARE", 
+                                    "element_id": 1942100006000002, 
+                                    "enable": true
+                                }
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100022, 
+                            "args_list": [
+                                {
+                                    "action_type": "SET_UI_COMP_ENABLE", 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "TRIGGER_PLAYER"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "TRIGGER_PLAYER"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [
+                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "team_panel.member_row_1.button_kick_1"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "sub_type": "GET_UI_COMP_BY_PATH"
+                                        }, 
+                                        {
+                                            "arg_type": 100001, 
+                                            "args_list": [
+                                                true
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "bp": false, 
+                                    "element_id": 1942100006000003, 
+                                    "enable": true
+                                }, 
+                                {
+                                    "action_type": "IF_THEN_ELSE", 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100021, 
+                                            "args_list": [
+                                                {
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100001, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100011, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100240, 
+                                                                            "args_list": [
+                                                                                "回调数据"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_CUS_EVENT_PARAM"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "success"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100035, 
+                                                            "args_list": [
+                                                                "=="
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100001, 
+                                                            "args_list": [
+                                                                true
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "condition_type": "BOOL_COMPARE", 
+                                                    "element_id": 1942100006000004, 
+                                                    "enable": true
+                                                }
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100022, 
+                                            "args_list": [
+                                                {
+                                                    "action_type": "SET_UI_COMP_TEXT", 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "TRIGGER_PLAYER"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "TRIGGER_PLAYER"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "team_panel.label_team_hint"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_UI_COMP_BY_PATH"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "ECA大厅UI - 移出队员1：操作成功"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "bp": false, 
+                                                    "element_id": 1942100006000005, 
+                                                    "enable": true
+                                                }
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100022, 
+                                            "args_list": [
+                                                {
+                                                    "action_type": "SET_UI_COMP_TEXT", 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "TRIGGER_PLAYER"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "TRIGGER_PLAYER"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "team_panel.label_team_hint"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_UI_COMP_BY_PATH"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "ECA大厅UI - 移出队员1：失败，请查看日志"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "bp": false, 
+                                                    "element_id": 1942100006000006, 
+                                                    "enable": true
+                                                }
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "bp": false, 
+                                    "element_id": 1942100006000007, 
+                                    "enable": true, 
+                                    "fake_op": [
+                                        2
+                                    ]
+                                }, 
+                                {
+                                    "action_type": "DUMP_TABLE", 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100011, 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100240, 
+                                                    "args_list": [
+                                                        "回调数据"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "sub_type": "GET_CUS_EVENT_PARAM"
+                                        }
+                                    ], 
+                                    "bp": false, 
+                                    "element_id": 1942100006000008, 
+                                    "enable": true
+                                }, 
+                                {
+                                    "action_type": "UNREG_TRIGGER", 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100178, 
+                                            "args_list": [], 
+                                            "sub_type": "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
+                                        }
+                                    ], 
+                                    "bp": false, 
+                                    "element_id": 1942100006000009, 
+                                    "enable": true
+                                }
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100022, 
+                            "args_list": [], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "bp": false, 
+                    "element_id": 1942100006000010, 
+                    "enable": true, 
+                    "fake_op": [
+                        2
+                    ]
+                }
+            ], 
+            "call_enabled": true, 
+            "condition": [], 
+            "enabled": false, 
+            "event": [
+                {
+                    "args_list": [
+                        {
+                            "arg_type": 100238, 
+                            "args_list": [
+                                1876423410
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "element_id": 1942100006000001, 
+                    "enable": true, 
+                    "event_type": "RECEIVE_CUSTOM_EVENT"
+                }
+            ], 
+            "group_id": 0, 
+            "is_conf": true, 
+            "p_trigger_id": 1942000007, 
+            "trigger_id": 1942100006, 
+            "trigger_name": "ECA大厅UI - 移出队员1完成回调", 
+            "valid": true, 
+            "var_data": [
+                {}, 
+                {}, 
+                []
+            ]
+        }
+    }, 
+    "trigger_id": 1942000007, 
+    "trigger_name": "ECA大厅UI - 移出队员1", 
+    "valid": true, 
+    "var_data": [
+        {
+            "TABLE": {
+                "ECA大厅UI - 移出队员1立即结果": null, 
+                "成员操作目标1": null
+            }
+        }, 
+        {
+            "ECA大厅UI - 移出队员1立即结果": 0, 
+            "成员操作目标1": 0
+        }, 
+        [
+            "成员操作目标1", 
+            "ECA大厅UI - 移出队员1立即结果"
+        ]
+    ]
+}

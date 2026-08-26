@@ -88,6 +88,9 @@ ARG_TYPE_ID = {
     "ROUND_AREA": 100064,
     "UNIT_WRITE_ATTRIBUTE": 100077,
     "DYNAMIC_TRIGGER_INSTANCE": 100178,
+    "UI_EVENT": 100067,
+    "UI_COMP": 100070,
+    "UI_COMP_EVENT_TYPE": 100072,
     "UI_PREFAB_INSTANCE": 100301,
     "MODIFIER": 100046,
     "VARIABLE": 100077,
@@ -127,6 +130,10 @@ BUILTIN_INDEX_PATCH = {
     "IF_THEN_ELSE": {"p": ["CONDITION_LIST", "ACTION_LIST", "ACTION_LIST"], "t": ["ACTION"], "s": "t_base", "o": []},
     "STRING_COMPARE": {"p": ["STRING", "BOOLEAN_OPERATOR", "STRING"], "t": ["COND", "BOOLEAN"], "s": "t_base", "o": []},
     "GET_STRING_TABLE_VAR_1D": {"p": ["TABLE", "STRING"], "t": ["STRING"], "s": "t_table", "o": []},
+    "GET_INTEGER_TABLE_VAR_1D": {"p": ["TABLE", "STRING"], "t": ["INTEGER"], "s": "t_table", "o": []},
+    "GET_BOOLEAN_TABLE_VAR_1D": {"p": ["TABLE", "STRING"], "t": ["BOOLEAN"], "s": "t_table", "o": []},
+    "GET_FLOAT_TABLE_VAR_1D": {"p": ["TABLE", "STRING"], "t": ["FLOAT"], "s": "t_table", "o": []},
+    "GET_TABLE_TABLE_VAR_1D": {"p": ["TABLE", "STRING"], "t": ["TABLE"], "s": "t_table", "o": []},
     "GET_NEW_TABLE": {"p": [], "t": ["TABLE"], "s": "t_table", "o": []},
     "SET_TABLE_VALUE_1D": {"p": ["TABLE", "[INTEGER,STRING]", "TABLE_VAR"], "t": ["ACTION"], "s": "t_table", "o": []},
     "UNREG_TRIGGER": {"p": ["DYNAMIC_TRIGGER_INSTANCE"], "t": ["ACTION"], "s": "t_base", "o": []},
@@ -658,6 +665,12 @@ def build_action(spec, idx_data, eid_gen, sub_trigger_refs=None):
     if name == "IF_THEN_ELSE":
         # Editor-authored IF nodes always carry this branch-layout marker.
         node["fake_op"] = [2]
+    if name in {
+        "RUN_LOOP_TIMER_NO_SAVE",
+        "RUN_LOOP_TIMER_BY_FRAME_NO_SAVE",
+        "RUN_ONCE_TIMER_NO_SAVE",
+    }:
+        node["local_var"] = {"__tuple__": True, "items": [{}, {}]}
     if "call_rt_arg_idxes" in extra:
         node["call_rt_arg_idxes"] = extra["call_rt_arg_idxes"]
     op_params = entry.get("o", [])

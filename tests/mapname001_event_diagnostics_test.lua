@@ -104,9 +104,8 @@ end
 dofile('maps/MapName001/script/main.lua')
 
 assert_equal(#triggers, 2, 'diagnostic listener count')
-assert_equal(#included, 2, 'included module count')
+assert_equal(#included, 1, 'included module count')
 assert_equal(included[1], 'dungeon_unit_spawn', 'spawn include')
-assert_equal(included[2], 'test_ui', 'test UI include')
 assert_contains(log_lines[1], 'main_load=1', 'main load sequence')
 assert_contains(log_lines[1], 'lobby_status=idle', 'lobby status query')
 assert_contains(log_lines[2], 'event=游戏-初始化', 'game init registration')

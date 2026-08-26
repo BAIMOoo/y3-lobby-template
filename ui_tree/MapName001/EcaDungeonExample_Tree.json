@@ -1,0 +1,113 @@
+{
+  "name": "EcaDungeonExample",
+  "uid": "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+  "type": 2,
+  "children": [
+    {
+      "name": "exit_confirm_overlay",
+      "uid": "23fd2578-c9fd-41e8-ba38-f933d77ca3a0",
+      "type": 7,
+      "children": [
+        {
+          "name": "exit_confirm_overlay_bg",
+          "uid": "bf73aa91-4295-49c8-9f31-56a0922b8e87",
+          "type": 4
+        }
+      ]
+    },
+    {
+      "name": "dungeon_chat_panel",
+      "uid": "50d1eb19-8741-4fa1-abd4-7b2d85f52723",
+      "type": 7,
+      "children": [
+        {
+          "name": "dungeon_chat_panel_bg",
+          "uid": "d894476a-ee02-4a8b-8036-7a852843eb39",
+          "type": 4
+        },
+        {
+          "name": "input_chat",
+          "uid": "37b9783a-133b-4fee-951d-e071d16bc4cd",
+          "type": 15
+        },
+        {
+          "name": "label_chat_history",
+          "uid": "ad6b2e56-02b4-4704-8f1e-77d8870e8445",
+          "type": 3
+        },
+        {
+          "name": "label_chat_result",
+          "uid": "4294c221-c643-4cb6-806a-0421779f288c",
+          "type": 3
+        },
+        {
+          "name": "label_token_value",
+          "uid": "b5101365-8730-4783-9a6d-63810b8ba9ff",
+          "type": 3
+        },
+        {
+          "name": "label_chat_title",
+          "uid": "521a14c2-c601-48cf-98f2-5c58de4031cb",
+          "type": 3
+        },
+        {
+          "name": "label_token_key",
+          "uid": "4616269f-7170-40c6-8fa6-de168fb5c577",
+          "type": 3
+        },
+        {
+          "name": "button_copy_token",
+          "uid": "32890a47-6508-4170-81d1-2e5dc2100d3a",
+          "type": 1
+        },
+        {
+          "name": "button_world_chat",
+          "uid": "bc98ab6b-0006-427f-82d9-1abb78bf232f",
+          "type": 1
+        },
+        {
+          "name": "button_team_chat",
+          "uid": "4ea79ac6-fa87-4647-b048-bb10f7d78dff",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "name": "dungeon_status_panel",
+      "uid": "22e0d41f-ebde-406d-af75-04132f65c987",
+      "type": 7,
+      "children": [
+        {
+          "name": "dungeon_status_panel_bg",
+          "uid": "a020bd96-3c5c-427f-aa59-20de0bd8656d",
+          "type": 4
+        },
+        {
+          "name": "label_status",
+          "uid": "d19f6044-f682-463a-95df-4289c6c60d6e",
+          "type": 3
+        },
+        {
+          "name": "label_title",
+          "uid": "dfdc9dc0-26ee-4528-aaa5-c64c64004bbb",
+          "type": 3
+        },
+        {
+          "name": "label_context",
+          "uid": "b71528e6-21e0-47c1-9ac0-4d28657d8929",
+          "type": 3
+        },
+        {
+          "name": "button_return_lobby",
+          "uid": "db4503ac-fcb5-4151-882e-a66f51da6af7",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "name": "button_exit",
+      "uid": "bddd23a2-7133-4ee7-8a7a-813caeab003d",
+      "type": 1
+    }
+  ]
+}

@@ -10,6 +10,8 @@ ROOT = Path(__file__).resolve().parents[1]
 FUNCTION_DSL = ROOT / "tools" / "eca" / "lobby_service_functions.json"
 TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_service_tests.json"
 STATUS_TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_status_event_listener.json"
+ENTRY_UI_DSL = ROOT / "tools" / "eca" / "lobby_ui_entry_map.json"
+DUNGEON_UI_DSL = ROOT / "tools" / "eca" / "lobby_ui_dungeon_map.json"
 MAP_NAMES = ["EntryMap", "MapName001"]
 
 EXPECTED_ECA_NAMES = [
@@ -72,11 +74,20 @@ def lobby_function_files(map_name: str):
     return list(function_root.rglob("大厅服务 - *.json"))
 
 
+def ui_paths(node, prefix=""):
+    path = f"{prefix}.{node['name']}" if prefix else node["name"]
+    yield path
+    for child in node.get("children", []):
+        yield from ui_paths(child, path)
+
+
 class LobbyEcaJsonTests(unittest.TestCase):
     def setUp(self):
         self.function_dsl = load_json(FUNCTION_DSL)
         self.trigger_dsl = load_json(TRIGGER_DSL)
         self.status_trigger_dsl = load_json(STATUS_TRIGGER_DSL)
+        self.entry_ui_dsl = load_json(ENTRY_UI_DSL)
+        self.dungeon_ui_dsl = load_json(DUNGEON_UI_DSL)
         self.functions = self.function_dsl["functions"]
 
     def test_function_dsl_lists_exactly_26_official_external_call_interfaces(self):
@@ -93,6 +104,15 @@ class LobbyEcaJsonTests(unittest.TestCase):
         }
         self.assertEqual([["回调数据", 100011]], events["大厅服务请求完成"])
         self.assertEqual([["事件数据", 100011]], events["大厅服务状态变化"])
+
+    def test_both_maps_declare_the_same_lobby_custom_events(self):
+        expected = load_json(ROOT / "maps" / "EntryMap" / "customevent.json")
+        actual = load_json(ROOT / "maps" / "MapName001" / "customevent.json")
+        self.assertEqual(expected, actual)
+        self.assertEqual(
+            [["回调数据", 100011]],
+            actual["conf"]["1876423410"],
+        )
 
     def test_status_event_listener_only_dumps_the_event_table(self):
         trigger = self.status_trigger_dsl["triggers"][0]
@@ -441,6 +461,189 @@ class LobbyEcaJsonTests(unittest.TestCase):
         for fragment in forbidden_fragments:
             with self.subTest(fragment=fragment):
                 self.assertNotIn(fragment, serialized)
+
+    def test_ui_dsl_covers_all_26_lobby_functions(self):
+        expected_ids = {
+            load_json(path)["func_id"]
+            for path in lobby_function_files("EntryMap")
+        }
+        used_ids = {
+            node["call_function"]["func_id"]
+            for dsl in (self.entry_ui_dsl, self.dungeon_ui_dsl)
+            for node in walk_json(dsl)
+            if isinstance(node, dict) and "call_function" in node
+        }
+        self.assertEqual(expected_ids, used_ids)
+        self.assertEqual(26, len(used_ids))
+
+    def test_entry_ui_contains_fixed_rows_and_developer_controls(self):
+        tree = load_json(ROOT / "ui_tree" / "EcaLobbyExample_Tree.json")
+        paths = set(ui_paths(tree))
+        for index in range(1, 5):
+            self.assertIn(f"EcaLobbyExample.team_panel.member_row_{index}", paths)
+            self.assertIn(
+                f"EcaLobbyExample.team_panel.member_row_{index}.button_transfer_{index}",
+                paths,
+            )
+            self.assertIn(
+                f"EcaLobbyExample.team_panel.member_row_{index}.button_kick_{index}",
+                paths,
+            )
+        for name in [
+            "button_dev_connect",
+            "button_dev_score",
+            "button_dev_team_info",
+            "button_dev_player_info",
+            "button_dev_refresh_player",
+            "label_developer_result",
+        ]:
+            self.assertIn(f"EcaLobbyExample.developer_panel.{name}", paths)
+
+    def test_every_ui_path_used_by_dsl_exists_in_its_map_tree(self):
+        cases = [
+            (
+                self.entry_ui_dsl,
+                load_json(ROOT / "ui_tree" / "EcaLobbyExample_Tree.json"),
+            ),
+            (
+                self.dungeon_ui_dsl,
+                load_json(
+                    ROOT
+                    / "ui_tree"
+                    / "MapName001"
+                    / "EcaDungeonExample_Tree.json"
+                ),
+            ),
+        ]
+        for dsl, tree in cases:
+            root_name = tree["name"]
+            available = set(ui_paths(tree))
+            referenced = {
+                f"{root_name}.{node[3]}"
+                for node in walk_json(dsl)
+                if isinstance(node, list)
+                and len(node) == 4
+                and node[0] == "GET_UI_COMP_BY_PATH"
+            }
+            with self.subTest(map_name=dsl["map"]):
+                self.assertTrue(referenced)
+                self.assertEqual(set(), referenced - available)
+
+    def test_async_ui_triggers_disable_buttons_and_filter_completion_by_request_id(self):
+        triggers = [
+            trigger
+            for dsl in (self.entry_ui_dsl, self.dungeon_ui_dsl)
+            for trigger in dsl["triggers"]
+            if trigger.get("sub_triggers")
+        ]
+        self.assertGreaterEqual(len(triggers), 20)
+        for trigger in triggers:
+            serialized = json.dumps(trigger, ensure_ascii=False)
+            with self.subTest(trigger=trigger["name"]):
+                self.assertIn("SET_UI_COMP_ENABLE", serialized)
+                self.assertIn("false", serialized)
+                self.assertIn("true", serialized)
+                self.assertIn("大厅服务请求完成", serialized)
+                self.assertIn("回调数据", serialized)
+                self.assertIn("request_id", serialized)
+                self.assertIn("UNREG_TRIGGER", serialized)
+
+    def test_cross_map_ui_requests_do_not_register_fake_completion_callbacks(self):
+        names = {
+            "ECA大厅UI - 局内私人副本",
+            "ECA大厅UI - 加入口令",
+            "ECA副本UI - 返回大厅",
+        }
+        triggers = {
+            trigger["name"]: trigger
+            for dsl in (self.entry_ui_dsl, self.dungeon_ui_dsl)
+            for trigger in dsl["triggers"]
+            if trigger["name"] in names
+        }
+        self.assertEqual(names, set(triggers))
+        for name, trigger in triggers.items():
+            serialized = json.dumps(trigger, ensure_ascii=False)
+            with self.subTest(trigger=name):
+                self.assertNotIn("sub_triggers", trigger)
+                self.assertNotIn("大厅服务请求完成", serialized)
+                self.assertNotIn("request_id", serialized)
+                self.assertIn("以切图结果为准", serialized)
+
+    def test_generated_ui_triggers_keep_editor_ui_type_ids_and_timer_metadata(self):
+        generated = []
+        for map_name, pattern in [
+            ("EntryMap", "ECA大厅UI - *.json"),
+            ("MapName001", "ECA副本UI - *.json"),
+        ]:
+            generated.extend(
+                load_json(path)
+                for path in (
+                    ROOT / "maps" / map_name / "global_trigger" / "trigger"
+                ).glob(pattern)
+            )
+        self.assertEqual(31, len(generated))
+        all_nodes = [node for trigger in generated for node in walk_json(trigger)]
+        ui_args = [
+            node
+            for node in all_nodes
+            if isinstance(node, dict)
+            and node.get("sub_type") == "GET_UI_COMP_BY_PATH"
+        ]
+        event_args = [
+            node
+            for node in all_nodes
+            if isinstance(node, dict) and node.get("sub_type") == "STR_TO_UI_EVENT"
+        ]
+        event_type_args = [
+            node["args_list"][1]
+            for node in all_nodes
+            if isinstance(node, dict)
+            and node.get("action_type") == "CREATE_UI_COMP_EVENT_EX_EX"
+        ]
+        timers = [
+            node
+            for node in all_nodes
+            if isinstance(node, dict)
+            and node.get("action_type") == "RUN_LOOP_TIMER_NO_SAVE"
+        ]
+        self.assertTrue(ui_args)
+        self.assertTrue(event_args)
+        self.assertTrue(event_type_args)
+        self.assertEqual({100070}, {node["arg_type"] for node in ui_args})
+        self.assertEqual({100067}, {node["arg_type"] for node in event_args})
+        self.assertEqual({100072}, {node["arg_type"] for node in event_type_args})
+        self.assertEqual(2, len(timers))
+        for timer in timers:
+            self.assertEqual(
+                {"__tuple__": True, "items": [{}, {}]},
+                timer.get("local_var"),
+            )
+
+    def test_lua_test_ui_is_preserved_but_disabled_by_default(self):
+        for map_name in MAP_NAMES:
+            source = (ROOT / "maps" / map_name / "script" / "main.lua").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(map_name=map_name):
+                self.assertIn("local ENABLE_LUA_TEST_UI = false", source)
+                self.assertIn("include 'test_ui'", source)
+                self.assertIn("if ENABLE_LUA_TEST_UI then", source)
+
+    def test_join_token_diagnostics_are_redacted_in_both_maps(self):
+        for map_name in MAP_NAMES:
+            source = (
+                ROOT
+                / "maps"
+                / map_name
+                / "script"
+                / "y3"
+                / "game"
+                / "lobby"
+                / "init.lua"
+            ).read_text(encoding="utf-8")
+            with self.subTest(map_name=map_name):
+                self.assertIn("加入口令请求 | token=<redacted>", source)
+                self.assertNotIn("加入口令请求 | token=' .. token", source)
 
 
 if __name__ == "__main__":

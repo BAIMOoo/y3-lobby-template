@@ -19,6 +19,7 @@ Supported node types:
     - div[data-type="3dmodel"] -> type 6 (模型控件)
     - div[data-type="grid"]    -> type 25 (GridView 网格)
     - div[data-type="list"]    -> type 10 (ScrollView 滚动列表)
+    - div[data-type="input"]   -> type 15 (输入框)
 
 Prefab mode:
     python html_to_y3_ui.py <input.html> <output.json> --prefab --prefab-name ItemCmp
@@ -48,6 +49,7 @@ TYPE_MAP = {
     "layout": 7,
     "grid": 25,    # GridView
     "list": 10,    # ScrollView
+    "input": 15,   # InputField
 }
 
 # Grid required attributes (grid_size is mandatory in engine)
@@ -534,6 +536,9 @@ class Y3UIHTMLParser(HTMLParser):
             "uid": str(uuid.uuid4()),
         }
 
+        if 'data-visible' in attrs:
+            node["visible"] = attrs['data-visible'].lower() == 'true'
+
         # Store original HTML coordinates for post_process_tree
         node['_html_x'] = x
         node['_html_y'] = y
@@ -563,6 +568,8 @@ class Y3UIHTMLParser(HTMLParser):
             self._add_list_fields(node, attrs)
         elif data_type == "3dmodel":
             self._add_3dmodel_fields(node, attrs)
+        elif data_type == "input":
+            self._add_input_fields(node, attrs)
 
         return node
 
@@ -614,6 +621,18 @@ class Y3UIHTMLParser(HTMLParser):
         if attrs.get('data-shadow', 'false').lower() == 'true':
             node["shadow"] = True
             node["text_shadow_color"] = {"__tuple__": True, "items": [0, 0, 0, 180]}
+
+    def _add_input_fields(self, node, attrs):
+        """Add input-field fields using an editor-authored type=15 sample."""
+        text = attrs.get('data-value', '')
+        placeholder = attrs.get('data-placeholder', attrs.get('data-text', ''))
+        font_size = int(attrs.get('data-font-size', '16'))
+        color = self._parse_color(attrs.get('data-color', '#ffffff'))
+
+        node["text"] = {"__tuple__": True, "items": [text, False]}
+        node["font"] = {"__tuple__": True, "items": ["MSYH", font_size]}
+        node["font_color"] = {"__tuple__": True, "items": color}
+        node["tip_text"] = {"__tuple__": True, "items": [placeholder, False]}
 
     def _add_image_fields(self, node, attrs):
         """Add image-specific fields (type=4)."""
@@ -1804,7 +1823,7 @@ def convert_prefab(html_path, output_path, prefab_name="NewPrefab"):
         # Remove uid for prefab nodes (prefab format uses prefab_sub_key instead)
         node.pop('uid', None)
         # Add comp_type based on type
-        comp_type_map = {1: "Button", 3: "TextLabel", 4: "Image", 7: "Layout", 25: "GridView", 10: "ScrollView"}
+        comp_type_map = {1: "Button", 3: "TextLabel", 4: "Image", 7: "Layout", 10: "ScrollView", 15: "InputField", 25: "GridView"}
         node_type = node.get('type', 7)
         if 'comp_type' not in node:
             node['comp_type'] = comp_type_map.get(node_type, "Layout")

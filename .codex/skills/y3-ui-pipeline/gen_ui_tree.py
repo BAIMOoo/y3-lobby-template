@@ -14,6 +14,7 @@ Y3 UI Tree Generator
 import json
 import os
 import sys
+import argparse
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
@@ -21,7 +22,7 @@ from typing import Dict, List, Any, Optional, Tuple
 class UITreeGenerator:
     """UI 树结构生成器"""
     
-    def __init__(self, map_root: str):
+    def __init__(self, map_root: str, map_name: str = "EntryMap"):
         """
         初始化生成器
         
@@ -29,8 +30,11 @@ class UITreeGenerator:
             map_root: 地图根目录路径
         """
         self.map_root = Path(map_root).resolve()
-        self.ui_dir = self.map_root / "maps" / "EntryMap" / "ui"
+        self.map_name = map_name
+        self.ui_dir = self.map_root / "maps" / map_name / "ui"
         self.output_dir = self.map_root / "ui_tree"
+        if map_name != "EntryMap":
+            self.output_dir = self.output_dir / map_name
         self.stats = {
             "total_files": 0,
             "processed": 0,
@@ -336,21 +340,19 @@ if %errorlevel% neq 0 (
 
 def main():
     """主函数"""
-    if len(sys.argv) < 2:
-        print("用法: python gen_ui_tree.py <map_root_path>")
-        print("示例: python gen_ui_tree.py .")
-        sys.exit(1)
-    
-    map_root = sys.argv[1]
-    
+    parser = argparse.ArgumentParser()
+    parser.add_argument("map_root_path")
+    parser.add_argument("--map", default="EntryMap", dest="map_name")
+    args = parser.parse_args()
+
     # 创建生成器
-    generator = UITreeGenerator(map_root)
+    generator = UITreeGenerator(args.map_root_path, args.map_name)
     
     # 生成树结构
     success = generator.generate()
     
     # 创建批处理脚本
-    script_dir = Path(map_root).resolve()
+    script_dir = Path(args.map_root_path).resolve()
     create_batch_script(script_dir)
     
     sys.exit(0 if success else 1)

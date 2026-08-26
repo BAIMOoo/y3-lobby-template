@@ -1,4 +1,10 @@
 {
     "New trigger.json": 0,
-    "UI.folder": 1
+    "UI.folder": 1,
+    "ECA副本UI - 初始化.json": 2,
+    "ECA副本UI - 发送队伍聊天.json": 3,
+    "ECA副本UI - 发送世界聊天.json": 4,
+    "ECA副本UI - 返回大厅.json": 5,
+    "ECA副本UI - 显示口令.json": 6,
+    "ECA副本UI - 退出游戏.json": 7
 }

@@ -1,0 +1,1850 @@
+{
+  "map": "MapName001",
+  "triggers": [
+    {
+      "name": "ECA副本UI - 初始化",
+      "id": 1943000001,
+      "event": [
+        [
+          "INIT_FINISHED"
+        ]
+      ],
+      "condition": [],
+      "action": [
+        [
+          "CREATE_UI_COMP_EVENT_EX_EX",
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "GET_CLIENT_ROLE"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_status_panel.button_return_lobby"
+          ],
+          1,
+          "eca_dungeon_return_lobby"
+        ],
+        [
+          "CREATE_UI_COMP_EVENT_EX_EX",
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "GET_CLIENT_ROLE"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.button_team_chat"
+          ],
+          1,
+          "eca_dungeon_team_chat"
+        ],
+        [
+          "CREATE_UI_COMP_EVENT_EX_EX",
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "GET_CLIENT_ROLE"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.button_world_chat"
+          ],
+          1,
+          "eca_dungeon_world_chat"
+        ],
+        [
+          "CREATE_UI_COMP_EVENT_EX_EX",
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "GET_CLIENT_ROLE"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.button_copy_token"
+          ],
+          1,
+          "eca_dungeon_copy_token"
+        ],
+        [
+          "CREATE_UI_COMP_EVENT_EX_EX",
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "GET_CLIENT_ROLE"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "button_exit"
+          ],
+          1,
+          "eca_dungeon_exit"
+        ],
+        [
+          "RUN_LOOP_TIMER_NO_SAVE",
+          1.0,
+          true,
+          [
+            {
+              "call_function": {
+                "func_id": "fb4e6115da4b5f02b2dcf819cfd1f642",
+                "args": [],
+                "returns": [
+                  {
+                    "var": "副本刷新连接状态",
+                    "type": "TABLE"
+                  }
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "06baf266d22b5844b236f6a8dea1828e",
+                "args": [],
+                "returns": [
+                  {
+                    "var": "副本刷新状态快照",
+                    "type": "TABLE"
+                  }
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "da0b1d8bb1f354ec8b4f91fca5c8c653",
+                "args": [],
+                "returns": [
+                  {
+                    "var": "副本刷新口令",
+                    "type": "TABLE"
+                  }
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "403f34876b6854779906e8855b689305",
+                "args": [],
+                "returns": [
+                  {
+                    "var": "副本刷新聊天记录",
+                    "type": "TABLE"
+                  }
+                ],
+                "optional_args": [
+                  null
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                "args": [
+                  1
+                ],
+                "returns": [
+                  {
+                    "var": "副本刷新聊天1",
+                    "type": "TABLE"
+                  }
+                ],
+                "optional_args": [
+                  null
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                "args": [
+                  2
+                ],
+                "returns": [
+                  {
+                    "var": "副本刷新聊天2",
+                    "type": "TABLE"
+                  }
+                ],
+                "optional_args": [
+                  null
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                "args": [
+                  3
+                ],
+                "returns": [
+                  {
+                    "var": "副本刷新聊天3",
+                    "type": "TABLE"
+                  }
+                ],
+                "optional_args": [
+                  null
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                "args": [
+                  4
+                ],
+                "returns": [
+                  {
+                    "var": "副本刷新聊天4",
+                    "type": "TABLE"
+                  }
+                ],
+                "optional_args": [
+                  null
+                ]
+              }
+            },
+            {
+              "call_function": {
+                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                "args": [
+                  5
+                ],
+                "returns": [
+                  {
+                    "var": "副本刷新聊天5",
+                    "type": "TABLE"
+                  }
+                ],
+                "optional_args": [
+                  null
+                ]
+              }
+            },
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "GET_CLIENT_ROLE"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_status_panel.label_status"
+              ],
+              [
+                "STR_JOIN",
+                "连接：",
+                [
+                  "STR_JOIN",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "副本刷新连接状态",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "status"
+                  ],
+                  [
+                    "STR_JOIN",
+                    "    AID：",
+                    [
+                      "STR_JOIN",
+                      [
+                        "ANY_VAR_TO_STR",
+                        [
+                          "GET_INTEGER_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            {
+                              "var": "副本刷新状态快照",
+                              "type": "TABLE"
+                            },
+                            "result_data"
+                          ],
+                          "aid"
+                        ]
+                      ],
+                      [
+                        "STR_JOIN",
+                        "    队伍：",
+                        [
+                          "STR_JOIN",
+                          [
+                            "ANY_VAR_TO_STR",
+                            [
+                              "GET_INTEGER_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "副本刷新状态快照",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "team_id"
+                            ]
+                          ],
+                          [
+                            "STR_JOIN",
+                            "    模式：",
+                            [
+                              "ANY_VAR_TO_STR",
+                              [
+                                "GET_INTEGER_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "副本刷新状态快照",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "game_mode"
+                              ]
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ],
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "GET_CLIENT_ROLE"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.label_token_value"
+              ],
+              [
+                "GET_STRING_TABLE_VAR_1D",
+                [
+                  "GET_TABLE_TABLE_VAR_1D",
+                  {
+                    "var": "副本刷新口令",
+                    "type": "TABLE"
+                  },
+                  "result_data"
+                ],
+                "token"
+              ]
+            ],
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "GET_CLIENT_ROLE"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.label_chat_history"
+              ],
+              [
+                "STR_JOIN",
+                [
+                  "STR_JOIN",
+                  [
+                    "STR_JOIN",
+                    [
+                      "STR_JOIN",
+                      [
+                        "STR_JOIN",
+                        [
+                          "GET_STRING_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "副本刷新聊天1",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "message"
+                            ],
+                            "sender"
+                          ],
+                          "name"
+                        ],
+                        [
+                          "STR_JOIN",
+                          "：",
+                          [
+                            "GET_STRING_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "副本刷新聊天1",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "message"
+                            ],
+                            "message"
+                          ]
+                        ]
+                      ],
+                      [
+                        "STR_JOIN",
+                        "\n",
+                        [
+                          "STR_JOIN",
+                          [
+                            "GET_STRING_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "副本刷新聊天2",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "message"
+                              ],
+                              "sender"
+                            ],
+                            "name"
+                          ],
+                          [
+                            "STR_JOIN",
+                            "：",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "副本刷新聊天2",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "message"
+                              ],
+                              "message"
+                            ]
+                          ]
+                        ]
+                      ]
+                    ],
+                    [
+                      "STR_JOIN",
+                      "\n",
+                      [
+                        "STR_JOIN",
+                        [
+                          "GET_STRING_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "副本刷新聊天3",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "message"
+                            ],
+                            "sender"
+                          ],
+                          "name"
+                        ],
+                        [
+                          "STR_JOIN",
+                          "：",
+                          [
+                            "GET_STRING_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "副本刷新聊天3",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "message"
+                            ],
+                            "message"
+                          ]
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    "STR_JOIN",
+                    "\n",
+                    [
+                      "STR_JOIN",
+                      [
+                        "GET_STRING_TABLE_VAR_1D",
+                        [
+                          "GET_TABLE_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              {
+                                "var": "副本刷新聊天4",
+                                "type": "TABLE"
+                              },
+                              "result_data"
+                            ],
+                            "message"
+                          ],
+                          "sender"
+                        ],
+                        "name"
+                      ],
+                      [
+                        "STR_JOIN",
+                        "：",
+                        [
+                          "GET_STRING_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              {
+                                "var": "副本刷新聊天4",
+                                "type": "TABLE"
+                              },
+                              "result_data"
+                            ],
+                            "message"
+                          ],
+                          "message"
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "STR_JOIN",
+                  "\n",
+                  [
+                    "STR_JOIN",
+                    [
+                      "GET_STRING_TABLE_VAR_1D",
+                      [
+                        "GET_TABLE_TABLE_VAR_1D",
+                        [
+                          "GET_TABLE_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            {
+                              "var": "副本刷新聊天5",
+                              "type": "TABLE"
+                            },
+                            "result_data"
+                          ],
+                          "message"
+                        ],
+                        "sender"
+                      ],
+                      "name"
+                    ],
+                    [
+                      "STR_JOIN",
+                      "：",
+                      [
+                        "GET_STRING_TABLE_VAR_1D",
+                        [
+                          "GET_TABLE_TABLE_VAR_1D",
+                          [
+                            "GET_TABLE_TABLE_VAR_1D",
+                            {
+                              "var": "副本刷新聊天5",
+                              "type": "TABLE"
+                            },
+                            "result_data"
+                          ],
+                          "message"
+                        ],
+                        "message"
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "ECA副本UI - 发送队伍聊天",
+      "id": 1943000002,
+      "event": [
+        [
+          "TRIGGER_COMPONENT_EVENT",
+          [
+            "STR_TO_UI_EVENT",
+            "eca_dungeon_team_chat"
+          ]
+        ]
+      ],
+      "condition": [],
+      "action": [
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.button_team_chat"
+          ],
+          false
+        ],
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.label_chat_result"
+          ],
+          "ECA副本UI - 发送队伍聊天：处理中"
+        ],
+        {
+          "call_function": {
+            "func_id": "a4b886695cfd53e6ba30adc15025c5bb",
+            "args": [
+              [
+                "GET_INPUT_FIELD_CONTENT",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                [
+                  "GET_UI_COMP_BY_PATH",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                  "dungeon_chat_panel.input_chat"
+                ]
+              ]
+            ],
+            "returns": [
+              {
+                "var": "ECA副本UI - 发送队伍聊天立即结果",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "IF_THEN_ELSE",
+          [
+            [
+              "BOOL_COMPARE",
+              [
+                "GET_BOOLEAN_TABLE_VAR_1D",
+                {
+                  "var": "ECA副本UI - 发送队伍聊天立即结果",
+                  "type": "TABLE"
+                },
+                "accepted"
+              ],
+              "==",
+              true
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.input_chat"
+              ],
+              ""
+            ],
+            [
+              "IF_THEN_ELSE",
+              [
+                [
+                  "STRING_COMPARE",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    {
+                      "var": "ECA副本UI - 发送队伍聊天立即结果",
+                      "type": "TABLE"
+                    },
+                    "request_id"
+                  ],
+                  "!=",
+                  ""
+                ]
+              ],
+              [
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.label_chat_result"
+                  ],
+                  "ECA副本UI - 发送队伍聊天：请求已受理"
+                ],
+                {
+                  "register_sub_trigger": "ECA副本UI - 发送队伍聊天完成回调"
+                }
+              ],
+              [
+                [
+                  "SET_UI_COMP_ENABLE",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.button_team_chat"
+                  ],
+                  true
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.label_chat_result"
+                  ],
+                  "ECA副本UI - 发送队伍聊天：同步完成"
+                ],
+                [
+                  "PRINT_MESSAGE_ACTION_TO_DIALOG",
+                  3,
+                  "[ECA Lobby] 结果包含敏感字段，详细内容已省略"
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_ENABLE",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.button_team_chat"
+              ],
+              true
+            ],
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.label_chat_result"
+              ],
+              "ECA副本UI - 发送队伍聊天：失败，请查看日志"
+            ],
+            [
+              "PRINT_MESSAGE_ACTION_TO_DIALOG",
+              3,
+              "[ECA Lobby] 结果包含敏感字段，详细内容已省略"
+            ]
+          ]
+        ]
+      ],
+      "sub_triggers": [
+        {
+          "name": "ECA副本UI - 发送队伍聊天完成回调",
+          "id": 1943100001,
+          "event": [
+            [
+              "RECEIVE_CUSTOM_EVENT",
+              "大厅服务请求完成"
+            ]
+          ],
+          "action": [
+            [
+              "IF_THEN_ELSE",
+              [
+                [
+                  "STRING_COMPARE",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    [
+                      "GET_CUS_EVENT_PARAM",
+                      "回调数据"
+                    ],
+                    "request_id"
+                  ],
+                  "==",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    {
+                      "var": "ECA副本UI - 发送队伍聊天立即结果",
+                      "type": "TABLE"
+                    },
+                    "request_id"
+                  ]
+                ]
+              ],
+              [
+                [
+                  "SET_UI_COMP_ENABLE",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.button_team_chat"
+                  ],
+                  true
+                ],
+                [
+                  "IF_THEN_ELSE",
+                  [
+                    [
+                      "BOOL_COMPARE",
+                      [
+                        "GET_BOOLEAN_TABLE_VAR_1D",
+                        [
+                          "GET_CUS_EVENT_PARAM",
+                          "回调数据"
+                        ],
+                        "success"
+                      ],
+                      "==",
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_TEXT",
+                      [
+                        "TRIGGER_PLAYER"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "TRIGGER_PLAYER"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.label_chat_result"
+                      ],
+                      "ECA副本UI - 发送队伍聊天：操作成功"
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_TEXT",
+                      [
+                        "TRIGGER_PLAYER"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "TRIGGER_PLAYER"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.label_chat_result"
+                      ],
+                      "ECA副本UI - 发送队伍聊天：失败，请查看日志"
+                    ]
+                  ]
+                ],
+                [
+                  "PRINT_MESSAGE_ACTION_TO_DIALOG",
+                  3,
+                  "[ECA Lobby] 结果包含敏感字段，详细内容已省略"
+                ],
+                [
+                  "UNREG_TRIGGER",
+                  [
+                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
+                  ]
+                ]
+              ],
+              []
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ECA副本UI - 发送世界聊天",
+      "id": 1943000003,
+      "event": [
+        [
+          "TRIGGER_COMPONENT_EVENT",
+          [
+            "STR_TO_UI_EVENT",
+            "eca_dungeon_world_chat"
+          ]
+        ]
+      ],
+      "condition": [],
+      "action": [
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.button_world_chat"
+          ],
+          false
+        ],
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.label_chat_result"
+          ],
+          "ECA副本UI - 发送世界聊天：处理中"
+        ],
+        {
+          "call_function": {
+            "func_id": "45f48cac073155d38ca8dc7edc934517",
+            "args": [
+              [
+                "GET_INPUT_FIELD_CONTENT",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                [
+                  "GET_UI_COMP_BY_PATH",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                  "dungeon_chat_panel.input_chat"
+                ]
+              ]
+            ],
+            "returns": [
+              {
+                "var": "ECA副本UI - 发送世界聊天立即结果",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "IF_THEN_ELSE",
+          [
+            [
+              "BOOL_COMPARE",
+              [
+                "GET_BOOLEAN_TABLE_VAR_1D",
+                {
+                  "var": "ECA副本UI - 发送世界聊天立即结果",
+                  "type": "TABLE"
+                },
+                "accepted"
+              ],
+              "==",
+              true
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.input_chat"
+              ],
+              ""
+            ],
+            [
+              "IF_THEN_ELSE",
+              [
+                [
+                  "STRING_COMPARE",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    {
+                      "var": "ECA副本UI - 发送世界聊天立即结果",
+                      "type": "TABLE"
+                    },
+                    "request_id"
+                  ],
+                  "!=",
+                  ""
+                ]
+              ],
+              [
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.label_chat_result"
+                  ],
+                  "ECA副本UI - 发送世界聊天：请求已受理"
+                ],
+                {
+                  "register_sub_trigger": "ECA副本UI - 发送世界聊天完成回调"
+                }
+              ],
+              [
+                [
+                  "SET_UI_COMP_ENABLE",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.button_world_chat"
+                  ],
+                  true
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.label_chat_result"
+                  ],
+                  "ECA副本UI - 发送世界聊天：同步完成"
+                ],
+                [
+                  "PRINT_MESSAGE_ACTION_TO_DIALOG",
+                  3,
+                  "[ECA Lobby] 结果包含敏感字段，详细内容已省略"
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_ENABLE",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.button_world_chat"
+              ],
+              true
+            ],
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.label_chat_result"
+              ],
+              "ECA副本UI - 发送世界聊天：失败，请查看日志"
+            ],
+            [
+              "PRINT_MESSAGE_ACTION_TO_DIALOG",
+              3,
+              "[ECA Lobby] 结果包含敏感字段，详细内容已省略"
+            ]
+          ]
+        ]
+      ],
+      "sub_triggers": [
+        {
+          "name": "ECA副本UI - 发送世界聊天完成回调",
+          "id": 1943100002,
+          "event": [
+            [
+              "RECEIVE_CUSTOM_EVENT",
+              "大厅服务请求完成"
+            ]
+          ],
+          "action": [
+            [
+              "IF_THEN_ELSE",
+              [
+                [
+                  "STRING_COMPARE",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    [
+                      "GET_CUS_EVENT_PARAM",
+                      "回调数据"
+                    ],
+                    "request_id"
+                  ],
+                  "==",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    {
+                      "var": "ECA副本UI - 发送世界聊天立即结果",
+                      "type": "TABLE"
+                    },
+                    "request_id"
+                  ]
+                ]
+              ],
+              [
+                [
+                  "SET_UI_COMP_ENABLE",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.button_world_chat"
+                  ],
+                  true
+                ],
+                [
+                  "IF_THEN_ELSE",
+                  [
+                    [
+                      "BOOL_COMPARE",
+                      [
+                        "GET_BOOLEAN_TABLE_VAR_1D",
+                        [
+                          "GET_CUS_EVENT_PARAM",
+                          "回调数据"
+                        ],
+                        "success"
+                      ],
+                      "==",
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_TEXT",
+                      [
+                        "TRIGGER_PLAYER"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "TRIGGER_PLAYER"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.label_chat_result"
+                      ],
+                      "ECA副本UI - 发送世界聊天：操作成功"
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_TEXT",
+                      [
+                        "TRIGGER_PLAYER"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "TRIGGER_PLAYER"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.label_chat_result"
+                      ],
+                      "ECA副本UI - 发送世界聊天：失败，请查看日志"
+                    ]
+                  ]
+                ],
+                [
+                  "PRINT_MESSAGE_ACTION_TO_DIALOG",
+                  3,
+                  "[ECA Lobby] 结果包含敏感字段，详细内容已省略"
+                ],
+                [
+                  "UNREG_TRIGGER",
+                  [
+                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
+                  ]
+                ]
+              ],
+              []
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ECA副本UI - 返回大厅",
+      "id": 1943000004,
+      "event": [
+        [
+          "TRIGGER_COMPONENT_EVENT",
+          [
+            "STR_TO_UI_EVENT",
+            "eca_dungeon_return_lobby"
+          ]
+        ]
+      ],
+      "condition": [],
+      "action": [
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_status_panel.button_return_lobby"
+          ],
+          false
+        ],
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_status_panel.label_status"
+          ],
+          "ECA副本UI - 返回大厅：提交中"
+        ],
+        [
+          "SET_VARIABLE",
+          {
+            "var": "返回大厅参数",
+            "type": "TABLE"
+          },
+          [
+            "GET_NEW_TABLE"
+          ]
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "返回大厅参数",
+            "type": "TABLE"
+          },
+          "level_id",
+          "81ad7554-7e6b-11f1-8f5c-c78cd393ba6e"
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "返回大厅参数",
+            "type": "TABLE"
+          },
+          "game_mode",
+          1001
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "返回大厅参数",
+            "type": "TABLE"
+          },
+          "max_player",
+          1
+        ],
+        {
+          "call_function": {
+            "func_id": "1fec80e8afe657b88e0fdd00a336fe05",
+            "args": [
+              {
+                "var": "返回大厅参数",
+                "type": "TABLE"
+              }
+            ],
+            "returns": [
+              {
+                "var": "ECA副本UI - 返回大厅立即结果",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_status_panel.button_return_lobby"
+          ],
+          true
+        ],
+        [
+          "IF_THEN_ELSE",
+          [
+            [
+              "BOOL_COMPARE",
+              [
+                "GET_BOOLEAN_TABLE_VAR_1D",
+                {
+                  "var": "ECA副本UI - 返回大厅立即结果",
+                  "type": "TABLE"
+                },
+                "accepted"
+              ],
+              "==",
+              true
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_status_panel.label_status"
+              ],
+              "ECA副本UI - 返回大厅：请求已提交，以切图结果为准"
+            ],
+            [
+              "DUMP_TABLE",
+              {
+                "var": "ECA副本UI - 返回大厅立即结果",
+                "type": "TABLE"
+              }
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_status_panel.label_status"
+              ],
+              "ECA副本UI - 返回大厅：失败，请查看日志"
+            ],
+            [
+              "DUMP_TABLE",
+              {
+                "var": "ECA副本UI - 返回大厅立即结果",
+                "type": "TABLE"
+              }
+            ]
+          ]
+        ]
+      ]
+    },
+    {
+      "name": "ECA副本UI - 显示口令",
+      "id": 1943000005,
+      "event": [
+        [
+          "TRIGGER_COMPONENT_EVENT",
+          [
+            "STR_TO_UI_EVENT",
+            "eca_dungeon_copy_token"
+          ]
+        ]
+      ],
+      "condition": [],
+      "action": [
+        {
+          "call_function": {
+            "func_id": "da0b1d8bb1f354ec8b4f91fca5c8c653",
+            "args": [],
+            "returns": [
+              {
+                "var": "副本显示口令",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.label_token_value"
+          ],
+          [
+            "GET_STRING_TABLE_VAR_1D",
+            [
+              "GET_TABLE_TABLE_VAR_1D",
+              {
+                "var": "副本显示口令",
+                "type": "TABLE"
+              },
+              "result_data"
+            ],
+            "token"
+          ]
+        ],
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_chat_panel.label_chat_result"
+          ],
+          "口令已显示，请手动传递给另一客户端"
+        ]
+      ]
+    },
+    {
+      "name": "ECA副本UI - 退出游戏",
+      "id": 1943000006,
+      "event": [
+        [
+          "TRIGGER_COMPONENT_EVENT",
+          [
+            "STR_TO_UI_EVENT",
+            "eca_dungeon_exit"
+          ]
+        ]
+      ],
+      "condition": [],
+      "action": [
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "button_exit"
+          ],
+          false
+        ],
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            "dungeon_status_panel.label_status"
+          ],
+          "ECA副本UI - 退出游戏：处理中"
+        ],
+        {
+          "call_function": {
+            "func_id": "f384a7cfa22959a09b7ea36e9ddbff86",
+            "args": [],
+            "returns": [
+              {
+                "var": "ECA副本UI - 退出游戏立即结果",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "IF_THEN_ELSE",
+          [
+            [
+              "BOOL_COMPARE",
+              [
+                "GET_BOOLEAN_TABLE_VAR_1D",
+                {
+                  "var": "ECA副本UI - 退出游戏立即结果",
+                  "type": "TABLE"
+                },
+                "accepted"
+              ],
+              "==",
+              true
+            ]
+          ],
+          [
+            [
+              "IF_THEN_ELSE",
+              [
+                [
+                  "STRING_COMPARE",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    {
+                      "var": "ECA副本UI - 退出游戏立即结果",
+                      "type": "TABLE"
+                    },
+                    "request_id"
+                  ],
+                  "!=",
+                  ""
+                ]
+              ],
+              [
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_status_panel.label_status"
+                  ],
+                  "ECA副本UI - 退出游戏：请求已受理"
+                ],
+                {
+                  "register_sub_trigger": "ECA副本UI - 退出游戏完成回调"
+                }
+              ],
+              [
+                [
+                  "SET_UI_COMP_ENABLE",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "button_exit"
+                  ],
+                  true
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_status_panel.label_status"
+                  ],
+                  "ECA副本UI - 退出游戏：同步完成"
+                ],
+                [
+                  "DUMP_TABLE",
+                  {
+                    "var": "ECA副本UI - 退出游戏立即结果",
+                    "type": "TABLE"
+                  }
+                ]
+              ]
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_ENABLE",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "button_exit"
+              ],
+              true
+            ],
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_status_panel.label_status"
+              ],
+              "ECA副本UI - 退出游戏：失败，请查看日志"
+            ],
+            [
+              "DUMP_TABLE",
+              {
+                "var": "ECA副本UI - 退出游戏立即结果",
+                "type": "TABLE"
+              }
+            ]
+          ]
+        ]
+      ],
+      "sub_triggers": [
+        {
+          "name": "ECA副本UI - 退出游戏完成回调",
+          "id": 1943100003,
+          "event": [
+            [
+              "RECEIVE_CUSTOM_EVENT",
+              "大厅服务请求完成"
+            ]
+          ],
+          "action": [
+            [
+              "IF_THEN_ELSE",
+              [
+                [
+                  "STRING_COMPARE",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    [
+                      "GET_CUS_EVENT_PARAM",
+                      "回调数据"
+                    ],
+                    "request_id"
+                  ],
+                  "==",
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    {
+                      "var": "ECA副本UI - 退出游戏立即结果",
+                      "type": "TABLE"
+                    },
+                    "request_id"
+                  ]
+                ]
+              ],
+              [
+                [
+                  "SET_UI_COMP_ENABLE",
+                  [
+                    "TRIGGER_PLAYER"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "button_exit"
+                  ],
+                  true
+                ],
+                [
+                  "IF_THEN_ELSE",
+                  [
+                    [
+                      "BOOL_COMPARE",
+                      [
+                        "GET_BOOLEAN_TABLE_VAR_1D",
+                        [
+                          "GET_CUS_EVENT_PARAM",
+                          "回调数据"
+                        ],
+                        "success"
+                      ],
+                      "==",
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_TEXT",
+                      [
+                        "TRIGGER_PLAYER"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "TRIGGER_PLAYER"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_status_panel.label_status"
+                      ],
+                      "ECA副本UI - 退出游戏：操作成功"
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_TEXT",
+                      [
+                        "TRIGGER_PLAYER"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "TRIGGER_PLAYER"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_status_panel.label_status"
+                      ],
+                      "ECA副本UI - 退出游戏：失败，请查看日志"
+                    ]
+                  ]
+                ],
+                [
+                  "DUMP_TABLE",
+                  [
+                    "GET_CUS_EVENT_PARAM",
+                    "回调数据"
+                  ]
+                ],
+                [
+                  "UNREG_TRIGGER",
+                  [
+                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
+                  ]
+                ]
+              ],
+              []
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}
