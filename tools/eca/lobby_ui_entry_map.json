@@ -12,758 +12,42 @@
       "condition": [],
       "action": [
         [
-          "CREATE_UI_COMP_EVENT_EX_EX",
+          "IF_THEN_ELSE",
           [
-            "GET_UI_COMP_BY_PATH",
             [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.button_create_team"
-          ],
-          1,
-          "eca_lobby_create_team"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.button_join_team"
-          ],
-          1,
-          "eca_lobby_join_team"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.button_leave_team"
-          ],
-          1,
-          "eca_lobby_leave_team"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.button_dismiss_team"
-          ],
-          1,
-          "eca_lobby_dismiss_team"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "action_panel.button_match"
-          ],
-          1,
-          "eca_lobby_match"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "action_panel.button_private_dungeon"
-          ],
-          1,
-          "eca_lobby_private_dungeon"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "action_panel.button_join_dungeon"
-          ],
-          1,
-          "eca_lobby_join_token"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.button_team_chat"
-          ],
-          1,
-          "eca_lobby_team_chat"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.button_world_chat"
-          ],
-          1,
-          "eca_lobby_world_chat"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "button_developer"
-          ],
-          1,
-          "eca_lobby_developer_toggle"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "button_exit"
-          ],
-          1,
-          "eca_lobby_exit"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "developer_panel.button_dev_connect"
-          ],
-          1,
-          "eca_lobby_dev_connect"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "developer_panel.button_dev_score"
-          ],
-          1,
-          "eca_lobby_dev_score"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "developer_panel.button_dev_team_info"
-          ],
-          1,
-          "eca_lobby_dev_team_info"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "developer_panel.button_dev_player_info"
-          ],
-          1,
-          "eca_lobby_dev_player_info"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "developer_panel.button_dev_refresh_player"
-          ],
-          1,
-          "eca_lobby_dev_refresh_player"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_1.button_transfer_1"
-          ],
-          1,
-          "eca_lobby_transfer_1"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_1.button_kick_1"
-          ],
-          1,
-          "eca_lobby_kick_1"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_2.button_transfer_2"
-          ],
-          1,
-          "eca_lobby_transfer_2"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_2.button_kick_2"
-          ],
-          1,
-          "eca_lobby_kick_2"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_3.button_transfer_3"
-          ],
-          1,
-          "eca_lobby_transfer_3"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_3.button_kick_3"
-          ],
-          1,
-          "eca_lobby_kick_3"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_4.button_transfer_4"
-          ],
-          1,
-          "eca_lobby_transfer_4"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "team_panel.member_row_4.button_kick_4"
-          ],
-          1,
-          "eca_lobby_kick_4"
-        ],
-        [
-          "RUN_LOOP_TIMER_NO_SAVE",
-          1.0,
-          true,
-          [
-            {
-              "call_function": {
-                "func_id": "fb4e6115da4b5f02b2dcf819cfd1f642",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "刷新连接状态",
-                    "type": "TABLE"
-                  }
-                ]
+              "ANY_COMPARE",
+              [
+                "GET_CURRENT_LEVEL"
+              ],
+              "==",
+              {
+                "type": "MAP",
+                "value": "172371058548994502264384971909138463342"
               }
-            },
-            {
-              "call_function": {
-                "func_id": "06baf266d22b5844b236f6a8dea1828e",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "刷新状态快照",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "98f17b779b50566496a5175924ec5036",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "刷新成员列表",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "da0b1d8bb1f354ec8b4f91fca5c8c653",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "刷新口令",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "403f34876b6854779906e8855b689305",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "刷新聊天记录",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "ff8d602fd5235532934fcc588f045d96",
-                "args": [
-                  1
-                ],
-                "returns": [
-                  {
-                    "var": "刷新成员1",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "ff8d602fd5235532934fcc588f045d96",
-                "args": [
-                  2
-                ],
-                "returns": [
-                  {
-                    "var": "刷新成员2",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "ff8d602fd5235532934fcc588f045d96",
-                "args": [
-                  3
-                ],
-                "returns": [
-                  {
-                    "var": "刷新成员3",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "ff8d602fd5235532934fcc588f045d96",
-                "args": [
-                  4
-                ],
-                "returns": [
-                  {
-                    "var": "刷新成员4",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  1
-                ],
-                "returns": [
-                  {
-                    "var": "刷新聊天1",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  2
-                ],
-                "returns": [
-                  {
-                    "var": "刷新聊天2",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  3
-                ],
-                "returns": [
-                  {
-                    "var": "刷新聊天3",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  4
-                ],
-                "returns": [
-                  {
-                    "var": "刷新聊天4",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  5
-                ],
-                "returns": [
-                  {
-                    "var": "刷新聊天5",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
+            ],
             [
-              "SET_UI_COMP_TEXT",
+              "GAME_MODE_COMPARE",
+              [
+                "GET_GAME_MODE"
+              ],
+              "==",
+              1001
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_VISIBLE",
               [
                 "GET_CLIENT_ROLE"
               ],
+              true,
               [
                 "GET_UI_COMP_BY_PATH",
                 [
                   "GET_CLIENT_ROLE"
                 ],
                 "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "status_panel.status_aid.label_aid_value"
-              ],
-              [
-                "ANY_VAR_TO_STR",
-                [
-                  "GET_INTEGER_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "刷新状态快照",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "aid"
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "status_panel.status_mode.label_mode_value"
-              ],
-              [
-                "ANY_VAR_TO_STR",
-                [
-                  "GET_INTEGER_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "刷新状态快照",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "game_mode"
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "status_panel.status_connection.label_connection_value"
-              ],
-              [
-                "GET_STRING_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  {
-                    "var": "刷新连接状态",
-                    "type": "TABLE"
-                  },
-                  "result_data"
-                ],
-                "status"
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "status_panel.status_team.label_team_value"
-              ],
-              [
-                "ANY_VAR_TO_STR",
-                [
-                  "GET_INTEGER_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "刷新状态快照",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "team_id"
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "status_panel.status_match.label_match_value"
-              ],
-              [
-                "ANY_VAR_TO_STR",
-                [
-                  "GET_BOOLEAN_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "刷新状态快照",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "matching"
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "status_panel.status_launch.label_launch_value"
-              ],
-              [
-                "ANY_VAR_TO_STR",
-                [
-                  "GET_BOOLEAN_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "刷新状态快照",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "launching"
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.label_team_id"
-              ],
-              [
-                "STR_JOIN",
-                "队伍编号：",
-                [
-                  "ANY_VAR_TO_STR",
-                  [
-                    "GET_INTEGER_TABLE_VAR_1D",
-                    [
-                      "GET_TABLE_TABLE_VAR_1D",
-                      {
-                        "var": "刷新状态快照",
-                        "type": "TABLE"
-                      },
-                      "result_data"
-                    ],
-                    "team_id"
-                  ]
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "action_panel.label_token"
-              ],
-              [
-                "STR_JOIN",
-                "当前口令：",
-                [
-                  "GET_STRING_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "刷新口令",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "token"
-                ]
+                ""
               ]
             ],
             [
@@ -771,90 +55,819 @@
               [
                 "GET_CLIENT_ROLE"
               ],
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  {
-                    "var": "刷新成员1",
-                    "type": "TABLE"
-                  },
-                  "result_data"
-                ],
-                "exists"
-              ],
+              false,
               [
                 "GET_UI_COMP_BY_PATH",
                 [
                   "GET_CLIENT_ROLE"
                 ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_1"
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                ""
               ]
             ],
             [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
+              "CREATE_UI_COMP_EVENT_EX_EX",
               [
                 "GET_UI_COMP_BY_PATH",
                 [
                   "GET_CLIENT_ROLE"
                 ],
                 "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_1.label_member_1"
+                "team_panel.button_create_team"
               ],
+              1,
+              "eca_lobby_create_team"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
               [
-                "STR_JOIN",
-                "#1  AID ",
+                "GET_UI_COMP_BY_PATH",
                 [
-                  "STR_JOIN",
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.button_join_team"
+              ],
+              1,
+              "eca_lobby_join_team"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.button_leave_team"
+              ],
+              1,
+              "eca_lobby_leave_team"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.button_dismiss_team"
+              ],
+              1,
+              "eca_lobby_dismiss_team"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "action_panel.button_match"
+              ],
+              1,
+              "eca_lobby_match"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "action_panel.button_private_dungeon"
+              ],
+              1,
+              "eca_lobby_private_dungeon"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "action_panel.button_join_dungeon"
+              ],
+              1,
+              "eca_lobby_join_token"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "chat_panel.button_team_chat"
+              ],
+              1,
+              "eca_lobby_team_chat"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "chat_panel.button_world_chat"
+              ],
+              1,
+              "eca_lobby_world_chat"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "button_developer"
+              ],
+              1,
+              "eca_lobby_developer_toggle"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "button_exit"
+              ],
+              1,
+              "eca_lobby_exit"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "developer_panel.button_dev_connect"
+              ],
+              1,
+              "eca_lobby_dev_connect"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "developer_panel.button_dev_score"
+              ],
+              1,
+              "eca_lobby_dev_score"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "developer_panel.button_dev_team_info"
+              ],
+              1,
+              "eca_lobby_dev_team_info"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "developer_panel.button_dev_player_info"
+              ],
+              1,
+              "eca_lobby_dev_player_info"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "developer_panel.button_dev_refresh_player"
+              ],
+              1,
+              "eca_lobby_dev_refresh_player"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_1.button_transfer_1"
+              ],
+              1,
+              "eca_lobby_transfer_1"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_1.button_kick_1"
+              ],
+              1,
+              "eca_lobby_kick_1"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_2.button_transfer_2"
+              ],
+              1,
+              "eca_lobby_transfer_2"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_2.button_kick_2"
+              ],
+              1,
+              "eca_lobby_kick_2"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_3.button_transfer_3"
+              ],
+              1,
+              "eca_lobby_transfer_3"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_3.button_kick_3"
+              ],
+              1,
+              "eca_lobby_kick_3"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_4.button_transfer_4"
+              ],
+              1,
+              "eca_lobby_transfer_4"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "team_panel.member_row_4.button_kick_4"
+              ],
+              1,
+              "eca_lobby_kick_4"
+            ],
+            [
+              "RUN_LOOP_TIMER_NO_SAVE",
+              1.0,
+              true,
+              [
+                {
+                  "call_function": {
+                    "func_id": "fb4e6115da4b5f02b2dcf819cfd1f642",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "刷新连接状态",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "06baf266d22b5844b236f6a8dea1828e",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "刷新状态快照",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "98f17b779b50566496a5175924ec5036",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "刷新成员列表",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "da0b1d8bb1f354ec8b4f91fca5c8c653",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "刷新口令",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "403f34876b6854779906e8855b689305",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "刷新聊天记录",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "ff8d602fd5235532934fcc588f045d96",
+                    "args": [
+                      1
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新成员1",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "ff8d602fd5235532934fcc588f045d96",
+                    "args": [
+                      2
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新成员2",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "ff8d602fd5235532934fcc588f045d96",
+                    "args": [
+                      3
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新成员3",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "ff8d602fd5235532934fcc588f045d96",
+                    "args": [
+                      4
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新成员4",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      1
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新聊天1",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      2
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新聊天2",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      3
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新聊天3",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      4
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新聊天4",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      5
+                    ],
+                    "returns": [
+                      {
+                        "var": "刷新聊天5",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "status_panel.status_aid.label_aid_value"
+                  ],
                   [
                     "ANY_VAR_TO_STR",
                     [
                       "GET_INTEGER_TABLE_VAR_1D",
                       [
                         "GET_TABLE_TABLE_VAR_1D",
+                        {
+                          "var": "刷新状态快照",
+                          "type": "TABLE"
+                        },
+                        "result_data"
+                      ],
+                      "aid"
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "status_panel.status_mode.label_mode_value"
+                  ],
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_INTEGER_TABLE_VAR_1D",
+                      [
+                        "GET_TABLE_TABLE_VAR_1D",
+                        {
+                          "var": "刷新状态快照",
+                          "type": "TABLE"
+                        },
+                        "result_data"
+                      ],
+                      "game_mode"
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "status_panel.status_connection.label_connection_value"
+                  ],
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "刷新连接状态",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "status"
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "status_panel.status_team.label_team_value"
+                  ],
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_INTEGER_TABLE_VAR_1D",
+                      [
+                        "GET_TABLE_TABLE_VAR_1D",
+                        {
+                          "var": "刷新状态快照",
+                          "type": "TABLE"
+                        },
+                        "result_data"
+                      ],
+                      "team_id"
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "status_panel.status_match.label_match_value"
+                  ],
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_BOOLEAN_TABLE_VAR_1D",
+                      [
+                        "GET_TABLE_TABLE_VAR_1D",
+                        {
+                          "var": "刷新状态快照",
+                          "type": "TABLE"
+                        },
+                        "result_data"
+                      ],
+                      "matching"
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "status_panel.status_launch.label_launch_value"
+                  ],
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_BOOLEAN_TABLE_VAR_1D",
+                      [
+                        "GET_TABLE_TABLE_VAR_1D",
+                        {
+                          "var": "刷新状态快照",
+                          "type": "TABLE"
+                        },
+                        "result_data"
+                      ],
+                      "launching"
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.label_team_id"
+                  ],
+                  [
+                    "STR_JOIN",
+                    "队伍编号：",
+                    [
+                      "ANY_VAR_TO_STR",
+                      [
+                        "GET_INTEGER_TABLE_VAR_1D",
                         [
                           "GET_TABLE_TABLE_VAR_1D",
                           {
-                            "var": "刷新成员1",
+                            "var": "刷新状态快照",
                             "type": "TABLE"
                           },
                           "result_data"
                         ],
-                        "member"
-                      ],
-                      "aid"
+                        "team_id"
+                      ]
                     ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "action_panel.label_token"
                   ],
                   [
                     "STR_JOIN",
-                    "  ",
+                    "当前口令：",
+                    [
+                      "GET_STRING_TABLE_VAR_1D",
+                      [
+                        "GET_TABLE_TABLE_VAR_1D",
+                        {
+                          "var": "刷新口令",
+                          "type": "TABLE"
+                        },
+                        "result_data"
+                      ],
+                      "token"
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_VISIBLE",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_BOOLEAN_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "刷新成员1",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "exists"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_1"
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_1.label_member_1"
+                  ],
+                  [
+                    "STR_JOIN",
+                    "#1  AID ",
                     [
                       "STR_JOIN",
                       [
-                        "GET_STRING_TABLE_VAR_1D",
+                        "ANY_VAR_TO_STR",
                         [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "刷新成员1",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "member"
-                        ],
-                        "name"
-                      ],
-                      [
-                        "STR_JOIN",
-                        "  ",
-                        [
-                          "GET_STRING_TABLE_VAR_1D",
+                          "GET_INTEGER_TABLE_VAR_1D",
                           [
                             "GET_TABLE_TABLE_VAR_1D",
                             [
@@ -867,103 +880,103 @@
                             ],
                             "member"
                           ],
-                          "state"
+                          "aid"
                         ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_VISIBLE",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  {
-                    "var": "刷新成员2",
-                    "type": "TABLE"
-                  },
-                  "result_data"
-                ],
-                "exists"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_2"
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_2.label_member_2"
-              ],
-              [
-                "STR_JOIN",
-                "#2  AID ",
-                [
-                  "STR_JOIN",
-                  [
-                    "ANY_VAR_TO_STR",
-                    [
-                      "GET_INTEGER_TABLE_VAR_1D",
-                      [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          {
-                            "var": "刷新成员2",
-                            "type": "TABLE"
-                          },
-                          "result_data"
-                        ],
-                        "member"
-                      ],
-                      "aid"
-                    ]
-                  ],
-                  [
-                    "STR_JOIN",
-                    "  ",
-                    [
-                      "STR_JOIN",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "刷新成员2",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "member"
-                        ],
-                        "name"
                       ],
                       [
                         "STR_JOIN",
                         "  ",
                         [
-                          "GET_STRING_TABLE_VAR_1D",
+                          "STR_JOIN",
+                          [
+                            "GET_STRING_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "刷新成员1",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "member"
+                            ],
+                            "name"
+                          ],
+                          [
+                            "STR_JOIN",
+                            "  ",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "刷新成员1",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "member"
+                              ],
+                              "state"
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_VISIBLE",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_BOOLEAN_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "刷新成员2",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "exists"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_2"
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_2.label_member_2"
+                  ],
+                  [
+                    "STR_JOIN",
+                    "#2  AID ",
+                    [
+                      "STR_JOIN",
+                      [
+                        "ANY_VAR_TO_STR",
+                        [
+                          "GET_INTEGER_TABLE_VAR_1D",
                           [
                             "GET_TABLE_TABLE_VAR_1D",
                             [
@@ -976,103 +989,103 @@
                             ],
                             "member"
                           ],
-                          "state"
+                          "aid"
                         ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_VISIBLE",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  {
-                    "var": "刷新成员3",
-                    "type": "TABLE"
-                  },
-                  "result_data"
-                ],
-                "exists"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_3"
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_3.label_member_3"
-              ],
-              [
-                "STR_JOIN",
-                "#3  AID ",
-                [
-                  "STR_JOIN",
-                  [
-                    "ANY_VAR_TO_STR",
-                    [
-                      "GET_INTEGER_TABLE_VAR_1D",
-                      [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          {
-                            "var": "刷新成员3",
-                            "type": "TABLE"
-                          },
-                          "result_data"
-                        ],
-                        "member"
-                      ],
-                      "aid"
-                    ]
-                  ],
-                  [
-                    "STR_JOIN",
-                    "  ",
-                    [
-                      "STR_JOIN",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "刷新成员3",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "member"
-                        ],
-                        "name"
                       ],
                       [
                         "STR_JOIN",
                         "  ",
                         [
-                          "GET_STRING_TABLE_VAR_1D",
+                          "STR_JOIN",
+                          [
+                            "GET_STRING_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "刷新成员2",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "member"
+                            ],
+                            "name"
+                          ],
+                          [
+                            "STR_JOIN",
+                            "  ",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "刷新成员2",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "member"
+                              ],
+                              "state"
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_VISIBLE",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_BOOLEAN_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "刷新成员3",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "exists"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_3"
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_3.label_member_3"
+                  ],
+                  [
+                    "STR_JOIN",
+                    "#3  AID ",
+                    [
+                      "STR_JOIN",
+                      [
+                        "ANY_VAR_TO_STR",
+                        [
+                          "GET_INTEGER_TABLE_VAR_1D",
                           [
                             "GET_TABLE_TABLE_VAR_1D",
                             [
@@ -1085,103 +1098,103 @@
                             ],
                             "member"
                           ],
-                          "state"
+                          "aid"
                         ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_VISIBLE",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  {
-                    "var": "刷新成员4",
-                    "type": "TABLE"
-                  },
-                  "result_data"
-                ],
-                "exists"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_4"
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "team_panel.member_row_4.label_member_4"
-              ],
-              [
-                "STR_JOIN",
-                "#4  AID ",
-                [
-                  "STR_JOIN",
-                  [
-                    "ANY_VAR_TO_STR",
-                    [
-                      "GET_INTEGER_TABLE_VAR_1D",
-                      [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          {
-                            "var": "刷新成员4",
-                            "type": "TABLE"
-                          },
-                          "result_data"
-                        ],
-                        "member"
-                      ],
-                      "aid"
-                    ]
-                  ],
-                  [
-                    "STR_JOIN",
-                    "  ",
-                    [
-                      "STR_JOIN",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "刷新成员4",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "member"
-                        ],
-                        "name"
                       ],
                       [
                         "STR_JOIN",
                         "  ",
                         [
-                          "GET_STRING_TABLE_VAR_1D",
+                          "STR_JOIN",
+                          [
+                            "GET_STRING_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                {
+                                  "var": "刷新成员3",
+                                  "type": "TABLE"
+                                },
+                                "result_data"
+                              ],
+                              "member"
+                            ],
+                            "name"
+                          ],
+                          [
+                            "STR_JOIN",
+                            "  ",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "刷新成员3",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "member"
+                              ],
+                              "state"
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_VISIBLE",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_BOOLEAN_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "刷新成员4",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "exists"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_4"
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "team_panel.member_row_4.label_member_4"
+                  ],
+                  [
+                    "STR_JOIN",
+                    "#4  AID ",
+                    [
+                      "STR_JOIN",
+                      [
+                        "ANY_VAR_TO_STR",
+                        [
+                          "GET_INTEGER_TABLE_VAR_1D",
                           [
                             "GET_TABLE_TABLE_VAR_1D",
                             [
@@ -1194,60 +1207,14 @@
                             ],
                             "member"
                           ],
-                          "state"
+                          "aid"
                         ]
-                      ]
-                    ]
-                  ]
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_history"
-              ],
-              [
-                "STR_JOIN",
-                [
-                  "STR_JOIN",
-                  [
-                    "STR_JOIN",
-                    [
-                      "STR_JOIN",
+                      ],
                       [
                         "STR_JOIN",
-                        [
-                          "GET_STRING_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            [
-                              "GET_TABLE_TABLE_VAR_1D",
-                              [
-                                "GET_TABLE_TABLE_VAR_1D",
-                                {
-                                  "var": "刷新聊天1",
-                                  "type": "TABLE"
-                                },
-                                "result_data"
-                              ],
-                              "message"
-                            ],
-                            "sender"
-                          ],
-                          "name"
-                        ],
+                        "  ",
                         [
                           "STR_JOIN",
-                          "：",
                           [
                             "GET_STRING_TABLE_VAR_1D",
                             [
@@ -1255,14 +1222,197 @@
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
                                 {
-                                  "var": "刷新聊天1",
+                                  "var": "刷新成员4",
                                   "type": "TABLE"
                                 },
                                 "result_data"
                               ],
-                              "message"
+                              "member"
                             ],
-                            "message"
+                            "name"
+                          ],
+                          [
+                            "STR_JOIN",
+                            "  ",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  {
+                                    "var": "刷新成员4",
+                                    "type": "TABLE"
+                                  },
+                                  "result_data"
+                                ],
+                                "member"
+                              ],
+                              "state"
+                            ]
+                          ]
+                        ]
+                      ]
+                    ]
+                  ]
+                ],
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                    "chat_panel.label_chat_history"
+                  ],
+                  [
+                    "STR_JOIN",
+                    [
+                      "STR_JOIN",
+                      [
+                        "STR_JOIN",
+                        [
+                          "STR_JOIN",
+                          [
+                            "STR_JOIN",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "刷新聊天1",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "sender"
+                              ],
+                              "name"
+                            ],
+                            [
+                              "STR_JOIN",
+                              "：",
+                              [
+                                "GET_STRING_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "刷新聊天1",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "message"
+                              ]
+                            ]
+                          ],
+                          [
+                            "STR_JOIN",
+                            "\n",
+                            [
+                              "STR_JOIN",
+                              [
+                                "GET_STRING_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    [
+                                      "GET_TABLE_TABLE_VAR_1D",
+                                      {
+                                        "var": "刷新聊天2",
+                                        "type": "TABLE"
+                                      },
+                                      "result_data"
+                                    ],
+                                    "message"
+                                  ],
+                                  "sender"
+                                ],
+                                "name"
+                              ],
+                              [
+                                "STR_JOIN",
+                                "：",
+                                [
+                                  "GET_STRING_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    [
+                                      "GET_TABLE_TABLE_VAR_1D",
+                                      {
+                                        "var": "刷新聊天2",
+                                        "type": "TABLE"
+                                      },
+                                      "result_data"
+                                    ],
+                                    "message"
+                                  ],
+                                  "message"
+                                ]
+                              ]
+                            ]
+                          ]
+                        ],
+                        [
+                          "STR_JOIN",
+                          "\n",
+                          [
+                            "STR_JOIN",
+                            [
+                              "GET_STRING_TABLE_VAR_1D",
+                              [
+                                "GET_TABLE_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "刷新聊天3",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "sender"
+                              ],
+                              "name"
+                            ],
+                            [
+                              "STR_JOIN",
+                              "：",
+                              [
+                                "GET_STRING_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "刷新聊天3",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "message"
+                              ]
+                            ]
                           ]
                         ]
                       ],
@@ -1280,7 +1430,7 @@
                                 [
                                   "GET_TABLE_TABLE_VAR_1D",
                                   {
-                                    "var": "刷新聊天2",
+                                    "var": "刷新聊天4",
                                     "type": "TABLE"
                                   },
                                   "result_data"
@@ -1301,7 +1451,7 @@
                                 [
                                   "GET_TABLE_TABLE_VAR_1D",
                                   {
-                                    "var": "刷新聊天2",
+                                    "var": "刷新聊天4",
                                     "type": "TABLE"
                                   },
                                   "result_data"
@@ -1328,7 +1478,7 @@
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
                                 {
-                                  "var": "刷新聊天3",
+                                  "var": "刷新聊天5",
                                   "type": "TABLE"
                                 },
                                 "result_data"
@@ -1349,7 +1499,7 @@
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
                                 {
-                                  "var": "刷新聊天3",
+                                  "var": "刷新聊天5",
                                   "type": "TABLE"
                                 },
                                 "result_data"
@@ -1361,102 +1511,25 @@
                         ]
                       ]
                     ]
-                  ],
-                  [
-                    "STR_JOIN",
-                    "\n",
-                    [
-                      "STR_JOIN",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            [
-                              "GET_TABLE_TABLE_VAR_1D",
-                              {
-                                "var": "刷新聊天4",
-                                "type": "TABLE"
-                              },
-                              "result_data"
-                            ],
-                            "message"
-                          ],
-                          "sender"
-                        ],
-                        "name"
-                      ],
-                      [
-                        "STR_JOIN",
-                        "：",
-                        [
-                          "GET_STRING_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            [
-                              "GET_TABLE_TABLE_VAR_1D",
-                              {
-                                "var": "刷新聊天4",
-                                "type": "TABLE"
-                              },
-                              "result_data"
-                            ],
-                            "message"
-                          ],
-                          "message"
-                        ]
-                      ]
-                    ]
-                  ]
-                ],
-                [
-                  "STR_JOIN",
-                  "\n",
-                  [
-                    "STR_JOIN",
-                    [
-                      "GET_STRING_TABLE_VAR_1D",
-                      [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "刷新聊天5",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "message"
-                        ],
-                        "sender"
-                      ],
-                      "name"
-                    ],
-                    [
-                      "STR_JOIN",
-                      "：",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "刷新聊天5",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "message"
-                        ],
-                        "message"
-                      ]
-                    ]
                   ]
                 ]
+              ]
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_VISIBLE",
+              [
+                "GET_CLIENT_ROLE"
+              ],
+              false,
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                ""
               ]
             ]
           ]

@@ -15,12 +15,6 @@
                 0.0
             ], 
             "children": [], 
-            "color": [
-                255, 
-                255, 
-                255, 
-                255
-            ], 
             "event_list": [], 
             "image": 134230328, 
             "name": "image_backdrop", 
@@ -42,27 +36,12 @@
                 1920.0, 
                 1080.0
             ], 
-            "swallow_touches": false, 
             "type": 4, 
             "uid": "3e2de968-8d4f-59a2-9b88-c2aa7f0869e6"
         }, 
         {
             "children": [
                 {
-                    "name": "exit_confirm_overlay_bg", 
-                    "type": 4, 
-                    "uid": "bf73aa91-4295-49c8-9f31-56a0922b8e87", 
-                    "size": [
-                        1920.0, 
-                        1080.0
-                    ], 
-                    "visible": true, 
-                    "alpha": 100, 
-                    "image": 109589, 
-                    "is_scale9_enable": false, 
-                    "children": [], 
-                    "event_list": [], 
-                    "open_adapter": true, 
                     "adapter_option": [
                         true, 
                         true, 
@@ -73,6 +52,17 @@
                         0.0, 
                         0.0
                     ], 
+                    "children": [], 
+                    "color": [
+                        0, 
+                        0, 
+                        0, 
+                        190
+                    ], 
+                    "event_list": [], 
+                    "image": 109589, 
+                    "name": "exit_confirm_overlay_bg", 
+                    "open_adapter": true, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
@@ -84,27 +74,18 @@
                             1
                         ]
                     }, 
-                    "color": [
-                        0, 
-                        0, 
-                        0, 
-                        190
-                    ]
+                    "prefab_sub_key": null, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        1920.0, 
+                        1080.0
+                    ], 
+                    "type": 4, 
+                    "uid": "bf73aa91-4295-49c8-9f31-56a0922b8e87"
                 }
             ], 
             "event_list": [], 
             "name": "exit_confirm_overlay", 
-            "open_adapter": false, 
-            "adapter_option": [
-                false, 
-                false, 
-                false, 
-                false, 
-                0.0, 
-                0.0, 
-                0.0, 
-                0.0
-            ], 
             "pos_data": {
                 "__tuple__": true, 
                 "items": [
@@ -127,22 +108,18 @@
             "visible": false
         }, 
         {
+            "adapter_option": [
+                false, 
+                false, 
+                false, 
+                false, 
+                666.0, 
+                24.0, 
+                24.0, 
+                1196.0
+            ], 
             "children": [
                 {
-                    "name": "dungeon_chat_panel_bg", 
-                    "type": 4, 
-                    "uid": "d894476a-ee02-4a8b-8036-7a852843eb39", 
-                    "size": [
-                        700.0, 
-                        390.0
-                    ], 
-                    "visible": true, 
-                    "alpha": 100, 
-                    "image": 134217729, 
-                    "is_scale9_enable": true, 
-                    "children": [], 
-                    "event_list": [], 
-                    "open_adapter": true, 
                     "adapter_option": [
                         true, 
                         true, 
@@ -153,6 +130,24 @@
                         0.0, 
                         0.0
                     ], 
+                    "cap_insets": [
+                        8.0, 
+                        8.0, 
+                        8.0, 
+                        8.0
+                    ], 
+                    "children": [], 
+                    "color": [
+                        30, 
+                        25, 
+                        18, 
+                        236
+                    ], 
+                    "event_list": [], 
+                    "image": 134217729, 
+                    "is_scale9_enable": true, 
+                    "name": "dungeon_chat_panel_bg", 
+                    "open_adapter": true, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
@@ -164,18 +159,14 @@
                             1
                         ]
                     }, 
-                    "color": [
-                        30, 
-                        25, 
-                        18, 
-                        236
+                    "prefab_sub_key": null, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        700.0, 
+                        390.0
                     ], 
-                    "cap_insets": [
-                        8.0, 
-                        8.0, 
-                        8.0, 
-                        8.0
-                    ]
+                    "type": 4, 
+                    "uid": "d894476a-ee02-4a8b-8036-7a852843eb39"
                 }, 
                 {
                     "adapter_option": [
@@ -195,22 +186,15 @@
                         8.0
                     ], 
                     "children": [], 
-                    "color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
                     "event_list": [], 
                     "image": 134217732, 
                     "is_scale9_enable": true, 
                     "name": "image_input_chat_bg", 
-                    "open_adapter": false, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            225.0, 
-                            91.0, 
+                            225.0003, 
+                            90.9999, 
                             32.1429, 
                             23.3333, 
                             1, 
@@ -223,15 +207,10 @@
                         414.0, 
                         42.0
                     ], 
-                    "swallow_touches": false, 
                     "type": 4, 
                     "uid": "2ea342fa-a0c0-5f89-8b39-b1d8be863288"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "input_chat", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -242,32 +221,8 @@
                         18.0, 
                         268.0
                     ], 
-                    "pos_data": {
-                        "__tuple__": true, 
-                        "items": [
-                            225.0, 
-                            91.0, 
-                            32.1429, 
-                            23.3333, 
-                            1, 
-                            1
-                        ]
-                    }, 
-                    "prefab_sub_key": null, 
-                    "scene_ui_name": null, 
-                    "size": [
-                        414.0, 
-                        42.0
-                    ], 
-                    "type": 15, 
-                    "uid": "37b9783a-133b-4fee-951d-e071d16bc4cd", 
-                    "text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            false
-                        ]
-                    }, 
+                    "children": [], 
+                    "event_list": [], 
                     "font": {
                         "__tuple__": true, 
                         "items": [
@@ -284,19 +239,45 @@
                             255
                         ]
                     }, 
+                    "name": "input_chat", 
+                    "pos_data": {
+                        "__tuple__": true, 
+                        "items": [
+                            225.0003, 
+                            90.9999, 
+                            32.1429, 
+                            23.3333, 
+                            1, 
+                            1
+                        ]
+                    }, 
+                    "prefab_sub_key": null, 
+                    "scene_ui_name": null, 
+                    "size": {
+                        "__tuple__": true, 
+                        "items": [
+                            414.0, 
+                            42.0
+                        ]
+                    }, 
+                    "text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            false
+                        ]
+                    }, 
                     "tip_text": {
                         "__tuple__": true, 
                         "items": [
-                            "输入消息", 
+                            "\u8f93\u5165\u6d88\u606f", 
                             false
                         ]
-                    }
+                    }, 
+                    "type": 15, 
+                    "uid": "37b9783a-133b-4fee-951d-e071d16bc4cd"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_chat_history", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -307,11 +288,30 @@
                         18.0, 
                         18.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_chat_history", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
                             350.0, 
-                            207.0, 
+                            206.9999, 
                             50.0, 
                             53.0769, 
                             1, 
@@ -324,43 +324,17 @@
                         664.0, 
                         158.0
                     ], 
-                    "type": 3, 
-                    "uid": "ad6b2e56-02b4-4704-8f1e-77d8870e8445", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "最近 5 条消息", 
+                            "\u6700\u8fd1 5 \u6761\u6d88\u606f", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "ad6b2e56-02b4-4704-8f1e-77d8870e8445"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_chat_result", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -371,11 +345,30 @@
                         18.0, 
                         18.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_chat_result", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
                             350.0, 
-                            35.0, 
+                            35.0002, 
                             50.0, 
                             8.9744, 
                             1, 
@@ -388,43 +381,17 @@
                         664.0, 
                         34.0
                     ], 
-                    "type": 3, 
-                    "uid": "4294c221-c643-4cb6-806a-0421779f288c", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "操作结果：就绪", 
+                            "\u64cd\u4f5c\u7ed3\u679c\uff1a\u5c31\u7eea", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "4294c221-c643-4cb6-806a-0421779f288c"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_token_value", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -435,11 +402,30 @@
                         132.0, 
                         178.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_token_value", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            327.0, 
-                            358.0, 
+                            327.0001, 
+                            358.0001, 
                             46.7143, 
                             91.7949, 
                             1, 
@@ -452,8 +438,6 @@
                         390.0, 
                         34.0
                     ], 
-                    "type": 3, 
-                    "uid": "b5101365-8730-4783-9a6d-63810b8ba9ff", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
@@ -461,34 +445,10 @@
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "b5101365-8730-4783-9a6d-63810b8ba9ff"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_chat_title", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -499,11 +459,30 @@
                         18.0, 
                         502.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_chat_title", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            108.0, 
-                            306.0, 
+                            108.0002, 
+                            305.9999, 
                             15.4286, 
                             78.4615, 
                             1, 
@@ -516,43 +495,17 @@
                         180.0, 
                         24.0
                     ], 
-                    "type": 3, 
-                    "uid": "521a14c2-c601-48cf-98f2-5c58de4031cb", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "最近聊天", 
+                            "\u6700\u8fd1\u804a\u5929", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "521a14c2-c601-48cf-98f2-5c58de4031cb"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_token_key", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -563,11 +516,30 @@
                         18.0, 
                         570.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_token_key", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            74.0, 
-                            358.0, 
+                            73.9998, 
+                            358.0001, 
                             10.5714, 
                             91.7949, 
                             1, 
@@ -580,43 +552,17 @@
                         112.0, 
                         28.0
                     ], 
-                    "type": 3, 
-                    "uid": "4616269f-7170-40c6-8fa6-de168fb5c577", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "关卡口令", 
+                            "\u5173\u5361\u53e3\u4ee4", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "4616269f-7170-40c6-8fa6-de168fb5c577"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "button_copy_token", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -627,32 +573,32 @@
                         542.0, 
                         18.0
                     ], 
-                    "pos_data": {
+                    "children": [], 
+                    "disabled_cap_insets": {
                         "__tuple__": true, 
                         "items": [
-                            612.0, 
-                            357.0, 
-                            87.4286, 
-                            91.5385, 
-                            1, 
-                            1
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
                         ]
                     }, 
-                    "prefab_sub_key": null, 
-                    "scene_ui_name": null, 
-                    "size": [
-                        140.0, 
-                        42.0
+                    "disabled_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
                     ], 
-                    "type": 1, 
-                    "uid": "32890a47-6508-4170-81d1-2e5dc2100d3a", 
-                    "normal_picture": 134217733, 
-                    "suspend_picture": 134217734, 
-                    "press_picture": 134217735, 
                     "disabled_picture": 134217736, 
-                    "hover_status_added": true, 
-                    "pressed_status_added": true, 
                     "disabled_status_added": true, 
+                    "disabled_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u590d\u5236\u53e3\u4ee4", 
+                            false
+                        ]
+                    }, 
+                    "event_list": [], 
                     "font": {
                         "__tuple__": true, 
                         "items": [
@@ -660,58 +606,8 @@
                             16
                         ]
                     }, 
-                    "normal_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "复制口令", 
-                            false
-                        ]
-                    }, 
-                    "suspend_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "复制口令", 
-                            false
-                        ]
-                    }, 
-                    "press_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "复制口令", 
-                            false
-                        ]
-                    }, 
-                    "disabled_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "复制口令", 
-                            false
-                        ]
-                    }, 
-                    "normal_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "suspend_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "press_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "disabled_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
+                    "hover_status_added": true, 
+                    "name": "button_copy_token", 
                     "normal_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -721,15 +617,32 @@
                             8.0
                         ]
                     }, 
-                    "suspend_cap_insets": {
+                    "normal_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "normal_picture": 134217733, 
+                    "normal_text": {
                         "__tuple__": true, 
                         "items": [
-                            8.0, 
-                            8.0, 
-                            8.0, 
-                            8.0
+                            "\u590d\u5236\u53e3\u4ee4", 
+                            false
                         ]
                     }, 
+                    "pos_data": {
+                        "__tuple__": true, 
+                        "items": [
+                            612.0002, 
+                            357.0002, 
+                            87.4286, 
+                            91.5385, 
+                            1, 
+                            1
+                        ]
+                    }, 
+                    "prefab_sub_key": null, 
                     "press_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -739,7 +652,27 @@
                             8.0
                         ]
                     }, 
-                    "disabled_cap_insets": {
+                    "press_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "press_picture": 134217735, 
+                    "press_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u590d\u5236\u53e3\u4ee4", 
+                            false
+                        ]
+                    }, 
+                    "pressed_status_added": true, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        140.0, 
+                        42.0
+                    ], 
+                    "suspend_cap_insets": {
                         "__tuple__": true, 
                         "items": [
                             8.0, 
@@ -747,13 +680,25 @@
                             8.0, 
                             8.0
                         ]
-                    }
+                    }, 
+                    "suspend_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "suspend_picture": 134217734, 
+                    "suspend_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u590d\u5236\u53e3\u4ee4", 
+                            false
+                        ]
+                    }, 
+                    "type": 1, 
+                    "uid": "32890a47-6508-4170-81d1-2e5dc2100d3a"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "button_world_chat", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -764,32 +709,32 @@
                         568.0, 
                         18.0
                     ], 
-                    "pos_data": {
+                    "children": [], 
+                    "disabled_cap_insets": {
                         "__tuple__": true, 
                         "items": [
-                            625.0, 
-                            91.0, 
-                            89.2857, 
-                            23.3333, 
-                            1, 
-                            1
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
                         ]
                     }, 
-                    "prefab_sub_key": null, 
-                    "scene_ui_name": null, 
-                    "size": [
-                        114.0, 
-                        42.0
+                    "disabled_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
                     ], 
-                    "type": 1, 
-                    "uid": "bc98ab6b-0006-427f-82d9-1abb78bf232f", 
-                    "normal_picture": 134217733, 
-                    "suspend_picture": 134217734, 
-                    "press_picture": 134217735, 
                     "disabled_picture": 134217736, 
-                    "hover_status_added": true, 
-                    "pressed_status_added": true, 
                     "disabled_status_added": true, 
+                    "disabled_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u4e16\u754c\u804a\u5929", 
+                            false
+                        ]
+                    }, 
+                    "event_list": [], 
                     "font": {
                         "__tuple__": true, 
                         "items": [
@@ -797,58 +742,8 @@
                             16
                         ]
                     }, 
-                    "normal_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "世界聊天", 
-                            false
-                        ]
-                    }, 
-                    "suspend_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "世界聊天", 
-                            false
-                        ]
-                    }, 
-                    "press_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "世界聊天", 
-                            false
-                        ]
-                    }, 
-                    "disabled_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "世界聊天", 
-                            false
-                        ]
-                    }, 
-                    "normal_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "suspend_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "press_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "disabled_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
+                    "hover_status_added": true, 
+                    "name": "button_world_chat", 
                     "normal_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -858,15 +753,32 @@
                             8.0
                         ]
                     }, 
-                    "suspend_cap_insets": {
+                    "normal_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "normal_picture": 134217733, 
+                    "normal_text": {
                         "__tuple__": true, 
                         "items": [
-                            8.0, 
-                            8.0, 
-                            8.0, 
-                            8.0
+                            "\u4e16\u754c\u804a\u5929", 
+                            false
                         ]
                     }, 
+                    "pos_data": {
+                        "__tuple__": true, 
+                        "items": [
+                            624.9999, 
+                            90.9999, 
+                            89.2857, 
+                            23.3333, 
+                            1, 
+                            1
+                        ]
+                    }, 
+                    "prefab_sub_key": null, 
                     "press_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -876,7 +788,27 @@
                             8.0
                         ]
                     }, 
-                    "disabled_cap_insets": {
+                    "press_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "press_picture": 134217735, 
+                    "press_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u4e16\u754c\u804a\u5929", 
+                            false
+                        ]
+                    }, 
+                    "pressed_status_added": true, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        114.0, 
+                        42.0
+                    ], 
+                    "suspend_cap_insets": {
                         "__tuple__": true, 
                         "items": [
                             8.0, 
@@ -884,13 +816,25 @@
                             8.0, 
                             8.0
                         ]
-                    }
+                    }, 
+                    "suspend_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "suspend_picture": 134217734, 
+                    "suspend_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u4e16\u754c\u804a\u5929", 
+                            false
+                        ]
+                    }, 
+                    "type": 1, 
+                    "uid": "bc98ab6b-0006-427f-82d9-1abb78bf232f"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "button_team_chat", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -901,32 +845,32 @@
                         444.0, 
                         144.0
                     ], 
-                    "pos_data": {
+                    "children": [], 
+                    "disabled_cap_insets": {
                         "__tuple__": true, 
                         "items": [
-                            500.0, 
-                            91.0, 
-                            71.4286, 
-                            23.3333, 
-                            1, 
-                            1
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
                         ]
                     }, 
-                    "prefab_sub_key": null, 
-                    "scene_ui_name": null, 
-                    "size": [
-                        112.0, 
-                        42.0
+                    "disabled_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
                     ], 
-                    "type": 1, 
-                    "uid": "4ea79ac6-fa87-4647-b048-bb10f7d78dff", 
-                    "normal_picture": 134217733, 
-                    "suspend_picture": 134217734, 
-                    "press_picture": 134217735, 
                     "disabled_picture": 134217736, 
-                    "hover_status_added": true, 
-                    "pressed_status_added": true, 
                     "disabled_status_added": true, 
+                    "disabled_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u961f\u4f0d\u804a\u5929", 
+                            false
+                        ]
+                    }, 
+                    "event_list": [], 
                     "font": {
                         "__tuple__": true, 
                         "items": [
@@ -934,58 +878,8 @@
                             16
                         ]
                     }, 
-                    "normal_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "队伍聊天", 
-                            false
-                        ]
-                    }, 
-                    "suspend_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "队伍聊天", 
-                            false
-                        ]
-                    }, 
-                    "press_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "队伍聊天", 
-                            false
-                        ]
-                    }, 
-                    "disabled_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "队伍聊天", 
-                            false
-                        ]
-                    }, 
-                    "normal_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "suspend_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "press_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "disabled_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
+                    "hover_status_added": true, 
+                    "name": "button_team_chat", 
                     "normal_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -995,15 +889,32 @@
                             8.0
                         ]
                     }, 
-                    "suspend_cap_insets": {
+                    "normal_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "normal_picture": 134217733, 
+                    "normal_text": {
                         "__tuple__": true, 
                         "items": [
-                            8.0, 
-                            8.0, 
-                            8.0, 
-                            8.0
+                            "\u961f\u4f0d\u804a\u5929", 
+                            false
                         ]
                     }, 
+                    "pos_data": {
+                        "__tuple__": true, 
+                        "items": [
+                            500.0002, 
+                            90.9999, 
+                            71.4286, 
+                            23.3333, 
+                            1, 
+                            1
+                        ]
+                    }, 
+                    "prefab_sub_key": null, 
                     "press_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -1013,7 +924,27 @@
                             8.0
                         ]
                     }, 
-                    "disabled_cap_insets": {
+                    "press_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "press_picture": 134217735, 
+                    "press_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u961f\u4f0d\u804a\u5929", 
+                            false
+                        ]
+                    }, 
+                    "pressed_status_added": true, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        112.0, 
+                        42.0
+                    ], 
+                    "suspend_cap_insets": {
                         "__tuple__": true, 
                         "items": [
                             8.0, 
@@ -1021,27 +952,32 @@
                             8.0, 
                             8.0
                         ]
-                    }
+                    }, 
+                    "suspend_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "suspend_picture": 134217734, 
+                    "suspend_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u961f\u4f0d\u804a\u5929", 
+                            false
+                        ]
+                    }, 
+                    "type": 1, 
+                    "uid": "4ea79ac6-fa87-4647-b048-bb10f7d78dff"
                 }
             ], 
             "event_list": [], 
             "name": "dungeon_chat_panel", 
-            "open_adapter": false, 
-            "adapter_option": [
-                false, 
-                false, 
-                false, 
-                false, 
-                666.0, 
-                24.0, 
-                24.0, 
-                1196.0
-            ], 
             "pos_data": {
                 "__tuple__": true, 
                 "items": [
-                    374.0, 
-                    219.0, 
+                    374.0006, 
+                    219.0002, 
                     19.4792, 
                     20.2778, 
                     1, 
@@ -1058,22 +994,18 @@
             "uid": "50d1eb19-8741-4fa1-abd4-7b2d85f52723"
         }, 
         {
+            "adapter_option": [
+                false, 
+                false, 
+                false, 
+                false, 
+                24.0, 
+                856.0, 
+                24.0, 
+                1036.0
+            ], 
             "children": [
                 {
-                    "name": "dungeon_status_panel_bg", 
-                    "type": 4, 
-                    "uid": "a020bd96-3c5c-427f-aa59-20de0bd8656d", 
-                    "size": [
-                        860.0, 
-                        200.0
-                    ], 
-                    "visible": true, 
-                    "alpha": 100, 
-                    "image": 134217729, 
-                    "is_scale9_enable": true, 
-                    "children": [], 
-                    "event_list": [], 
-                    "open_adapter": true, 
                     "adapter_option": [
                         true, 
                         true, 
@@ -1084,6 +1016,24 @@
                         0.0, 
                         0.0
                     ], 
+                    "cap_insets": [
+                        8.0, 
+                        8.0, 
+                        8.0, 
+                        8.0
+                    ], 
+                    "children": [], 
+                    "color": [
+                        30, 
+                        25, 
+                        18, 
+                        236
+                    ], 
+                    "event_list": [], 
+                    "image": 134217729, 
+                    "is_scale9_enable": true, 
+                    "name": "dungeon_status_panel_bg", 
+                    "open_adapter": true, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
@@ -1095,24 +1045,16 @@
                             1
                         ]
                     }, 
-                    "color": [
-                        30, 
-                        25, 
-                        18, 
-                        236
+                    "prefab_sub_key": null, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        860.0, 
+                        200.0
                     ], 
-                    "cap_insets": [
-                        8.0, 
-                        8.0, 
-                        8.0, 
-                        8.0
-                    ]
+                    "type": 4, 
+                    "uid": "a020bd96-3c5c-427f-aa59-20de0bd8656d"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_status", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -1123,10 +1065,29 @@
                         18.0, 
                         222.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_status", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            328.0, 
+                            327.9997, 
                             64.0, 
                             38.1395, 
                             32.0, 
@@ -1140,43 +1101,17 @@
                         620.0, 
                         92.0
                     ], 
-                    "type": 3, 
-                    "uid": "d19f6044-f682-463a-95df-4289c6c60d6e", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "模式：目标关卡    连接：已连接\\n队伍：-    匹配：空闲    启动：否", 
+                            "\u6a21\u5f0f\uff1a\u76ee\u6807\u5173\u5361    \u8fde\u63a5\uff1a\u5df2\u8fde\u63a5\\n\u961f\u4f0d\uff1a-    \u5339\u914d\uff1a\u7a7a\u95f2    \u542f\u52a8\uff1a\u5426", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "d19f6044-f682-463a-95df-4289c6c60d6e"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_title", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -1187,10 +1122,29 @@
                         18.0, 
                         422.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_title", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            228.0, 
+                            227.9998, 
                             139.0, 
                             26.5116, 
                             69.5, 
@@ -1204,43 +1158,17 @@
                         420.0, 
                         34.0
                     ], 
-                    "type": 3, 
-                    "uid": "dfdc9dc0-26ee-4528-aaa5-c64c64004bbb", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "大厅服务状态", 
+                            "\u5927\u5385\u670d\u52a1\u72b6\u6001", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "dfdc9dc0-26ee-4528-aaa5-c64c64004bbb"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "label_context", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -1251,10 +1179,29 @@
                         18.0, 
                         482.0
                     ], 
+                    "alignment": {
+                        "__tuple__": true, 
+                        "items": [
+                            2, 
+                            8
+                        ]
+                    }, 
+                    "children": [], 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "", 
+                            16
+                        ]
+                    }, 
+                    "font_min_size": 12, 
+                    "name": "label_context", 
+                    "over_pattern": 2, 
                     "pos_data": {
                         "__tuple__": true, 
                         "items": [
-                            198.0, 
+                            198.0004, 
                             174.0, 
                             23.0233, 
                             87.0, 
@@ -1268,43 +1215,17 @@
                         360.0, 
                         20.0
                     ], 
-                    "type": 3, 
-                    "uid": "b71528e6-21e0-47c1-9ac0-4d28657d8929", 
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "ECA BUSINESS EXAMPLE · 关卡上下文", 
+                            "ECA BUSINESS EXAMPLE \u00b7 \u5173\u5361\u4e0a\u4e0b\u6587", 
                             false
                         ]
                     }, 
-                    "font": {
-                        "__tuple__": true, 
-                        "items": [
-                            "", 
-                            16
-                        ]
-                    }, 
-                    "font_color": [
-                        255, 
-                        255, 
-                        255, 
-                        255
-                    ], 
-                    "font_min_size": 12, 
-                    "over_pattern": 2, 
-                    "alignment": {
-                        "__tuple__": true, 
-                        "items": [
-                            2, 
-                            8
-                        ]
-                    }
+                    "type": 3, 
+                    "uid": "b71528e6-21e0-47c1-9ac0-4d28657d8929"
                 }, 
                 {
-                    "children": [], 
-                    "event_list": [], 
-                    "name": "button_return_lobby", 
-                    "open_adapter": false, 
                     "adapter_option": [
                         false, 
                         false, 
@@ -1315,32 +1236,32 @@
                         680.0, 
                         20.0
                     ], 
-                    "pos_data": {
+                    "children": [], 
+                    "disabled_cap_insets": {
                         "__tuple__": true, 
                         "items": [
-                            760.0, 
-                            140.0, 
-                            88.3721, 
-                            70.0, 
-                            1, 
-                            1
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
                         ]
                     }, 
-                    "prefab_sub_key": null, 
-                    "scene_ui_name": null, 
-                    "size": [
-                        160.0, 
-                        48.0
+                    "disabled_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
                     ], 
-                    "type": 1, 
-                    "uid": "db4503ac-fcb5-4151-882e-a66f51da6af7", 
-                    "normal_picture": 134217733, 
-                    "suspend_picture": 134217734, 
-                    "press_picture": 134217735, 
                     "disabled_picture": 134217736, 
-                    "hover_status_added": true, 
-                    "pressed_status_added": true, 
                     "disabled_status_added": true, 
+                    "disabled_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u8fd4\u56de\u521d\u59cb\u5173\u5361", 
+                            false
+                        ]
+                    }, 
+                    "event_list": [], 
                     "font": {
                         "__tuple__": true, 
                         "items": [
@@ -1348,58 +1269,8 @@
                             16
                         ]
                     }, 
-                    "normal_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "返回初始关卡", 
-                            false
-                        ]
-                    }, 
-                    "suspend_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "返回初始关卡", 
-                            false
-                        ]
-                    }, 
-                    "press_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "返回初始关卡", 
-                            false
-                        ]
-                    }, 
-                    "disabled_text": {
-                        "__tuple__": true, 
-                        "items": [
-                            "返回初始关卡", 
-                            false
-                        ]
-                    }, 
-                    "normal_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "suspend_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "press_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
-                    "disabled_font_color": [
-                        247, 
-                        247, 
-                        247, 
-                        255
-                    ], 
+                    "hover_status_added": true, 
+                    "name": "button_return_lobby", 
                     "normal_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -1409,15 +1280,32 @@
                             8.0
                         ]
                     }, 
-                    "suspend_cap_insets": {
+                    "normal_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "normal_picture": 134217733, 
+                    "normal_text": {
                         "__tuple__": true, 
                         "items": [
-                            8.0, 
-                            8.0, 
-                            8.0, 
-                            8.0
+                            "\u8fd4\u56de\u521d\u59cb\u5173\u5361", 
+                            false
                         ]
                     }, 
+                    "pos_data": {
+                        "__tuple__": true, 
+                        "items": [
+                            760.0001, 
+                            140.0, 
+                            88.3721, 
+                            70.0, 
+                            1, 
+                            1
+                        ]
+                    }, 
+                    "prefab_sub_key": null, 
                     "press_cap_insets": {
                         "__tuple__": true, 
                         "items": [
@@ -1427,7 +1315,27 @@
                             8.0
                         ]
                     }, 
-                    "disabled_cap_insets": {
+                    "press_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "press_picture": 134217735, 
+                    "press_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u8fd4\u56de\u521d\u59cb\u5173\u5361", 
+                            false
+                        ]
+                    }, 
+                    "pressed_status_added": true, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        160.0, 
+                        48.0
+                    ], 
+                    "suspend_cap_insets": {
                         "__tuple__": true, 
                         "items": [
                             8.0, 
@@ -1435,27 +1343,32 @@
                             8.0, 
                             8.0
                         ]
-                    }
+                    }, 
+                    "suspend_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "suspend_picture": 134217734, 
+                    "suspend_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u8fd4\u56de\u521d\u59cb\u5173\u5361", 
+                            false
+                        ]
+                    }, 
+                    "type": 1, 
+                    "uid": "db4503ac-fcb5-4151-882e-a66f51da6af7"
                 }
             ], 
             "event_list": [], 
             "name": "dungeon_status_panel", 
-            "open_adapter": false, 
-            "adapter_option": [
-                false, 
-                false, 
-                false, 
-                false, 
-                24.0, 
-                856.0, 
-                24.0, 
-                1036.0
-            ], 
             "pos_data": {
                 "__tuple__": true, 
                 "items": [
-                    454.0, 
-                    956.0, 
+                    453.9994, 
+                    955.9998, 
                     23.6458, 
                     88.5185, 
                     1, 
@@ -1472,10 +1385,6 @@
             "uid": "22e0d41f-ebde-406d-af75-04132f65c987"
         }, 
         {
-            "children": [], 
-            "event_list": [], 
-            "name": "button_exit", 
-            "open_adapter": false, 
             "adapter_option": [
                 false, 
                 false, 
@@ -1486,32 +1395,32 @@
                 1746.0, 
                 24.0
             ], 
-            "pos_data": {
+            "children": [], 
+            "disabled_cap_insets": {
                 "__tuple__": true, 
                 "items": [
-                    1821.0, 
-                    1032.0, 
-                    94.8438, 
-                    95.5556, 
-                    1, 
-                    1
+                    8.0, 
+                    8.0, 
+                    8.0, 
+                    8.0
                 ]
             }, 
-            "prefab_sub_key": null, 
-            "scene_ui_name": null, 
-            "size": [
-                150.0, 
-                48.0
+            "disabled_font_color": [
+                247, 
+                247, 
+                247, 
+                255
             ], 
-            "type": 1, 
-            "uid": "bddd23a2-7133-4ee7-8a7a-813caeab003d", 
-            "normal_picture": 134217741, 
-            "suspend_picture": 134217742, 
-            "press_picture": 134217743, 
             "disabled_picture": 134217744, 
-            "hover_status_added": true, 
-            "pressed_status_added": true, 
             "disabled_status_added": true, 
+            "disabled_text": {
+                "__tuple__": true, 
+                "items": [
+                    "\u9000\u51fa\u6e38\u620f", 
+                    false
+                ]
+            }, 
+            "event_list": [], 
             "font": {
                 "__tuple__": true, 
                 "items": [
@@ -1519,58 +1428,8 @@
                     16
                 ]
             }, 
-            "normal_text": {
-                "__tuple__": true, 
-                "items": [
-                    "退出游戏", 
-                    false
-                ]
-            }, 
-            "suspend_text": {
-                "__tuple__": true, 
-                "items": [
-                    "退出游戏", 
-                    false
-                ]
-            }, 
-            "press_text": {
-                "__tuple__": true, 
-                "items": [
-                    "退出游戏", 
-                    false
-                ]
-            }, 
-            "disabled_text": {
-                "__tuple__": true, 
-                "items": [
-                    "退出游戏", 
-                    false
-                ]
-            }, 
-            "normal_font_color": [
-                247, 
-                247, 
-                247, 
-                255
-            ], 
-            "suspend_font_color": [
-                247, 
-                247, 
-                247, 
-                255
-            ], 
-            "press_font_color": [
-                247, 
-                247, 
-                247, 
-                255
-            ], 
-            "disabled_font_color": [
-                247, 
-                247, 
-                247, 
-                255
-            ], 
+            "hover_status_added": true, 
+            "name": "button_exit", 
             "normal_cap_insets": {
                 "__tuple__": true, 
                 "items": [
@@ -1580,15 +1439,32 @@
                     8.0
                 ]
             }, 
-            "suspend_cap_insets": {
+            "normal_font_color": [
+                247, 
+                247, 
+                247, 
+                255
+            ], 
+            "normal_picture": 134217741, 
+            "normal_text": {
                 "__tuple__": true, 
                 "items": [
-                    8.0, 
-                    8.0, 
-                    8.0, 
-                    8.0
+                    "\u9000\u51fa\u6e38\u620f", 
+                    false
                 ]
             }, 
+            "pos_data": {
+                "__tuple__": true, 
+                "items": [
+                    1821.001, 
+                    1032.0005, 
+                    94.8438, 
+                    95.5556, 
+                    1, 
+                    1
+                ]
+            }, 
+            "prefab_sub_key": null, 
             "press_cap_insets": {
                 "__tuple__": true, 
                 "items": [
@@ -1598,7 +1474,27 @@
                     8.0
                 ]
             }, 
-            "disabled_cap_insets": {
+            "press_font_color": [
+                247, 
+                247, 
+                247, 
+                255
+            ], 
+            "press_picture": 134217743, 
+            "press_text": {
+                "__tuple__": true, 
+                "items": [
+                    "\u9000\u51fa\u6e38\u620f", 
+                    false
+                ]
+            }, 
+            "pressed_status_added": true, 
+            "scene_ui_name": null, 
+            "size": [
+                150.0, 
+                48.0
+            ], 
+            "suspend_cap_insets": {
                 "__tuple__": true, 
                 "items": [
                     8.0, 
@@ -1606,7 +1502,23 @@
                     8.0, 
                     8.0
                 ]
-            }
+            }, 
+            "suspend_font_color": [
+                247, 
+                247, 
+                247, 
+                255
+            ], 
+            "suspend_picture": 134217742, 
+            "suspend_text": {
+                "__tuple__": true, 
+                "items": [
+                    "\u9000\u51fa\u6e38\u620f", 
+                    false
+                ]
+            }, 
+            "type": 1, 
+            "uid": "bddd23a2-7133-4ee7-8a7a-813caeab003d"
         }
     ], 
     "name": "EcaDungeonExample", 

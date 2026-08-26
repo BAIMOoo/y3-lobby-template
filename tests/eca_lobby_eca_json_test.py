@@ -13,6 +13,7 @@ STATUS_TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_status_event_listener.json"
 ENTRY_UI_DSL = ROOT / "tools" / "eca" / "lobby_ui_entry_map.json"
 DUNGEON_UI_DSL = ROOT / "tools" / "eca" / "lobby_ui_dungeon_map.json"
 MAP_NAMES = ["EntryMap", "MapName001"]
+ENTRY_LEVEL_ID = "172371058548994502264384971909138463342"
 
 EXPECTED_ECA_NAMES = [
     "大厅服务 - 建立连接",
@@ -507,19 +508,14 @@ class LobbyEcaJsonTests(unittest.TestCase):
             ),
             (
                 self.dungeon_ui_dsl,
-                load_json(
-                    ROOT
-                    / "ui_tree"
-                    / "MapName001"
-                    / "EcaDungeonExample_Tree.json"
-                ),
+                load_json(ROOT / "ui_tree" / "EcaDungeonExample_Tree.json"),
             ),
         ]
         for dsl, tree in cases:
             root_name = tree["name"]
             available = set(ui_paths(tree))
             referenced = {
-                f"{root_name}.{node[3]}"
+                f"{root_name}.{node[3]}" if node[3] else root_name
                 for node in walk_json(dsl)
                 if isinstance(node, list)
                 and len(node) == 4
@@ -573,7 +569,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
         generated = []
         for map_name, pattern in [
             ("EntryMap", "ECA大厅UI - *.json"),
-            ("MapName001", "ECA副本UI - *.json"),
+            ("EntryMap", "ECA副本UI - *.json"),
         ]:
             generated.extend(
                 load_json(path)
@@ -619,6 +615,135 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 timer.get("local_var"),
             )
 
+    def test_entry_map_owns_both_ui_contexts_and_all_ui_triggers(self):
+        self.assertEqual("EntryMap", self.entry_ui_dsl["map"])
+        self.assertEqual("EntryMap", self.dungeon_ui_dsl["map"])
+        self.assertTrue(
+            (ROOT / "maps" / "EntryMap" / "ui" / "EcaLobbyExample.json").is_file()
+        )
+        self.assertTrue(
+            (ROOT / "maps" / "EntryMap" / "ui" / "EcaDungeonExample.json").is_file()
+        )
+        self.assertFalse(
+            (ROOT / "maps" / "MapName001" / "ui" / "EcaDungeonExample.json").exists()
+        )
+        panel_groups = load_json(
+            ROOT / "maps" / "EntryMap" / "editor" / "uipaneltreegroupinfo.json"
+        )
+        custom_panels = {
+            item["items"][1]: item["items"][0]
+            for item in panel_groups[0]["group"]
+        }
+        self.assertEqual(
+            {
+                "EcaLobbyExample": "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "EcaDungeonExample": "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+            },
+            {
+                name: custom_panels[name]
+                for name in ("EcaLobbyExample", "EcaDungeonExample")
+            },
+        )
+        entry_trigger_root = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
+        child_trigger_root = ROOT / "maps" / "MapName001" / "global_trigger" / "trigger"
+        self.assertEqual(25, len(list(entry_trigger_root.glob("ECA大厅UI - *.json"))))
+        self.assertEqual(6, len(list(entry_trigger_root.glob("ECA副本UI - *.json"))))
+        self.assertEqual([], list(child_trigger_root.glob("ECA副本UI - *.json")))
+
+    def test_ui_initializers_use_exact_lobby_runtime_context(self):
+        expected = [
+            [
+                "ANY_COMPARE",
+                ["GET_CURRENT_LEVEL"],
+                "==",
+                {"type": "MAP", "value": ENTRY_LEVEL_ID},
+            ],
+            ["GAME_MODE_COMPARE", ["GET_GAME_MODE"], "==", 1001],
+        ]
+        for dsl, name in [
+            (self.entry_ui_dsl, "ECA大厅UI - 初始化"),
+            (self.dungeon_ui_dsl, "ECA副本UI - 初始化"),
+        ]:
+            trigger = next(item for item in dsl["triggers"] if item["name"] == name)
+            with self.subTest(trigger=name):
+                self.assertEqual("IF_THEN_ELSE", trigger["action"][0][0])
+                self.assertEqual(expected, trigger["action"][0][1])
+
+    def test_ui_initializers_only_activate_the_matching_context(self):
+        init_actions = {}
+        for dsl, name in [
+            (self.entry_ui_dsl, "ECA大厅UI - 初始化"),
+            (self.dungeon_ui_dsl, "ECA副本UI - 初始化"),
+        ]:
+            trigger = next(item for item in dsl["triggers"] if item["name"] == name)
+            init_actions[name] = trigger["action"][0]
+
+        def visibility(branch):
+            return {
+                action[3][2]: action[2]
+                for action in branch
+                if action[0] == "SET_UI_COMP_VISIBLE" and action[3][3] == ""
+            }
+
+        def timer_count(branch):
+            return sum(action[0] == "RUN_LOOP_TIMER_NO_SAVE" for action in branch)
+
+        lobby_init = init_actions["ECA大厅UI - 初始化"]
+        dungeon_init = init_actions["ECA副本UI - 初始化"]
+        self.assertEqual(
+            {
+                "c3eb744a-f544-45d2-8e24-a2e279a67662": True,
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2": False,
+            },
+            visibility(lobby_init[2]),
+        )
+        self.assertEqual(
+            {"c3eb744a-f544-45d2-8e24-a2e279a67662": False},
+            visibility(lobby_init[3]),
+        )
+        self.assertEqual(
+            {"908f7d63-a40d-42e1-8ed4-b076b01095a2": False},
+            visibility(dungeon_init[2]),
+        )
+        self.assertEqual(
+            {
+                "c3eb744a-f544-45d2-8e24-a2e279a67662": False,
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2": True,
+            },
+            visibility(dungeon_init[3]),
+        )
+        self.assertEqual((1, 0), (timer_count(lobby_init[2]), timer_count(lobby_init[3])))
+        self.assertEqual((0, 1), (timer_count(dungeon_init[2]), timer_count(dungeon_init[3])))
+
+    def test_generated_runtime_context_uses_official_map_and_mode_types(self):
+        generated = [
+            load_json(
+                ROOT
+                / "maps"
+                / "EntryMap"
+                / "global_trigger"
+                / "trigger"
+                / name
+            )
+            for name in ["ECA大厅UI - 初始化.json", "ECA副本UI - 初始化.json"]
+        ]
+        for trigger in generated:
+            conditions = trigger["action"][0]["args_list"][0]["args_list"]
+            map_compare, mode_compare = conditions
+            with self.subTest(trigger=trigger["trigger_name"]):
+                self.assertEqual(
+                    [900002, 100035, 900002],
+                    [arg["arg_type"] for arg in map_compare["args_list"]],
+                )
+                self.assertEqual("GET_CURRENT_LEVEL", map_compare["args_list"][0]["sub_type"])
+                self.assertEqual(ENTRY_LEVEL_ID, map_compare["args_list"][2]["args_list"][0])
+                self.assertEqual(
+                    [100505, 100035, 100505],
+                    [arg["arg_type"] for arg in mode_compare["args_list"]],
+                )
+                self.assertEqual("GET_GAME_MODE", mode_compare["args_list"][0]["sub_type"])
+                self.assertEqual(1001, mode_compare["args_list"][2]["args_list"][0])
+
     def test_lua_test_ui_is_preserved_but_disabled_by_default(self):
         for map_name in MAP_NAMES:
             source = (ROOT / "maps" / map_name / "script" / "main.lua").read_text(
@@ -656,7 +781,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
         ui_docs = [
             load_json(ROOT / "maps" / "EntryMap" / "ui" / "EcaLobbyExample.json"),
             load_json(
-                ROOT / "maps" / "MapName001" / "ui" / "EcaDungeonExample.json"
+                ROOT / "maps" / "EntryMap" / "ui" / "EcaDungeonExample.json"
             ),
         ]
         buttons = [

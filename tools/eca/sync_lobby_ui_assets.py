@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 UI_FILES = [
     ROOT / "maps" / "EntryMap" / "ui" / "EcaLobbyExample.json",
-    ROOT / "maps" / "MapName001" / "ui" / "EcaDungeonExample.json",
+    ROOT / "maps" / "EntryMap" / "ui" / "EcaDungeonExample.json",
 ]
 
 BACKDROP = 134230328

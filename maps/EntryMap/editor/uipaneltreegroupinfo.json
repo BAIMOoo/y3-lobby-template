@@ -16,6 +16,20 @@
      "e80799be-ab41-413a-a888-dd1767c8074e", 
      "BobTestUI"
     ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "c3eb744a-f544-45d2-8e24-a2e279a67662", 
+     "EcaLobbyExample"
+    ]
+   }, 
+   {
+    "__tuple__": true, 
+    "items": [
+     "908f7d63-a40d-42e1-8ed4-b076b01095a2", 
+     "EcaDungeonExample"
+    ]
    }
   ]
  }, 

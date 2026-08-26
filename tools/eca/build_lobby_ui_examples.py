@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Build compact ECA DSL files for the lobby example UI on both maps."""
+"""Build compact ECA DSL files for the lobby and dungeon UI on EntryMap."""
 
 from __future__ import annotations
 
@@ -45,6 +45,7 @@ FUNCTIONS = {
 }
 
 MATCH_LEVEL_ID = "50377054694119407947881484918402159964"
+ENTRY_LEVEL_ID = "172371058548994502264384971909138463342"
 PRIVATE_LEVEL_UUID = "25e6448f-7e73-11f1-88ae-03dc5a85955c"
 LOBBY_LEVEL_UUID = "81ad7554-7e6b-11f1-8f5c-c78cd393ba6e"
 
@@ -123,6 +124,22 @@ def set_enabled(root: str, path: str, enabled: bool, local: bool = False):
 
 def set_visible(root: str, path: str, visible, local: bool = False):
     return ["SET_UI_COMP_VISIBLE", player(local), visible, ui(root, path, local)]
+
+
+def typed_literal(type_name: str, value):
+    return {"type": type_name, "value": value}
+
+
+def lobby_context_conditions():
+    return [
+        [
+            "ANY_COMPARE",
+            ["GET_CURRENT_LEVEL"],
+            "==",
+            typed_literal("MAP", ENTRY_LEVEL_ID),
+        ],
+        ["GAME_MODE_COMPARE", ["GET_GAME_MODE"], "==", 1001],
+    ]
 
 
 def call(key: str, result: str, args=None, optional_args=None):
@@ -367,16 +384,44 @@ def dungeon_refresh_actions():
     return actions
 
 
-def init_trigger(ids: Ids, name: str, root: str, bindings, refresh_actions):
+def init_trigger(
+    ids: Ids,
+    name: str,
+    root: str,
+    bindings,
+    refresh_actions,
+    *,
+    lobby_ui: bool,
+):
+    active_actions = [
+        *[register_event(root, path, event_name) for path, event_name in bindings],
+        ["RUN_LOOP_TIMER_NO_SAVE", 1.0, True, refresh_actions],
+    ]
+    if lobby_ui:
+        lobby_actions = [
+            set_visible(ENTRY_ROOT, "", True, True),
+            set_visible(DUNGEON_ROOT, "", False, True),
+            *active_actions,
+        ]
+        dungeon_actions = [set_visible(ENTRY_ROOT, "", False, True)]
+    else:
+        lobby_actions = [set_visible(DUNGEON_ROOT, "", False, True)]
+        dungeon_actions = [
+            set_visible(ENTRY_ROOT, "", False, True),
+            set_visible(DUNGEON_ROOT, "", True, True),
+            *active_actions,
+        ]
     return {
         "name": name,
         "id": ids.next_parent(),
         "event": [["INIT_FINISHED"]],
         "condition": [],
-        "action": [
-            *[register_event(root, path, event_name) for path, event_name in bindings],
-            ["RUN_LOOP_TIMER_NO_SAVE", 1.0, True, refresh_actions],
-        ],
+        "action": [[
+            "IF_THEN_ELSE",
+            lobby_context_conditions(),
+            lobby_actions,
+            dungeon_actions,
+        ]],
     }
 
 
@@ -406,7 +451,14 @@ def entry_dsl():
             (f"team_panel.member_row_{index}.button_kick_{index}", f"eca_lobby_kick_{index}"),
         ])
 
-    triggers = [init_trigger(ids, "ECA大厅UI - 初始化", ENTRY_ROOT, bindings, entry_refresh_actions())]
+    triggers = [init_trigger(
+        ids,
+        "ECA大厅UI - 初始化",
+        ENTRY_ROOT,
+        bindings,
+        entry_refresh_actions(),
+        lobby_ui=True,
+    )]
     triggers.extend([
         async_trigger(
             ids,
@@ -660,7 +712,14 @@ def dungeon_dsl():
         ("dungeon_chat_panel.button_copy_token", "eca_dungeon_copy_token"),
         ("button_exit", "eca_dungeon_exit"),
     ]
-    triggers = [init_trigger(ids, "ECA副本UI - 初始化", DUNGEON_ROOT, bindings, dungeon_refresh_actions())]
+    triggers = [init_trigger(
+        ids,
+        "ECA副本UI - 初始化",
+        DUNGEON_ROOT,
+        bindings,
+        dungeon_refresh_actions(),
+        lobby_ui=False,
+    )]
     chat_input = ["GET_INPUT_FIELD_CONTENT", player(), ui(DUNGEON_ROOT, "dungeon_chat_panel.input_chat")]
     triggers.extend([
         async_trigger(
@@ -727,7 +786,7 @@ def dungeon_dsl():
         result_path="dungeon_status_panel.label_status",
         function_key="exit",
     ))
-    return {"map": "MapName001", "triggers": triggers}
+    return {"map": "EntryMap", "triggers": triggers}
 
 
 def render(data) -> str:

@@ -71,6 +71,8 @@ ARG_TYPE_ID = {
     "ANGLE": 100225,
     "KEYBOARD_KEY": 200220,
     "MOUSE_KEY_WITHOUT_MIDDLE": 200224,
+    "MAP": 900002,
+    "GAME_MODE": 100505,
     # Extended types discovered from DM32 real-world usage
     "MODIFIER_ENTITY": 100076,
     "ABILITY": 100014,
@@ -315,6 +317,19 @@ def build_arg(value, expected_type, idx_data, eid_gen, sub_trigger_refs=None):
     # Variable reference: {"var": "unit", "type": "UNIT_ENTITY"}
     if isinstance(value, dict) and "var" in value:
         return build_variable_arg(value, expected_type, idx_data)
+
+    # Explicitly typed literals are required for generic parameters such as
+    # ANY_COMPARE, where a string-valued MAP must not degrade to STRING.
+    if (
+        isinstance(value, dict)
+        and set(value) == {"type", "value"}
+        and value["type"] in ARG_TYPE_ID
+    ):
+        return {
+            "arg_type": ARG_TYPE_ID[value["type"]],
+            "sub_type": 1,
+            "args_list": [value["value"]],
+        }
 
     # CONDITION_LIST: nested condition nodes
     if expected_type == "CONDITION_LIST":
@@ -872,7 +887,14 @@ def write_trigger(trigger, map_name, project_root):
     fname = trigger["trigger_name"] + ".json"
     path = os.path.join(out_dir, fname)
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(trigger, f, ensure_ascii=False, indent=4)
+        json.dump(
+            trigger,
+            f,
+            ensure_ascii=False,
+            indent=4,
+            sort_keys=True,
+            separators=(", ", ": "),
+        )
     return path, fname, out_dir
 
 
@@ -886,7 +908,7 @@ def update_index(out_dir, fname):
     if fname not in idx:
         idx[fname] = max(idx.values(), default=-1) + 1
     with open(idx_path, "w", encoding="utf-8") as f:
-        json.dump(idx, f, ensure_ascii=False, indent=4)
+        json.dump(idx, f, ensure_ascii=False, indent=4, separators=(", ", ": "))
     return idx[fname]
 
 

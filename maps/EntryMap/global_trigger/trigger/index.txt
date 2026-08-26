@@ -1,4 +1,10 @@
 {
+    "ECA副本UI - 初始化.json": 35, 
+    "ECA副本UI - 发送世界聊天.json": 37, 
+    "ECA副本UI - 发送队伍聊天.json": 36, 
+    "ECA副本UI - 显示口令.json": 39, 
+    "ECA副本UI - 返回大厅.json": 38, 
+    "ECA副本UI - 退出游戏.json": 40, 
     "ECA大厅UI - 创建队伍.json": 11, 
     "ECA大厅UI - 初始化.json": 10, 
     "ECA大厅UI - 刷新玩家信息.json": 33, 

@@ -1,5 +1,5 @@
 {
-  "map": "MapName001",
+  "map": "EntryMap",
   "triggers": [
     {
       "name": "ECA副本UI - 初始化",
@@ -12,264 +12,315 @@
       "condition": [],
       "action": [
         [
-          "CREATE_UI_COMP_EVENT_EX_EX",
+          "IF_THEN_ELSE",
           [
-            "GET_UI_COMP_BY_PATH",
             [
-              "GET_CLIENT_ROLE"
+              "ANY_COMPARE",
+              [
+                "GET_CURRENT_LEVEL"
+              ],
+              "==",
+              {
+                "type": "MAP",
+                "value": "172371058548994502264384971909138463342"
+              }
             ],
-            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-            "dungeon_status_panel.button_return_lobby"
-          ],
-          1,
-          "eca_dungeon_return_lobby"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
             [
-              "GET_CLIENT_ROLE"
-            ],
-            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-            "dungeon_chat_panel.button_team_chat"
+              "GAME_MODE_COMPARE",
+              [
+                "GET_GAME_MODE"
+              ],
+              "==",
+              1001
+            ]
           ],
-          1,
-          "eca_dungeon_team_chat"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
           [
-            "GET_UI_COMP_BY_PATH",
             [
-              "GET_CLIENT_ROLE"
-            ],
-            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-            "dungeon_chat_panel.button_world_chat"
-          ],
-          1,
-          "eca_dungeon_world_chat"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-            "dungeon_chat_panel.button_copy_token"
-          ],
-          1,
-          "eca_dungeon_copy_token"
-        ],
-        [
-          "CREATE_UI_COMP_EVENT_EX_EX",
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "GET_CLIENT_ROLE"
-            ],
-            "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-            "button_exit"
-          ],
-          1,
-          "eca_dungeon_exit"
-        ],
-        [
-          "RUN_LOOP_TIMER_NO_SAVE",
-          1.0,
-          true,
-          [
-            {
-              "call_function": {
-                "func_id": "fb4e6115da4b5f02b2dcf819cfd1f642",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "副本刷新连接状态",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "06baf266d22b5844b236f6a8dea1828e",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "副本刷新状态快照",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "da0b1d8bb1f354ec8b4f91fca5c8c653",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "副本刷新口令",
-                    "type": "TABLE"
-                  }
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "403f34876b6854779906e8855b689305",
-                "args": [],
-                "returns": [
-                  {
-                    "var": "副本刷新聊天记录",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  1
-                ],
-                "returns": [
-                  {
-                    "var": "副本刷新聊天1",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  2
-                ],
-                "returns": [
-                  {
-                    "var": "副本刷新聊天2",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  3
-                ],
-                "returns": [
-                  {
-                    "var": "副本刷新聊天3",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  4
-                ],
-                "returns": [
-                  {
-                    "var": "副本刷新聊天4",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            {
-              "call_function": {
-                "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
-                "args": [
-                  5
-                ],
-                "returns": [
-                  {
-                    "var": "副本刷新聊天5",
-                    "type": "TABLE"
-                  }
-                ],
-                "optional_args": [
-                  null
-                ]
-              }
-            },
-            [
-              "SET_UI_COMP_TEXT",
+              "SET_UI_COMP_VISIBLE",
               [
                 "GET_CLIENT_ROLE"
               ],
+              false,
               [
                 "GET_UI_COMP_BY_PATH",
                 [
                   "GET_CLIENT_ROLE"
                 ],
                 "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-                "dungeon_status_panel.label_status"
-              ],
+                ""
+              ]
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_VISIBLE",
               [
-                "STR_JOIN",
-                "连接：",
+                "GET_CLIENT_ROLE"
+              ],
+              false,
+              [
+                "GET_UI_COMP_BY_PATH",
                 [
-                  "STR_JOIN",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_TABLE_TABLE_VAR_1D",
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                ""
+              ]
+            ],
+            [
+              "SET_UI_COMP_VISIBLE",
+              [
+                "GET_CLIENT_ROLE"
+              ],
+              true,
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                ""
+              ]
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_status_panel.button_return_lobby"
+              ],
+              1,
+              "eca_dungeon_return_lobby"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.button_team_chat"
+              ],
+              1,
+              "eca_dungeon_team_chat"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.button_world_chat"
+              ],
+              1,
+              "eca_dungeon_world_chat"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "dungeon_chat_panel.button_copy_token"
+              ],
+              1,
+              "eca_dungeon_copy_token"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                "button_exit"
+              ],
+              1,
+              "eca_dungeon_exit"
+            ],
+            [
+              "RUN_LOOP_TIMER_NO_SAVE",
+              1.0,
+              true,
+              [
+                {
+                  "call_function": {
+                    "func_id": "fb4e6115da4b5f02b2dcf819cfd1f642",
+                    "args": [],
+                    "returns": [
                       {
                         "var": "副本刷新连接状态",
                         "type": "TABLE"
-                      },
-                      "result_data"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "06baf266d22b5844b236f6a8dea1828e",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "副本刷新状态快照",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "da0b1d8bb1f354ec8b4f91fca5c8c653",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "副本刷新口令",
+                        "type": "TABLE"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "403f34876b6854779906e8855b689305",
+                    "args": [],
+                    "returns": [
+                      {
+                        "var": "副本刷新聊天记录",
+                        "type": "TABLE"
+                      }
                     ],
-                    "status"
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      1
+                    ],
+                    "returns": [
+                      {
+                        "var": "副本刷新聊天1",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      2
+                    ],
+                    "returns": [
+                      {
+                        "var": "副本刷新聊天2",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      3
+                    ],
+                    "returns": [
+                      {
+                        "var": "副本刷新聊天3",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      4
+                    ],
+                    "returns": [
+                      {
+                        "var": "副本刷新聊天4",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                {
+                  "call_function": {
+                    "func_id": "c4c12fda3fb251f88eda0279bbf6b4ed",
+                    "args": [
+                      5
+                    ],
+                    "returns": [
+                      {
+                        "var": "副本刷新聊天5",
+                        "type": "TABLE"
+                      }
+                    ],
+                    "optional_args": [
+                      null
+                    ]
+                  }
+                },
+                [
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_status_panel.label_status"
                   ],
                   [
                     "STR_JOIN",
-                    "    AID：",
+                    "连接：",
                     [
                       "STR_JOIN",
                       [
-                        "ANY_VAR_TO_STR",
+                        "GET_STRING_TABLE_VAR_1D",
                         [
-                          "GET_INTEGER_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "副本刷新状态快照",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "aid"
-                        ]
+                          "GET_TABLE_TABLE_VAR_1D",
+                          {
+                            "var": "副本刷新连接状态",
+                            "type": "TABLE"
+                          },
+                          "result_data"
+                        ],
+                        "status"
                       ],
                       [
                         "STR_JOIN",
-                        "    队伍：",
+                        "    AID：",
                         [
                           "STR_JOIN",
                           [
@@ -284,25 +335,47 @@
                                 },
                                 "result_data"
                               ],
-                              "team_id"
+                              "aid"
                             ]
                           ],
                           [
                             "STR_JOIN",
-                            "    模式：",
+                            "    队伍：",
                             [
-                              "ANY_VAR_TO_STR",
+                              "STR_JOIN",
                               [
-                                "GET_INTEGER_TABLE_VAR_1D",
+                                "ANY_VAR_TO_STR",
                                 [
-                                  "GET_TABLE_TABLE_VAR_1D",
-                                  {
-                                    "var": "副本刷新状态快照",
-                                    "type": "TABLE"
-                                  },
-                                  "result_data"
-                                ],
-                                "game_mode"
+                                  "GET_INTEGER_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "副本刷新状态快照",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "team_id"
+                                ]
+                              ],
+                              [
+                                "STR_JOIN",
+                                "    模式：",
+                                [
+                                  "ANY_VAR_TO_STR",
+                                  [
+                                    "GET_INTEGER_TABLE_VAR_1D",
+                                    [
+                                      "GET_TABLE_TABLE_VAR_1D",
+                                      {
+                                        "var": "副本刷新状态快照",
+                                        "type": "TABLE"
+                                      },
+                                      "result_data"
+                                    ],
+                                    "game_mode"
+                                  ]
+                                ]
                               ]
                             ]
                           ]
@@ -310,52 +383,46 @@
                       ]
                     ]
                   ]
-                ]
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "GET_CLIENT_ROLE"
                 ],
-                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-                "dungeon_chat_panel.label_token_value"
-              ],
-              [
-                "GET_STRING_TABLE_VAR_1D",
                 [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  {
-                    "var": "副本刷新口令",
-                    "type": "TABLE"
-                  },
-                  "result_data"
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.label_token_value"
+                  ],
+                  [
+                    "GET_STRING_TABLE_VAR_1D",
+                    [
+                      "GET_TABLE_TABLE_VAR_1D",
+                      {
+                        "var": "副本刷新口令",
+                        "type": "TABLE"
+                      },
+                      "result_data"
+                    ],
+                    "token"
+                  ]
                 ],
-                "token"
-              ]
-            ],
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "GET_CLIENT_ROLE"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
                 [
-                  "GET_CLIENT_ROLE"
-                ],
-                "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-                "dungeon_chat_panel.label_chat_history"
-              ],
-              [
-                "STR_JOIN",
-                [
-                  "STR_JOIN",
+                  "SET_UI_COMP_TEXT",
+                  [
+                    "GET_CLIENT_ROLE"
+                  ],
+                  [
+                    "GET_UI_COMP_BY_PATH",
+                    [
+                      "GET_CLIENT_ROLE"
+                    ],
+                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                    "dungeon_chat_panel.label_chat_history"
+                  ],
                   [
                     "STR_JOIN",
                     [
@@ -363,43 +430,143 @@
                       [
                         "STR_JOIN",
                         [
-                          "GET_STRING_TABLE_VAR_1D",
+                          "STR_JOIN",
                           [
-                            "GET_TABLE_TABLE_VAR_1D",
+                            "STR_JOIN",
                             [
-                              "GET_TABLE_TABLE_VAR_1D",
+                              "GET_STRING_TABLE_VAR_1D",
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
-                                {
-                                  "var": "副本刷新聊天1",
-                                  "type": "TABLE"
-                                },
-                                "result_data"
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "副本刷新聊天1",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "sender"
                               ],
-                              "message"
+                              "name"
                             ],
-                            "sender"
+                            [
+                              "STR_JOIN",
+                              "：",
+                              [
+                                "GET_STRING_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "副本刷新聊天1",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "message"
+                              ]
+                            ]
                           ],
-                          "name"
+                          [
+                            "STR_JOIN",
+                            "\n",
+                            [
+                              "STR_JOIN",
+                              [
+                                "GET_STRING_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    [
+                                      "GET_TABLE_TABLE_VAR_1D",
+                                      {
+                                        "var": "副本刷新聊天2",
+                                        "type": "TABLE"
+                                      },
+                                      "result_data"
+                                    ],
+                                    "message"
+                                  ],
+                                  "sender"
+                                ],
+                                "name"
+                              ],
+                              [
+                                "STR_JOIN",
+                                "：",
+                                [
+                                  "GET_STRING_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    [
+                                      "GET_TABLE_TABLE_VAR_1D",
+                                      {
+                                        "var": "副本刷新聊天2",
+                                        "type": "TABLE"
+                                      },
+                                      "result_data"
+                                    ],
+                                    "message"
+                                  ],
+                                  "message"
+                                ]
+                              ]
+                            ]
+                          ]
                         ],
                         [
                           "STR_JOIN",
-                          "：",
+                          "\n",
                           [
-                            "GET_STRING_TABLE_VAR_1D",
+                            "STR_JOIN",
                             [
-                              "GET_TABLE_TABLE_VAR_1D",
+                              "GET_STRING_TABLE_VAR_1D",
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
-                                {
-                                  "var": "副本刷新聊天1",
-                                  "type": "TABLE"
-                                },
-                                "result_data"
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "副本刷新聊天3",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "sender"
                               ],
-                              "message"
+                              "name"
                             ],
-                            "message"
+                            [
+                              "STR_JOIN",
+                              "：",
+                              [
+                                "GET_STRING_TABLE_VAR_1D",
+                                [
+                                  "GET_TABLE_TABLE_VAR_1D",
+                                  [
+                                    "GET_TABLE_TABLE_VAR_1D",
+                                    {
+                                      "var": "副本刷新聊天3",
+                                      "type": "TABLE"
+                                    },
+                                    "result_data"
+                                  ],
+                                  "message"
+                                ],
+                                "message"
+                              ]
+                            ]
                           ]
                         ]
                       ],
@@ -417,7 +584,7 @@
                                 [
                                   "GET_TABLE_TABLE_VAR_1D",
                                   {
-                                    "var": "副本刷新聊天2",
+                                    "var": "副本刷新聊天4",
                                     "type": "TABLE"
                                   },
                                   "result_data"
@@ -438,7 +605,7 @@
                                 [
                                   "GET_TABLE_TABLE_VAR_1D",
                                   {
-                                    "var": "副本刷新聊天2",
+                                    "var": "副本刷新聊天4",
                                     "type": "TABLE"
                                   },
                                   "result_data"
@@ -465,7 +632,7 @@
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
                                 {
-                                  "var": "副本刷新聊天3",
+                                  "var": "副本刷新聊天5",
                                   "type": "TABLE"
                                 },
                                 "result_data"
@@ -486,7 +653,7 @@
                               [
                                 "GET_TABLE_TABLE_VAR_1D",
                                 {
-                                  "var": "副本刷新聊天3",
+                                  "var": "副本刷新聊天5",
                                   "type": "TABLE"
                                 },
                                 "result_data"
@@ -496,100 +663,6 @@
                             "message"
                           ]
                         ]
-                      ]
-                    ]
-                  ],
-                  [
-                    "STR_JOIN",
-                    "\n",
-                    [
-                      "STR_JOIN",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            [
-                              "GET_TABLE_TABLE_VAR_1D",
-                              {
-                                "var": "副本刷新聊天4",
-                                "type": "TABLE"
-                              },
-                              "result_data"
-                            ],
-                            "message"
-                          ],
-                          "sender"
-                        ],
-                        "name"
-                      ],
-                      [
-                        "STR_JOIN",
-                        "：",
-                        [
-                          "GET_STRING_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            [
-                              "GET_TABLE_TABLE_VAR_1D",
-                              {
-                                "var": "副本刷新聊天4",
-                                "type": "TABLE"
-                              },
-                              "result_data"
-                            ],
-                            "message"
-                          ],
-                          "message"
-                        ]
-                      ]
-                    ]
-                  ]
-                ],
-                [
-                  "STR_JOIN",
-                  "\n",
-                  [
-                    "STR_JOIN",
-                    [
-                      "GET_STRING_TABLE_VAR_1D",
-                      [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "副本刷新聊天5",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "message"
-                        ],
-                        "sender"
-                      ],
-                      "name"
-                    ],
-                    [
-                      "STR_JOIN",
-                      "：",
-                      [
-                        "GET_STRING_TABLE_VAR_1D",
-                        [
-                          "GET_TABLE_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "副本刷新聊天5",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "message"
-                        ],
-                        "message"
                       ]
                     ]
                   ]
