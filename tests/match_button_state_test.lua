@@ -115,6 +115,7 @@ local function collect_buttons_by_text(ui, text, result)
 end
 
 local function run_case(path)
+    local expected_level_name = string.find(path, 'MapName001', 1, true) and 'MapName001' or 'EntryMap'
     local join_callback
     local refresh_callback
     local complete_callback
@@ -548,7 +549,12 @@ local function run_case(path)
     local private_button = assert(
         _G.__BOB_TEST_UI_RUNTIME.private_button,
         path .. ' must create one private dungeon button')
+    local same_level_private_button = assert(
+        _G.__BOB_TEST_UI_RUNTIME.same_level_private_button,
+        path .. ' must create one same-level private dungeon button')
     assert_equal(#collect_buttons_by_text(root, '局内私人副本'), 1, path .. ' must create exactly one private dungeon button')
+    assert_equal(#collect_buttons_by_text(root, '同关卡不同模式'), 1,
+        path .. ' must create exactly one same-level mode button')
     assert_equal(#collect_buttons_by_text(root, '同房分流'), 0, path .. ' must not create old same-room split button')
     assert_equal(#collect_buttons_by_text(root, '跨房合流'), 0, path .. ' must not create old cross-room merge button')
     private_button:click()
@@ -579,6 +585,28 @@ local function run_case(path)
         'request_id=',
         'route=solo_engine',
     }, path .. ' logs solo private dungeon submission')
+
+    same_level_private_button:click()
+    assert_equal(private_dungeon_count, 2, path .. ' same-level mode button sends one request')
+    assert_equal(
+        private_dungeon_params.game_map_id,
+        'test-game-map-id',
+        path .. ' same-level request keeps current map version id')
+    assert_equal(
+        private_dungeon_params.level_id,
+        '172371058548994502264384971909138463342',
+        path .. ' same-level platform target is EntryMap')
+    assert_equal(
+        private_dungeon_params.engine_level_id,
+        '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e',
+        path .. ' same-level engine target is EntryMap')
+    assert_equal(private_dungeon_params.game_mode, 1003, path .. ' same-level target mode')
+    assert_equal(private_dungeon_params.team_game_mode, 1003, path .. ' same-level team target mode')
+    assert_equal(private_dungeon_params.max_player, 2, path .. ' same-level player limit')
+    assert_log_contains(log_entries, 'info', {
+        '[LobbyTestUI] 操作发起',
+        'action=同关卡不同模式',
+    }, path .. ' logs same-level mode action start')
 
     private_dungeon_result = {
         accepted = false,
@@ -651,6 +679,10 @@ local function run_case(path)
     assert_equal(private_button.enabled, true, path .. ' captain may start a private dungeon with one member')
     assert_equal(battle_panel.visible, true, path .. ' battle chat visible in dungeon')
     assert_equal(game_hud.visible, false, path .. ' default HUD hidden in dungeon')
+    assert(
+        string.find(_G.__BOB_TEST_UI_RUNTIME.status_text.text,
+            '关卡：' .. expected_level_name, 1, true),
+        path .. ' battle status must display the current level name')
     assert_equal(battle_token_text.text, dungeon_token, path .. ' battle token text')
     battle_copy_button:click()
     assert_equal(copied_role, player.handle, path .. ' clipboard role handle')
@@ -764,6 +796,8 @@ local function run_case(path)
     assert_equal(button.status_images['禁用'], 134217736, path .. ' uses Scheme B disabled button texture')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.private_button.status_images['常态'], 134217737,
         path .. ' uses Scheme B primary button texture')
+    assert_equal(same_level_private_button.status_images['常态'], 134217733,
+        path .. ' uses Scheme B normal texture for same-level test action')
     assert_equal(_G.__BOB_TEST_UI_RUNTIME.exit_button.status_images['常态'], 134217741,
         path .. ' uses Scheme B danger button texture')
     assert_equal(button.text, '开始匹配', path .. ' solo idle label')
@@ -788,6 +822,8 @@ local function run_case(path)
     assert_equal(button.text, '开始匹配', path .. ' member idle label')
     assert_equal(button.enabled, false, path .. ' member cannot start matching')
     assert_equal(private_button.enabled, false, path .. ' member cannot start a team private dungeon')
+    assert_equal(same_level_private_button.enabled, false,
+        path .. ' member cannot start a same-level team private dungeon')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 按钮不可用',
         'action=局内私人副本',
@@ -800,6 +836,8 @@ local function run_case(path)
     refresh_callback()
     assert_equal(button.enabled, true, path .. ' captain can start matching')
     assert_equal(private_button.enabled, true, path .. ' captain can start a team private dungeon')
+    assert_equal(same_level_private_button.enabled, true,
+        path .. ' captain can start a same-level team private dungeon')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 按钮可用',
         'action=局内私人副本',
@@ -807,7 +845,7 @@ local function run_case(path)
         'reason=条件已满足',
     }, path .. ' logs team private dungeon availability')
     private_button:click()
-    assert_equal(private_dungeon_count, 4, path .. ' captain private dungeon sends a request')
+    assert_equal(private_dungeon_count, 5, path .. ' captain private dungeon sends a request')
     assert_log_contains(log_entries, 'info', {
         '[LobbyTestUI] 请求已受理',
         'action=局内私人副本',
