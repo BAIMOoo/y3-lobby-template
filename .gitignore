@@ -13,5 +13,6 @@
 /lock/*.lock
 /maps/*/script/.log/
 /output/imagegen/
+/ui_tree/MapName001/
 **/__pycache__/
 *.py[cod]
