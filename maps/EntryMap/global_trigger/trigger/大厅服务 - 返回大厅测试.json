@@ -1,291 +1,291 @@
 {
-    "trigger_name": "大厅服务 - 返回大厅测试",
-    "trigger_id": 1931000006,
-    "p_trigger_id": null,
-    "group_id": 0,
-    "enabled": true,
-    "valid": true,
-    "call_enabled": true,
-    "event": [
-        {
-            "event_type": "KEYBOARD_KEY_DOWN_EVENT",
-            "element_id": 1931000006000001,
-            "enable": true,
-            "args_list": [
-                {
-                    "arg_type": 200220,
-                    "sub_type": 1,
-                    "args_list": [
-                        38
-                    ]
-                }
-            ]
-        }
-    ],
-    "condition": [],
     "action": [
         {
-            "action_type": "SET_VARIABLE",
-            "element_id": 1931000006000002,
-            "enable": true,
-            "bp": false,
+            "action_type": "SET_VARIABLE", 
             "args_list": [
                 {
-                    "arg_type": 100030,
-                    "sub_type": 1,
+                    "arg_type": 100030, 
                     "args_list": [
                         {
-                            "__tuple__": true,
+                            "__tuple__": true, 
                             "items": [
-                                "TABLE",
-                                "返回大厅参数",
+                                "TABLE", 
+                                "返回大厅参数", 
                                 "local"
                             ]
                         }
-                    ]
-                },
+                    ], 
+                    "sub_type": 1
+                }, 
                 {
-                    "arg_type": 100011,
-                    "sub_type": "GET_NEW_TABLE",
-                    "args_list": []
+                    "arg_type": 100011, 
+                    "args_list": [], 
+                    "sub_type": "GET_NEW_TABLE"
                 }
-            ]
-        },
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000002, 
+            "enable": true
+        }, 
         {
-            "action_type": "SET_TABLE_VALUE_1D",
-            "element_id": 1931000006000003,
-            "enable": true,
-            "bp": false,
+            "action_type": "SET_TABLE_VALUE_1D", 
             "args_list": [
                 {
-                    "arg_type": 100011,
-                    "sub_type": "VARIABLE",
+                    "arg_type": 100011, 
                     "args_list": [
                         {
-                            "__tuple__": true,
+                            "__tuple__": true, 
                             "items": [
-                                "TABLE",
-                                "返回大厅参数",
+                                "TABLE", 
+                                "返回大厅参数", 
                                 "local"
                             ]
                         }
-                    ]
-                },
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
                 {
-                    "arg_type": 100003,
-                    "sub_type": 1,
+                    "arg_type": 100003, 
                     "args_list": [
                         "level_id"
-                    ]
-                },
+                    ], 
+                    "sub_type": 1
+                }, 
                 {
-                    "arg_type": 100003,
-                    "sub_type": 1,
+                    "arg_type": 100003, 
                     "args_list": [
                         "81ad7554-7e6b-11f1-8f5c-c78cd393ba6e"
-                    ]
+                    ], 
+                    "sub_type": 1
                 }
-            ]
-        },
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000003, 
+            "enable": true
+        }, 
         {
-            "action_type": "SET_TABLE_VALUE_1D",
-            "element_id": 1931000006000004,
-            "enable": true,
-            "bp": false,
+            "action_type": "SET_TABLE_VALUE_1D", 
             "args_list": [
                 {
-                    "arg_type": 100011,
-                    "sub_type": "VARIABLE",
+                    "arg_type": 100011, 
                     "args_list": [
                         {
-                            "__tuple__": true,
+                            "__tuple__": true, 
                             "items": [
-                                "TABLE",
-                                "返回大厅参数",
+                                "TABLE", 
+                                "返回大厅参数", 
                                 "local"
                             ]
                         }
-                    ]
-                },
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
                 {
-                    "arg_type": 100003,
-                    "sub_type": 1,
+                    "arg_type": 100003, 
                     "args_list": [
                         "game_mode"
-                    ]
-                },
+                    ], 
+                    "sub_type": 1
+                }, 
                 {
-                    "arg_type": 100002,
-                    "sub_type": 1,
+                    "arg_type": 100002, 
                     "args_list": [
                         1001
-                    ]
+                    ], 
+                    "sub_type": 1
                 }
-            ]
-        },
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000004, 
+            "enable": true
+        }, 
         {
-            "action_type": "SET_TABLE_VALUE_1D",
-            "element_id": 1931000006000005,
-            "enable": true,
-            "bp": false,
+            "action_type": "SET_TABLE_VALUE_1D", 
             "args_list": [
                 {
-                    "arg_type": 100011,
-                    "sub_type": "VARIABLE",
+                    "arg_type": 100011, 
                     "args_list": [
                         {
-                            "__tuple__": true,
+                            "__tuple__": true, 
                             "items": [
-                                "TABLE",
-                                "返回大厅参数",
+                                "TABLE", 
+                                "返回大厅参数", 
                                 "local"
                             ]
                         }
-                    ]
-                },
+                    ], 
+                    "sub_type": "VARIABLE"
+                }, 
                 {
-                    "arg_type": 100003,
-                    "sub_type": 1,
+                    "arg_type": 100003, 
                     "args_list": [
                         "max_player"
-                    ]
-                },
+                    ], 
+                    "sub_type": 1
+                }, 
                 {
-                    "arg_type": 100002,
-                    "sub_type": 1,
+                    "arg_type": 100002, 
                     "args_list": [
                         1
-                    ]
+                    ], 
+                    "sub_type": 1
                 }
-            ]
-        },
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000005, 
+            "enable": true
+        }, 
         {
-            "action_type": "PRINT_MESSAGE_ACTION_TO_DIALOG",
-            "element_id": 1931000006000006,
-            "enable": true,
-            "bp": false,
+            "action_type": "PRINT_MESSAGE_ACTION_TO_DIALOG", 
             "args_list": [
                 {
-                    "arg_type": 100175,
-                    "sub_type": 1,
+                    "arg_type": 100175, 
                     "args_list": [
                         3
-                    ]
-                },
+                    ], 
+                    "sub_type": 1
+                }, 
                 {
-                    "arg_type": 100003,
-                    "sub_type": 1,
+                    "arg_type": 100003, 
                     "args_list": [
                         "调用大厅服务 - 返回大厅；立即结果如下"
-                    ]
+                    ], 
+                    "sub_type": 1
                 }
-            ]
-        },
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000006, 
+            "enable": true
+        }, 
         {
-            "action_type": "CALL_TRIGGER_FUNC",
+            "action_type": "CALL_TRIGGER_FUNC", 
             "args_list": [
                 {
-                    "arg_type": 100177,
-                    "sub_type": "1fec80e8afe657b88e0fdd00a336fe05",
+                    "arg_type": 100177, 
                     "args_list": [
                         {
-                            "arg_type": 100011,
-                            "sub_type": "VARIABLE",
+                            "arg_type": 100011, 
                             "args_list": [
                                 {
-                                    "__tuple__": true,
+                                    "__tuple__": true, 
                                     "items": [
-                                        "TABLE",
-                                        "返回大厅参数",
+                                        "TABLE", 
+                                        "返回大厅参数", 
                                         "local"
                                     ]
                                 }
-                            ]
+                            ], 
+                            "sub_type": "VARIABLE"
                         }
-                    ],
-                    "op_arg": [],
-                    "op_arg_enable": []
-                },
+                    ], 
+                    "op_arg": [], 
+                    "op_arg_enable": [], 
+                    "sub_type": "1fec80e8afe657b88e0fdd00a336fe05"
+                }, 
                 {
-                    "arg_type": 100011,
-                    "sub_type": "VARIABLE",
+                    "arg_type": 100011, 
                     "args_list": [
                         {
-                            "__tuple__": true,
+                            "__tuple__": true, 
                             "items": [
-                                "TABLE",
-                                "返回大厅立即结果",
+                                "TABLE", 
+                                "返回大厅立即结果", 
                                 "local"
                             ]
                         }
-                    ]
+                    ], 
+                    "sub_type": "VARIABLE"
                 }
-            ],
-            "bp": false,
+            ], 
+            "bp": false, 
             "call_rt_arg_idxes": [
                 0
-            ],
-            "element_id": 1931000006000007,
+            ], 
+            "element_id": 1931000006000007, 
             "enable": true
-        },
+        }, 
         {
-            "action_type": "DUMP_TABLE",
-            "element_id": 1931000006000008,
-            "enable": true,
-            "bp": false,
+            "action_type": "DUMP_TABLE", 
             "args_list": [
                 {
-                    "arg_type": 100011,
-                    "sub_type": "VARIABLE",
+                    "arg_type": 100011, 
                     "args_list": [
                         {
-                            "__tuple__": true,
+                            "__tuple__": true, 
                             "items": [
-                                "TABLE",
-                                "返回大厅立即结果",
+                                "TABLE", 
+                                "返回大厅立即结果", 
                                 "local"
                             ]
                         }
-                    ]
+                    ], 
+                    "sub_type": "VARIABLE"
                 }
-            ]
-        },
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000008, 
+            "enable": true
+        }, 
         {
-            "action_type": "PRINT_MESSAGE_ACTION_TO_DIALOG",
-            "element_id": 1931000006000009,
-            "enable": true,
-            "bp": false,
+            "action_type": "PRINT_MESSAGE_ACTION_TO_DIALOG", 
             "args_list": [
                 {
-                    "arg_type": 100175,
-                    "sub_type": 1,
+                    "arg_type": 100175, 
                     "args_list": [
                         3
-                    ]
-                },
+                    ], 
+                    "sub_type": 1
+                }, 
                 {
-                    "arg_type": 100003,
-                    "sub_type": 1,
+                    "arg_type": 100003, 
                     "args_list": [
                         "返回大厅不产生完成事件；请检查 accepted 和 result_data.platform_requested，实际成功以关卡切换为准"
-                    ]
+                    ], 
+                    "sub_type": 1
                 }
-            ]
+            ], 
+            "bp": false, 
+            "element_id": 1931000006000009, 
+            "enable": true
         }
-    ],
+    ], 
+    "call_enabled": true, 
+    "condition": [], 
+    "enabled": true, 
+    "event": [
+        {
+            "args_list": [
+                {
+                    "arg_type": 200220, 
+                    "args_list": [
+                        38
+                    ], 
+                    "sub_type": 1
+                }
+            ], 
+            "element_id": 1931000006000001, 
+            "enable": true, 
+            "event_type": "KEYBOARD_KEY_DOWN_EVENT"
+        }
+    ], 
+    "group_id": 0, 
+    "p_trigger_id": null, 
+    "trigger_id": 1931000006, 
+    "trigger_name": "大厅服务 - 返回大厅测试", 
+    "valid": true, 
     "var_data": [
         {
             "TABLE": {
-                "返回大厅参数": null,
+                "返回大厅参数": null, 
                 "返回大厅立即结果": null
             }
-        },
+        }, 
         {
-            "返回大厅参数": 0,
+            "返回大厅参数": 0, 
             "返回大厅立即结果": 0
-        },
+        }, 
         [
-            "返回大厅参数",
+            "返回大厅参数", 
             "返回大厅立即结果"
         ]
     ]

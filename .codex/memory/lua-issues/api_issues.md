@@ -417,3 +417,28 @@ request_create_private_dungeon(local_player, lobby_level_id, lobby_mode, max_pla
 **预防建议**：`return_lobby` 只提交 `request_create_private_dungeon`，提交成功或失败后恢复原连接状态；`exit_game` 才调用 `cleanup_before_exit`。合同测试必须断言返回大厅不会增加清理调用次数，并保持当前客户端与队伍缓存。
 
 *补充时间: 2026-08-11*
+
+---
+
+## 15. 可调用代理不能用 `type(value) == 'function'` 判断
+
+### 错误用法
+```lua
+if type(GameAPI.get_dungeon_info) == 'function' then
+    local info = GameAPI.get_dungeon_info()
+end
+```
+
+### 正确用法
+```lua
+local getter = GameAPI.get_dungeon_info
+if getter ~= nil then
+    local ok, info = pcall(getter)
+end
+```
+
+**现象**：运行时 API 或工具明明可以调用，诊断日志却持续显示 `unavailable`。例如 `y3.inspect` 是带 `__call` 元方法的 table，而部分 `GameAPI` 成员也可能是可调用代理。
+
+**预防建议**：对已验证存在的可调用代理，用非空判断加 `pcall` 探测；合同测试同时覆盖普通函数和带 `__call` 的 table。
+
+*补充时间: 2026-08-24*
