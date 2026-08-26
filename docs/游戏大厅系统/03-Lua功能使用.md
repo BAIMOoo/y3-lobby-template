@@ -152,7 +152,7 @@ end)
 | 局内私人副本 | `y3.lobby.private_dungeon(params)` | 框架按当前队伍人数自动选择单人引擎或多人 BOB 路径；通用调用应同时提供两条路径所需的目标参数 |
 | 加入口令 | `y3.lobby.join_by_token(token)` | 使用口令进入目标关卡 |
 | 获取口令 | `y3.lobby.get_token()` | 获取当前目标关卡口令 |
-| 返回大厅 | `y3.lobby.return_lobby(params)` | `level_id`、`game_mode`、`max_player` 必填；无需预先连接；不清理队伍、匹配或 BOB |
+| 返回大厅 | `y3.lobby.return_lobby(params)` | `level_id` 必须是大厅关卡引擎 UUID，另需 `game_mode`、`max_player`；无需预先连接；固定走引擎请求，不清理队伍、匹配或 BOB |
 | 退出游戏 | `y3.lobby.exit_game()` | 无需预先连接；已有连接时先清理 |
 | 获取状态快照 | `y3.lobby.request_state()` / `y3.lobby.get_state()` | 同步获取状态 |
 | 获取队伍信息 | `y3.lobby.get_team_info(aid)` | 异步查询指定 AID 的队伍信息；`aid` 可选，省略时查询自己 |
@@ -265,15 +265,15 @@ y3.lobby.refresh_player_info()
 
 ```lua
 y3.lobby.return_lobby({
-    level_id = 'LOBBY_LEVEL_ID',
-    game_mode = 'LOBBY_MODE_ID',
-    max_player = 8,
+    level_id = 'LOBBY_ENGINE_LEVEL_UUID',
+    game_mode = 1001,
+    max_player = 1,
 })
 
 y3.lobby.exit_game()
 ```
 
-`return_lobby(params)` 和 `exit_game()` 都可以在未连接时直接调用。`return_lobby(params)` 会立即提交引擎换图请求，不执行取消匹配、离队、删除玩家信息或销毁 BOB；当前地图未成功切换时，原连接和队伍缓存仍可使用，并可再次提交返回请求。实际加载大厅地图后需要重新连接并查询远端队伍状态。
+`return_lobby(params)` 和 `exit_game()` 都可以在未连接时直接调用。返回大厅虽然与局内私人副本的单人路径使用同一个引擎请求，但不会按队伍人数分流，也不读取状态快照：`level_id` 应直接填写目标大厅关卡的引擎 UUID，不要填写 38 位平台关卡配置 ID 或当前地图的 `game_map_id`。`return_lobby(params)` 会立即提交引擎换图请求，不执行取消匹配、离队、删除玩家信息或销毁 BOB；当前地图未成功切换时，原连接和队伍缓存仍可使用，并可再次提交返回请求。实际加载大厅地图后需要重新连接并查询远端队伍状态。
 
 `exit_game()` 才会进入异步终态清理，依次尽力取消匹配、离队、删除玩家信息并释放客户端。退出正在处理时：
 

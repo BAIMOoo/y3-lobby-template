@@ -102,7 +102,7 @@ ECA 触发器中按下面方式调用：
 | `大厅服务 - 局内私人副本` | `副本参数: table` | 框架按当前队伍人数自动选择单人引擎或多人 BOB 路径；通用调用应同时提供两条路径所需的目标参数 |
 | `大厅服务 - 加入口令` | `口令: string` | 使用口令进入目标关卡 |
 | `大厅服务 - 获取口令` | 无 | 同步返回当前目标关卡口令 |
-| `大厅服务 - 返回大厅` | `大厅参数: table` | 必须包含 `level_id`、`game_mode`、`max_player`；无需预先连接；不清理队伍、匹配或 BOB |
+| `大厅服务 - 返回大厅` | `大厅参数: table` | `level_id` 必须是大厅关卡引擎 UUID，另需 `game_mode`、`max_player`；固定走引擎请求，不读取状态快照，不等待完成事件 |
 | `大厅服务 - 退出游戏` | 无 | 无需预先连接；已有连接时先清理 |
 | `大厅服务 - 获取状态快照` | 无 | 同步返回当前状态 |
 | `大厅服务 - 获取队伍信息` | `目标AID: integer`，可不填 | 异步查询指定 AID 的队伍信息；省略时查询自己 |
@@ -117,11 +117,13 @@ ECA 触发器中按下面方式调用：
 | --- | --- | --- | --- |
 | `匹配参数` | `level_id`、`game_mode` | `score` | `level_id` 和 `game_mode` 应与 `match.json` 对应 |
 | `副本参数` | `level_id`、`game_mode`、`max_player` | `engine_level_id`、`game_map_id`、`team_game_mode`、`custom_param` | 框架自动分流；若同一 ECA 调用需兼容单人和多人，实际应同时提供前三个路由字段。`level_id` 使用 `dungeon.json` 的 38 位配置键；`engine_level_id` 使用目标关卡 UUID；`game_map_id` 使用当前地图版本 UUID；`team_game_mode` 使用多人 BOB 模式；调用者不传 `players` |
-| `大厅参数` | `level_id`、`game_mode`、`max_player` | `custom_param` | 用于返回大厅 |
+| `大厅参数` | `level_id`、`game_mode`、`max_player` | `custom_param` | 用于返回大厅；`level_id` 是目标大厅关卡的引擎 UUID，不是 38 位平台关卡配置 ID，也不是当前地图的 `game_map_id` |
 
 `version` 字段由框架内部写入固定字符串 `"2.0"`，ECA 作者不需要传。
 
 局内私人副本不要求 ECA 作者判断人数或提供 `players`。ECA 只调用一次“大厅服务 - 局内私人副本”：无队伍或一人队伍时框架走单人引擎请求；多人队伍时仅队长可发起，框架按 `team_info.members` 全量传递成员并走多人 BOB 请求，不依据 `in_game` 或展示状态过滤。参数表应同时准备两条路径的数据：单人路径使用 `engine_level_id`、`game_mode`、`max_player`，多人路径使用 `game_map_id`、`level_id`、`team_game_mode`。框架只读取实际路径需要的字段。
+
+返回大厅只走单人引擎请求，不按队伍人数分流，也不从状态快照读取 UUID。ECA 作者应直接在 `大厅参数.level_id` 中填写目标大厅关卡的引擎 UUID。该接口是请求提交型接口，立即结果的 `accepted = true` 且 `result_data.platform_requested = true` 只表示引擎请求已调用；它不会产生对应的“大厅服务请求完成”事件，实际成功以大厅关卡加载为准。
 
 无队伍的局内私人副本、加入口令和获取口令不要求预先连接 BOB。组队、匹配、聊天、有队伍的局内私人副本和高级查询接口仍需先建立连接。
 

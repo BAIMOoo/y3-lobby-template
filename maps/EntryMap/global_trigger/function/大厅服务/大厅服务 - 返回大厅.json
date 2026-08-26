@@ -91,7 +91,7 @@
     "event": [], 
     "func_category": "t_function", 
     "func_comment": "", 
-    "func_des": "无需预先连接，按参数表{大厅参数}返回大厅；必须包含 level_id、game_mode、max_player", 
+    "func_des": "无需预先连接，按参数表{大厅参数}返回大厅；level_id 必须是大厅关卡引擎 UUID，另需 game_mode、max_player，custom_param 可选；固定走引擎请求，不读取状态快照，不等待完成事件", 
     "func_id": "1fec80e8afe657b88e0fdd00a336fe05", 
     "func_name": "大厅服务 - 返回大厅", 
     "func_param_list": [

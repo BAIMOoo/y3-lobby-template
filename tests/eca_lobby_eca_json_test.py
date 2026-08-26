@@ -131,6 +131,29 @@ class LobbyEcaJsonTests(unittest.TestCase):
                     payload = load_json(path)
                     self.assertEqual(path.stem, payload["func_name"])
 
+    def test_return_lobby_descriptions_define_engine_uuid_and_request_only_contract(self):
+        descriptions = [
+            next(
+                item["description"]
+                for item in self.functions
+                if item["name"] == "大厅服务 - 返回大厅"
+            )
+        ]
+        for map_name in MAP_NAMES:
+            path = next(
+                path
+                for path in lobby_function_files(map_name)
+                if path.name == "大厅服务 - 返回大厅.json"
+            )
+            descriptions.append(load_json(path)["func_des"])
+
+        for description in descriptions:
+            with self.subTest(description=description):
+                self.assertIn("level_id", description)
+                self.assertIn("引擎 UUID", description)
+                self.assertIn("不读取状态快照", description)
+                self.assertIn("不等待完成事件", description)
+
     def test_generated_connect_function_requires_game_play_id_argument(self):
         for map_name in MAP_NAMES:
             path = next(
@@ -342,7 +365,6 @@ class LobbyEcaJsonTests(unittest.TestCase):
             "大厅服务 - 创建队伍",
             "大厅服务 - 开始匹配",
             "大厅服务 - 局内私人副本",
-            "大厅服务 - 返回大厅",
             "大厅服务 - 退出游戏",
         ]
         serialized_triggers = [
@@ -361,6 +383,51 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertIn("大厅服务请求完成", example)
                 self.assertIn("回调数据", example)
                 self.assertIn("request_id", example)
+
+    def test_return_lobby_example_is_request_only(self):
+        trigger = next(
+            trigger for trigger in self.trigger_dsl["triggers"]
+            if trigger["name"] == "大厅服务 - 返回大厅测试"
+        )
+        serialized = json.dumps(trigger, ensure_ascii=False)
+        self.assertNotIn("大厅服务请求完成", serialized)
+        self.assertNotIn("request_id", serialized)
+        self.assertNotIn("sub_triggers", trigger)
+        self.assertNotIn("your_lobby_level_id", serialized)
+        self.assertIn("your_lobby_engine_level_uuid", serialized)
+        self.assertIn("accepted", serialized)
+        self.assertIn("platform_requested", serialized)
+        self.assertIn("实际成功以关卡切换为准", serialized)
+
+    def test_entry_map_return_lobby_trigger_uses_real_engine_target_and_is_request_only(self):
+        trigger = load_json(
+            ROOT
+            / "maps"
+            / "EntryMap"
+            / "global_trigger"
+            / "trigger"
+            / "大厅服务 - 返回大厅测试.json"
+        )
+        fields = {}
+        for action in trigger["action"]:
+            if action["action_type"] != "SET_TABLE_VALUE_1D":
+                continue
+            key_arg, value_arg = action["args_list"][1:3]
+            fields[key_arg["args_list"][0]] = value_arg["args_list"][0]
+
+        self.assertEqual(
+            {
+                "level_id": "81ad7554-7e6b-11f1-8f5c-c78cd393ba6e",
+                "game_mode": 1001,
+                "max_player": 1,
+            },
+            fields,
+        )
+        serialized = json.dumps(trigger, ensure_ascii=False)
+        self.assertNotIn("request_id", serialized)
+        self.assertNotIn("大厅服务请求完成", serialized)
+        self.assertFalse(trigger.get("sub_trigger"))
+        self.assertIn("platform_requested", serialized)
 
     def test_trigger_examples_are_not_documenting_immediate_success_for_async_calls(self):
         serialized = json.dumps(self.trigger_dsl, ensure_ascii=False)

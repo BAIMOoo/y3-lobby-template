@@ -127,7 +127,7 @@
         },
         {
             "name": "大厅服务 - 返回大厅",
-            "description": "无需预先连接，按参数表{大厅参数}返回大厅；必须包含 level_id、game_mode、max_player",
+            "description": "无需预先连接，按参数表{大厅参数}返回大厅；level_id 必须是大厅关卡引擎 UUID，另需 game_mode、max_player，custom_param 可选；固定走引擎请求，不读取状态快照，不等待完成事件",
             "params": [{"name": "大厅参数", "type": "TABLE", "required": true}],
             "returns": [{"name": "result", "type": "TABLE", "var": "t"}],
             "lua_bind": true
