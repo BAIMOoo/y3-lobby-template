@@ -4,6 +4,11 @@
   "type": 2,
   "children": [
     {
+      "name": "image_backdrop",
+      "uid": "46e92674-cb1c-5d0a-91a6-22d082214f31",
+      "type": 4
+    },
+    {
       "name": "exit_confirm_overlay",
       "uid": "d50e4469-d042-4a50-bae7-351a14b7383a",
       "type": 7,
@@ -70,6 +75,11 @@
         {
           "name": "chat_panel_bg",
           "uid": "131198a4-8d92-4b14-95cf-b32ce4616a03",
+          "type": 4
+        },
+        {
+          "name": "image_input_chat_bg",
+          "uid": "bb949a51-f123-5dc7-8835-fcd0dcd95434",
           "type": 4
         },
         {
@@ -228,6 +238,11 @@
           ]
         },
         {
+          "name": "image_input_team_id_bg",
+          "uid": "b7cc036c-3471-5148-a57f-fcd308ae9024",
+          "type": 4
+        },
+        {
           "name": "input_team_id",
           "uid": "f85826fd-5b01-4075-b60e-db27f3b066da",
           "type": 15
@@ -287,6 +302,11 @@
         {
           "name": "action_panel_bg",
           "uid": "6511f84b-e284-459f-b000-343a4e6ec35d",
+          "type": 4
+        },
+        {
+          "name": "image_input_token_bg",
+          "uid": "4b149f6c-d5ec-591e-a5f5-1f4fd38ff604",
           "type": 4
         },
         {

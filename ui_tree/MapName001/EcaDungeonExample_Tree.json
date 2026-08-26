@@ -4,6 +4,11 @@
   "type": 2,
   "children": [
     {
+      "name": "image_backdrop",
+      "uid": "3e2de968-8d4f-59a2-9b88-c2aa7f0869e6",
+      "type": 4
+    },
+    {
       "name": "exit_confirm_overlay",
       "uid": "23fd2578-c9fd-41e8-ba38-f933d77ca3a0",
       "type": 7,
@@ -23,6 +28,11 @@
         {
           "name": "dungeon_chat_panel_bg",
           "uid": "d894476a-ee02-4a8b-8036-7a852843eb39",
+          "type": 4
+        },
+        {
+          "name": "image_input_chat_bg",
+          "uid": "2ea342fa-a0c0-5f89-8b39-b1d8be863288",
           "type": 4
         },
         {

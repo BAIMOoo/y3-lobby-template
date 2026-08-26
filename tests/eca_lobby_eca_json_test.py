@@ -645,6 +645,93 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertIn("加入口令请求 | token=<redacted>", source)
                 self.assertNotIn("加入口令请求 | token=' .. token", source)
 
+    def test_eca_ui_uses_the_same_image_assets_as_lua_test_ui(self):
+        lua_source = (
+            ROOT / "maps" / "EntryMap" / "script" / "test_ui.lua"
+        ).read_text(encoding="utf-8")
+        for resource_id in range(134217729, 134217745):
+            self.assertIn(str(resource_id), lua_source)
+        self.assertIn("local BACKDROP_IMAGE = 134230328", lua_source)
+
+        ui_docs = [
+            load_json(ROOT / "maps" / "EntryMap" / "ui" / "EcaLobbyExample.json"),
+            load_json(
+                ROOT / "maps" / "MapName001" / "ui" / "EcaDungeonExample.json"
+            ),
+        ]
+        buttons = [
+            node
+            for doc in ui_docs
+            for node in walk_json(doc)
+            if isinstance(node, dict) and node.get("type") == 1
+        ]
+        images = {
+            node["name"]: node
+            for doc in ui_docs
+            for node in walk_json(doc)
+            if isinstance(node, dict) and node.get("type") == 4
+        }
+
+        expected_button_assets = {
+            "normal": [134217733, 134217734, 134217735, 134217736],
+            "primary": [134217737, 134217738, 134217739, 134217740],
+            "danger": [134217741, 134217742, 134217743, 134217744],
+        }
+        for button in buttons:
+            name = button["name"]
+            variant = "normal"
+            if name == "button_private_dungeon":
+                variant = "primary"
+            elif name in {"button_exit", "button_dismiss_team"} or name.startswith(
+                "button_kick_"
+            ):
+                variant = "danger"
+            actual = [
+                button["normal_picture"],
+                button["suspend_picture"],
+                button["press_picture"],
+                button["disabled_picture"],
+            ]
+            with self.subTest(button=name):
+                self.assertEqual(expected_button_assets[variant], actual)
+                for status in ("normal", "suspend", "press", "disabled"):
+                    self.assertEqual(
+                        {"__tuple__": True, "items": [8.0, 8.0, 8.0, 8.0]},
+                        button[f"{status}_cap_insets"],
+                    )
+
+        self.assertEqual(134230328, images["image_backdrop"]["image"])
+        self.assertEqual(109589, images["exit_confirm_overlay_bg"]["image"])
+        for name in [
+            "chat_panel_bg",
+            "team_panel_bg",
+            "action_panel_bg",
+            "status_panel_bg",
+            "header_panel_bg",
+            "dungeon_chat_panel_bg",
+            "dungeon_status_panel_bg",
+        ]:
+            self.assertEqual(134217729, images[name]["image"])
+        for name in [
+            "member_row_1_bg",
+            "member_row_2_bg",
+            "member_row_3_bg",
+            "member_row_4_bg",
+            "status_mode_bg",
+            "status_connection_bg",
+            "status_team_bg",
+            "status_match_bg",
+            "status_launch_bg",
+        ]:
+            self.assertEqual(134217730, images[name]["image"])
+        self.assertEqual(134217731, images["developer_panel_bg"]["image"])
+        for name in [
+            "image_input_chat_bg",
+            "image_input_team_id_bg",
+            "image_input_token_bg",
+        ]:
+            self.assertEqual(134217732, images[name]["image"])
+
 
 if __name__ == "__main__":
     unittest.main()
