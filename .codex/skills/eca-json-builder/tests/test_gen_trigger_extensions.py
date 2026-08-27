@@ -211,6 +211,28 @@ class TriggerExtensionTests(unittest.TestCase):
         self.assertEqual(100001, boolean_arg["arg_type"])
         self.assertEqual("GET_BOOLEAN_TABLE_VAR_1D", boolean_arg["sub_type"])
 
+    def test_condition_only_function_cannot_fill_boolean_argument(self):
+        index = {
+            "AND": {"p": ["CONDITION_LIST"], "t": ["COND"], "o": []},
+            "BOOL_COMPARE": {
+                "p": ["BOOLEAN", "BOOLEAN_OPERATOR", "BOOLEAN"],
+                "t": ["COND", "BOOLEAN"],
+                "o": [],
+            },
+        }
+        condition = ["AND", [["BOOL_COMPARE", True, "==", True]]]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            "function 'AND' returns .*COND.* cannot fill BOOLEAN",
+        ):
+            gen_trigger.build_arg(
+                condition,
+                "BOOLEAN",
+                index,
+                gen_trigger.eid_factory(100),
+            )
+
     def test_function_call_table_literal_is_lowered_to_editor_table_actions(self):
         index = {
             "KEYBOARD_KEY_DOWN_EVENT": {"p": ["KEYBOARD_KEY"], "o": []},

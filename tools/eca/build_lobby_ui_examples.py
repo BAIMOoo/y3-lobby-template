@@ -122,6 +122,16 @@ def set_enabled(root: str, path: str, enabled: bool, local: bool = False):
     return ["SET_UI_COMP_ENABLE", player(local), ui(root, path, local), enabled]
 
 
+def set_enabled_when(root: str, path: str, condition, local: bool = False):
+    condition_list = [condition] if isinstance(condition[0], str) else condition
+    return [
+        "IF_THEN_ELSE",
+        condition_list,
+        [set_enabled(root, path, True, local)],
+        [set_enabled(root, path, False, local)],
+    ]
+
+
 def set_visible(root: str, path: str, visible, local: bool = False):
     return ["SET_UI_COMP_VISIBLE", player(local), visible, ui(root, path, local)]
 
@@ -373,13 +383,13 @@ def entry_refresh_actions():
         ["IF_THEN_ELSE", [bool_is(snapshot, "launching", True)], [set_text(ENTRY_ROOT, "status_panel.status_launch.label_launch_value", "启动中", True)], [set_text(ENTRY_ROOT, "status_panel.status_launch.label_launch_value", "未启动", True)]],
         set_text(ENTRY_ROOT, "team_panel.label_team_id", join_text("队伍编号：", as_text(integer_field(snapshot, "team_id"))), True),
         set_text(ENTRY_ROOT, "team_panel.label_member_count", join_text(as_text(integer_field(snapshot, "member_count")), " / ", as_text(integer_field(snapshot, "member_limit"))), True),
-        set_enabled(ENTRY_ROOT, "team_panel.button_leave_team", can_leave, True),
-        set_enabled(ENTRY_ROOT, "team_panel.button_dismiss_team", can_manage, True),
-        set_enabled(ENTRY_ROOT, "action_panel.button_private_dungeon", can_private, True),
-        set_enabled(ENTRY_ROOT, "action_panel.button_same_level_private_dungeon", can_private, True),
-        set_enabled(ENTRY_ROOT, "action_panel.button_match", can_match, True),
-        set_enabled(ENTRY_ROOT, "chat_panel.button_team_chat", all_of(connected, has_team), True),
-        set_enabled(ENTRY_ROOT, "chat_panel.button_world_chat", connected, True),
+        set_enabled_when(ENTRY_ROOT, "team_panel.button_leave_team", can_leave, True),
+        set_enabled_when(ENTRY_ROOT, "team_panel.button_dismiss_team", can_manage, True),
+        set_enabled_when(ENTRY_ROOT, "action_panel.button_private_dungeon", can_private, True),
+        set_enabled_when(ENTRY_ROOT, "action_panel.button_same_level_private_dungeon", can_private, True),
+        set_enabled_when(ENTRY_ROOT, "action_panel.button_match", can_match, True),
+        set_enabled_when(ENTRY_ROOT, "chat_panel.button_team_chat", all_of(connected, has_team), True),
+        set_enabled_when(ENTRY_ROOT, "chat_panel.button_world_chat", connected, True),
         [
             "IF_THEN_ELSE",
             [bool_is(snapshot, "launching", True)],
@@ -418,8 +428,8 @@ def entry_refresh_actions():
             set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}.label_member_current_{index}", is_self, True),
             set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}.button_transfer_{index}", ["BOOL_COMPARE", is_self, "==", False], True),
             set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}.button_kick_{index}", ["BOOL_COMPARE", is_self, "==", False], True),
-            set_enabled(ENTRY_ROOT, f"team_panel.member_row_{index}.button_transfer_{index}", all_of(can_manage, ["BOOL_COMPARE", is_self, "==", False]), True),
-            set_enabled(ENTRY_ROOT, f"team_panel.member_row_{index}.button_kick_{index}", all_of(can_manage, ["BOOL_COMPARE", is_self, "==", False]), True),
+            set_enabled_when(ENTRY_ROOT, f"team_panel.member_row_{index}.button_transfer_{index}", all_of(can_manage, ["BOOL_COMPARE", is_self, "==", False]), True),
+            set_enabled_when(ENTRY_ROOT, f"team_panel.member_row_{index}.button_kick_{index}", all_of(can_manage, ["BOOL_COMPARE", is_self, "==", False]), True),
         ])
     team_count = join_text(
         as_text(integer_field(snapshot, "member_count")),
@@ -500,9 +510,9 @@ def dungeon_refresh_actions():
             True,
         ),
         set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_token_value", string_field(token, "token"), True),
-        set_enabled(DUNGEON_ROOT, "dungeon_chat_panel.button_copy_token", token_available, True),
-        set_enabled(DUNGEON_ROOT, "dungeon_chat_panel.button_team_chat", all_of(connected, has_team), True),
-        set_enabled(DUNGEON_ROOT, "dungeon_chat_panel.button_world_chat", connected, True),
+        set_enabled_when(DUNGEON_ROOT, "dungeon_chat_panel.button_copy_token", token_available, True),
+        set_enabled_when(DUNGEON_ROOT, "dungeon_chat_panel.button_team_chat", all_of(connected, has_team), True),
+        set_enabled_when(DUNGEON_ROOT, "dungeon_chat_panel.button_world_chat", connected, True),
     ])
     history = message_line("副本刷新聊天1")
     for index in range(2, 6):

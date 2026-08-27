@@ -346,6 +346,12 @@ def build_arg(value, expected_type, idx_data, eid_gen, sub_trigger_refs=None):
     if isinstance(value, list) and len(value) >= 1 and isinstance(value[0], str) and value[0] in idx_data:
         func_name = value[0]
         func_def = idx_data[func_name]
+        expected_choices = param_type_choices(expected_type)
+        return_types = func_def.get("t", [])
+        if expected_choices == ["BOOLEAN"] and "BOOLEAN" not in return_types:
+            raise ValueError(
+                f"function '{func_name}' returns {return_types}, cannot fill BOOLEAN argument"
+            )
         raw_args = list(value[1:])
         dsl_op = None
         # Extract trailing op_arg dict from DSL

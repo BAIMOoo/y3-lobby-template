@@ -560,6 +560,26 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertIn("request_id", serialized)
                 self.assertIn("UNREG_TRIGGER", serialized)
 
+    def test_generated_button_enable_actions_use_literal_boolean_values(self):
+        trigger_root = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
+        initializers = [
+            load_json(trigger_root / "ECA大厅UI - 初始化.json"),
+            load_json(trigger_root / "ECA副本UI - 初始化.json"),
+        ]
+        enable_actions = [
+            node
+            for initializer in initializers
+            for node in walk_json(initializer)
+            if isinstance(node, dict) and node.get("action_type") == "SET_UI_COMP_ENABLE"
+        ]
+        self.assertGreaterEqual(len(enable_actions), 18)
+        for action in enable_actions:
+            value = action["args_list"][2]
+            with self.subTest(element_id=action["element_id"]):
+                self.assertEqual(1, value.get("sub_type"))
+                self.assertEqual(1, len(value.get("args_list", [])))
+                self.assertIsInstance(value["args_list"][0], bool)
+
     def test_cross_map_ui_requests_do_not_register_fake_completion_callbacks(self):
         names = {
             "ECA大厅UI - 局内私人副本",

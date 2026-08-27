@@ -1537,372 +1537,618 @@
                                             "enable": true
                                         }, 
                                         {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                            "action_type": "IF_THEN_ELSE", 
                                             "args_list": [
                                                 {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "GET_CLIENT_ROLE"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
+                                                    "arg_type": 100021, 
                                                     "args_list": [
                                                         {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "GET_CLIENT_ROLE"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "dungeon_chat_panel.button_copy_token"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100003, 
                                                             "args_list": [
                                                                 {
-                                                                    "arg_type": 100011, 
+                                                                    "arg_type": 100003, 
                                                                     "args_list": [
                                                                         {
                                                                             "arg_type": 100011, 
                                                                             "args_list": [
                                                                                 {
-                                                                                    "__tuple__": true, 
-                                                                                    "items": [
-                                                                                        "TABLE", 
-                                                                                        "副本刷新口令", 
-                                                                                        "local"
-                                                                                    ]
+                                                                                    "arg_type": 100011, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "__tuple__": true, 
+                                                                                            "items": [
+                                                                                                "TABLE", 
+                                                                                                "副本刷新口令", 
+                                                                                                "local"
+                                                                                            ]
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "VARIABLE"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100003, 
+                                                                                    "args_list": [
+                                                                                        "result_data"
+                                                                                    ], 
+                                                                                    "sub_type": 1
                                                                                 }
                                                                             ], 
-                                                                            "sub_type": "VARIABLE"
+                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
                                                                         }, 
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                "result_data"
+                                                                                "token"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
                                                                     ], 
-                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100035, 
+                                                                    "args_list": [
+                                                                        "!="
+                                                                    ], 
+                                                                    "sub_type": 1
                                                                 }, 
                                                                 {
                                                                     "arg_type": 100003, 
                                                                     "args_list": [
-                                                                        "token"
+                                                                        ""
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }
                                                             ], 
-                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100035, 
-                                                            "args_list": [
-                                                                "!="
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                ""
-                                                            ], 
-                                                            "sub_type": 1
+                                                            "condition_type": "STRING_COMPARE", 
+                                                            "element_id": 1943000001000027, 
+                                                            "enable": true
                                                         }
                                                     ], 
-                                                    "sub_type": "STRING_COMPARE"
-                                                }
-                                            ], 
-                                            "bp": false, 
-                                            "element_id": 1943000001000027, 
-                                            "enable": true
-                                        }, 
-                                        {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                    "sub_type": 1
                                                 }, 
                                                 {
-                                                    "arg_type": 100070, 
+                                                    "arg_type": 100022, 
                                                     "args_list": [
                                                         {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "GET_CLIENT_ROLE"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "dungeon_chat_panel.button_team_chat"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100021, 
+                                                            "action_type": "SET_UI_COMP_ENABLE", 
                                                             "args_list": [
                                                                 {
-                                                                    "args_list": [
-                                                                        {
-                                                                            "arg_type": 100001, 
-                                                                            "args_list": [
-                                                                                {
-                                                                                    "arg_type": 100011, 
-                                                                                    "args_list": [
-                                                                                        {
-                                                                                            "arg_type": 100011, 
-                                                                                            "args_list": [
-                                                                                                {
-                                                                                                    "__tuple__": true, 
-                                                                                                    "items": [
-                                                                                                        "TABLE", 
-                                                                                                        "副本刷新状态快照", 
-                                                                                                        "local"
-                                                                                                    ]
-                                                                                                }
-                                                                                            ], 
-                                                                                            "sub_type": "VARIABLE"
-                                                                                        }, 
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                "result_data"
-                                                                                            ], 
-                                                                                            "sub_type": 1
-                                                                                        }
-                                                                                    ], 
-                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                }, 
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        "connected"
-                                                                                    ], 
-                                                                                    "sub_type": 1
-                                                                                }
-                                                                            ], 
-                                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100035, 
-                                                                            "args_list": [
-                                                                                "=="
-                                                                            ], 
-                                                                            "sub_type": 1
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100001, 
-                                                                            "args_list": [
-                                                                                true
-                                                                            ], 
-                                                                            "sub_type": 1
-                                                                        }
-                                                                    ], 
-                                                                    "condition_type": "BOOL_COMPARE", 
-                                                                    "element_id": 1943000001000028, 
-                                                                    "enable": true
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
                                                                 }, 
                                                                 {
+                                                                    "arg_type": 100070, 
                                                                     "args_list": [
                                                                         {
-                                                                            "arg_type": 100001, 
-                                                                            "args_list": [
-                                                                                {
-                                                                                    "arg_type": 100011, 
-                                                                                    "args_list": [
-                                                                                        {
-                                                                                            "arg_type": 100011, 
-                                                                                            "args_list": [
-                                                                                                {
-                                                                                                    "__tuple__": true, 
-                                                                                                    "items": [
-                                                                                                        "TABLE", 
-                                                                                                        "副本刷新状态快照", 
-                                                                                                        "local"
-                                                                                                    ]
-                                                                                                }
-                                                                                            ], 
-                                                                                            "sub_type": "VARIABLE"
-                                                                                        }, 
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                "result_data"
-                                                                                            ], 
-                                                                                            "sub_type": 1
-                                                                                        }
-                                                                                    ], 
-                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                }, 
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        "has_team"
-                                                                                    ], 
-                                                                                    "sub_type": 1
-                                                                                }
-                                                                            ], 
-                                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
                                                                         }, 
                                                                         {
-                                                                            "arg_type": 100035, 
+                                                                            "arg_type": 100070, 
                                                                             "args_list": [
-                                                                                "=="
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }, 
                                                                         {
-                                                                            "arg_type": 100001, 
+                                                                            "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                true
+                                                                                "dungeon_chat_panel.button_copy_token"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
                                                                     ], 
-                                                                    "condition_type": "BOOL_COMPARE", 
-                                                                    "element_id": 1943000001000029, 
-                                                                    "enable": true
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        true
+                                                                    ], 
+                                                                    "sub_type": 1
                                                                 }
                                                             ], 
-                                                            "sub_type": 1
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000028, 
+                                                            "enable": true
                                                         }
                                                     ], 
-                                                    "sub_type": "AND"
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
+                                                                            "args_list": [
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "dungeon_chat_panel.button_copy_token"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        false
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000029, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
                                             "element_id": 1943000001000030, 
-                                            "enable": true
+                                            "enable": true, 
+                                            "fake_op": [
+                                                2
+                                            ]
                                         }, 
                                         {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                            "action_type": "IF_THEN_ELSE", 
                                             "args_list": [
                                                 {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "GET_CLIENT_ROLE"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
+                                                    "arg_type": 100021, 
                                                     "args_list": [
                                                         {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "GET_CLIENT_ROLE"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "dungeon_chat_panel.button_world_chat"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100001, 
                                                             "args_list": [
                                                                 {
-                                                                    "arg_type": 100011, 
+                                                                    "arg_type": 100021, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "arg_type": 100001, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "arg_type": 100011, 
+                                                                                            "args_list": [
+                                                                                                {
+                                                                                                    "arg_type": 100011, 
+                                                                                                    "args_list": [
+                                                                                                        {
+                                                                                                            "__tuple__": true, 
+                                                                                                            "items": [
+                                                                                                                "TABLE", 
+                                                                                                                "副本刷新状态快照", 
+                                                                                                                "local"
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ], 
+                                                                                                    "sub_type": "VARIABLE"
+                                                                                                }, 
+                                                                                                {
+                                                                                                    "arg_type": 100003, 
+                                                                                                    "args_list": [
+                                                                                                        "result_data"
+                                                                                                    ], 
+                                                                                                    "sub_type": 1
+                                                                                                }
+                                                                                            ], 
+                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                        }, 
+                                                                                        {
+                                                                                            "arg_type": 100003, 
+                                                                                            "args_list": [
+                                                                                                "connected"
+                                                                                            ], 
+                                                                                            "sub_type": 1
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100035, 
+                                                                                    "args_list": [
+                                                                                        "=="
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100001, 
+                                                                                    "args_list": [
+                                                                                        true
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }
+                                                                            ], 
+                                                                            "condition_type": "BOOL_COMPARE", 
+                                                                            "element_id": 1943000001000031, 
+                                                                            "enable": true
+                                                                        }, 
+                                                                        {
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "arg_type": 100001, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "arg_type": 100011, 
+                                                                                            "args_list": [
+                                                                                                {
+                                                                                                    "arg_type": 100011, 
+                                                                                                    "args_list": [
+                                                                                                        {
+                                                                                                            "__tuple__": true, 
+                                                                                                            "items": [
+                                                                                                                "TABLE", 
+                                                                                                                "副本刷新状态快照", 
+                                                                                                                "local"
+                                                                                                            ]
+                                                                                                        }
+                                                                                                    ], 
+                                                                                                    "sub_type": "VARIABLE"
+                                                                                                }, 
+                                                                                                {
+                                                                                                    "arg_type": 100003, 
+                                                                                                    "args_list": [
+                                                                                                        "result_data"
+                                                                                                    ], 
+                                                                                                    "sub_type": 1
+                                                                                                }
+                                                                                            ], 
+                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                        }, 
+                                                                                        {
+                                                                                            "arg_type": 100003, 
+                                                                                            "args_list": [
+                                                                                                "has_team"
+                                                                                            ], 
+                                                                                            "sub_type": 1
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100035, 
+                                                                                    "args_list": [
+                                                                                        "=="
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100001, 
+                                                                                    "args_list": [
+                                                                                        true
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }
+                                                                            ], 
+                                                                            "condition_type": "BOOL_COMPARE", 
+                                                                            "element_id": 1943000001000032, 
+                                                                            "enable": true
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "condition_type": "AND", 
+                                                            "element_id": 1943000001000033, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
+                                                                            "args_list": [
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "dungeon_chat_panel.button_team_chat"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        true
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000034, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
+                                                                            "args_list": [
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "dungeon_chat_panel.button_team_chat"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        false
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000035, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1943000001000036, 
+                                            "enable": true, 
+                                            "fake_op": [
+                                                2
+                                            ]
+                                        }, 
+                                        {
+                                            "action_type": "IF_THEN_ELSE", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100021, 
+                                                    "args_list": [
+                                                        {
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100001, 
                                                                     "args_list": [
                                                                         {
                                                                             "arg_type": 100011, 
                                                                             "args_list": [
                                                                                 {
-                                                                                    "__tuple__": true, 
-                                                                                    "items": [
-                                                                                        "TABLE", 
-                                                                                        "副本刷新状态快照", 
-                                                                                        "local"
-                                                                                    ]
+                                                                                    "arg_type": 100011, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "__tuple__": true, 
+                                                                                            "items": [
+                                                                                                "TABLE", 
+                                                                                                "副本刷新状态快照", 
+                                                                                                "local"
+                                                                                            ]
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "VARIABLE"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100003, 
+                                                                                    "args_list": [
+                                                                                        "result_data"
+                                                                                    ], 
+                                                                                    "sub_type": 1
                                                                                 }
                                                                             ], 
-                                                                            "sub_type": "VARIABLE"
+                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
                                                                         }, 
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                "result_data"
+                                                                                "connected"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
                                                                     ], 
-                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                    "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
                                                                 }, 
                                                                 {
-                                                                    "arg_type": 100003, 
+                                                                    "arg_type": 100035, 
                                                                     "args_list": [
-                                                                        "connected"
+                                                                        "=="
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        true
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }
                                                             ], 
-                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100035, 
-                                                            "args_list": [
-                                                                "=="
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100001, 
-                                                            "args_list": [
-                                                                true
-                                                            ], 
-                                                            "sub_type": 1
+                                                            "condition_type": "BOOL_COMPARE", 
+                                                            "element_id": 1943000001000037, 
+                                                            "enable": true
                                                         }
                                                     ], 
-                                                    "sub_type": "BOOL_COMPARE"
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
+                                                                            "args_list": [
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "dungeon_chat_panel.button_world_chat"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        true
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000038, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
+                                                                            "args_list": [
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "dungeon_chat_panel.button_world_chat"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        false
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000039, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1943000001000031, 
-                                            "enable": true
+                                            "element_id": 1943000001000040, 
+                                            "enable": true, 
+                                            "fake_op": [
+                                                2
+                                            ]
                                         }, 
                                         {
                                             "action_type": "IF_THEN_ELSE", 
@@ -1968,7 +2214,7 @@
                                                                 }
                                                             ], 
                                                             "condition_type": "BOOL_COMPARE", 
-                                                            "element_id": 1943000001000032, 
+                                                            "element_id": 1943000001000041, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -3138,7 +3384,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1943000001000033, 
+                                                            "element_id": 1943000001000042, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -3189,7 +3435,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1943000001000034, 
+                                                            "element_id": 1943000001000043, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -3197,7 +3443,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1943000001000035, 
+                                            "element_id": 1943000001000044, 
                                             "enable": true, 
                                             "fake_op": [
                                                 2
@@ -3208,7 +3454,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000036, 
+                            "element_id": 1943000001000045, 
                             "enable": true, 
                             "local_var": {
                                 "__tuple__": true, 
@@ -3223,7 +3469,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000001000037, 
+            "element_id": 1943000001000046, 
             "enable": true, 
             "fake_op": [
                 2

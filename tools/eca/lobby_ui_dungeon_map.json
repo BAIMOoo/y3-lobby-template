@@ -460,118 +460,193 @@
                   ]
                 ],
                 [
-                  "SET_UI_COMP_ENABLE",
+                  "IF_THEN_ELSE",
                   [
-                    "GET_CLIENT_ROLE"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
                     [
-                      "GET_CLIENT_ROLE"
-                    ],
-                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-                    "dungeon_chat_panel.button_copy_token"
-                  ],
-                  [
-                    "STRING_COMPARE",
-                    [
-                      "GET_STRING_TABLE_VAR_1D",
+                      "STRING_COMPARE",
                       [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        {
-                          "var": "副本刷新口令",
-                          "type": "TABLE"
-                        },
-                        "result_data"
-                      ],
-                      "token"
-                    ],
-                    "!=",
-                    ""
-                  ]
-                ],
-                [
-                  "SET_UI_COMP_ENABLE",
-                  [
-                    "GET_CLIENT_ROLE"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "GET_CLIENT_ROLE"
-                    ],
-                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-                    "dungeon_chat_panel.button_team_chat"
-                  ],
-                  [
-                    "AND",
-                    [
-                      [
-                        "BOOL_COMPARE",
+                        "GET_STRING_TABLE_VAR_1D",
                         [
-                          "GET_BOOLEAN_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "副本刷新状态快照",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "connected"
+                          "GET_TABLE_TABLE_VAR_1D",
+                          {
+                            "var": "副本刷新口令",
+                            "type": "TABLE"
+                          },
+                          "result_data"
                         ],
-                        "==",
-                        true
+                        "token"
+                      ],
+                      "!=",
+                      ""
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_ENABLE",
+                      [
+                        "GET_CLIENT_ROLE"
                       ],
                       [
-                        "BOOL_COMPARE",
+                        "GET_UI_COMP_BY_PATH",
                         [
-                          "GET_BOOLEAN_TABLE_VAR_1D",
-                          [
-                            "GET_TABLE_TABLE_VAR_1D",
-                            {
-                              "var": "副本刷新状态快照",
-                              "type": "TABLE"
-                            },
-                            "result_data"
-                          ],
-                          "has_team"
+                          "GET_CLIENT_ROLE"
                         ],
-                        "==",
-                        true
-                      ]
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.button_copy_token"
+                      ],
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_ENABLE",
+                      [
+                        "GET_CLIENT_ROLE"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "GET_CLIENT_ROLE"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.button_copy_token"
+                      ],
+                      false
                     ]
                   ]
                 ],
                 [
-                  "SET_UI_COMP_ENABLE",
+                  "IF_THEN_ELSE",
                   [
-                    "GET_CLIENT_ROLE"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
                     [
-                      "GET_CLIENT_ROLE"
-                    ],
-                    "908f7d63-a40d-42e1-8ed4-b076b01095a2",
-                    "dungeon_chat_panel.button_world_chat"
-                  ],
-                  [
-                    "BOOL_COMPARE",
-                    [
-                      "GET_BOOLEAN_TABLE_VAR_1D",
+                      "AND",
                       [
-                        "GET_TABLE_TABLE_VAR_1D",
-                        {
-                          "var": "副本刷新状态快照",
-                          "type": "TABLE"
-                        },
-                        "result_data"
+                        [
+                          "BOOL_COMPARE",
+                          [
+                            "GET_BOOLEAN_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              {
+                                "var": "副本刷新状态快照",
+                                "type": "TABLE"
+                              },
+                              "result_data"
+                            ],
+                            "connected"
+                          ],
+                          "==",
+                          true
+                        ],
+                        [
+                          "BOOL_COMPARE",
+                          [
+                            "GET_BOOLEAN_TABLE_VAR_1D",
+                            [
+                              "GET_TABLE_TABLE_VAR_1D",
+                              {
+                                "var": "副本刷新状态快照",
+                                "type": "TABLE"
+                              },
+                              "result_data"
+                            ],
+                            "has_team"
+                          ],
+                          "==",
+                          true
+                        ]
+                      ]
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_ENABLE",
+                      [
+                        "GET_CLIENT_ROLE"
                       ],
-                      "connected"
-                    ],
-                    "==",
-                    true
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "GET_CLIENT_ROLE"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.button_team_chat"
+                      ],
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_ENABLE",
+                      [
+                        "GET_CLIENT_ROLE"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "GET_CLIENT_ROLE"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.button_team_chat"
+                      ],
+                      false
+                    ]
+                  ]
+                ],
+                [
+                  "IF_THEN_ELSE",
+                  [
+                    [
+                      "BOOL_COMPARE",
+                      [
+                        "GET_BOOLEAN_TABLE_VAR_1D",
+                        [
+                          "GET_TABLE_TABLE_VAR_1D",
+                          {
+                            "var": "副本刷新状态快照",
+                            "type": "TABLE"
+                          },
+                          "result_data"
+                        ],
+                        "connected"
+                      ],
+                      "==",
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_ENABLE",
+                      [
+                        "GET_CLIENT_ROLE"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "GET_CLIENT_ROLE"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.button_world_chat"
+                      ],
+                      true
+                    ]
+                  ],
+                  [
+                    [
+                      "SET_UI_COMP_ENABLE",
+                      [
+                        "GET_CLIENT_ROLE"
+                      ],
+                      [
+                        "GET_UI_COMP_BY_PATH",
+                        [
+                          "GET_CLIENT_ROLE"
+                        ],
+                        "908f7d63-a40d-42e1-8ed4-b076b01095a2",
+                        "dungeon_chat_panel.button_world_chat"
+                      ],
+                      false
+                    ]
                   ]
                 ],
                 [
