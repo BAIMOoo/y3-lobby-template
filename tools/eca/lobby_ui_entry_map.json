@@ -1,5 +1,9 @@
 {
   "map": "EntryMap",
+  "folder": [
+    "大厅服务",
+    "大厅UI"
+  ],
   "triggers": [
     {
       "name": "ECA大厅UI - 初始化",
@@ -253,7 +257,7 @@
                 "team_panel.member_row_1.button_transfer_1"
               ],
               1,
-              "eca_lobby_transfer_1"
+              "eca_lobby_transfer"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -266,7 +270,7 @@
                 "team_panel.member_row_1.button_kick_1"
               ],
               1,
-              "eca_lobby_kick_1"
+              "eca_lobby_kick"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -279,7 +283,7 @@
                 "team_panel.member_row_2.button_transfer_2"
               ],
               1,
-              "eca_lobby_transfer_2"
+              "eca_lobby_transfer"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -292,7 +296,7 @@
                 "team_panel.member_row_2.button_kick_2"
               ],
               1,
-              "eca_lobby_kick_2"
+              "eca_lobby_kick"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -305,7 +309,7 @@
                 "team_panel.member_row_3.button_transfer_3"
               ],
               1,
-              "eca_lobby_transfer_3"
+              "eca_lobby_transfer"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -318,7 +322,7 @@
                 "team_panel.member_row_3.button_kick_3"
               ],
               1,
-              "eca_lobby_kick_3"
+              "eca_lobby_kick"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -331,7 +335,7 @@
                 "team_panel.member_row_4.button_transfer_4"
               ],
               1,
-              "eca_lobby_transfer_4"
+              "eca_lobby_transfer"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -344,7 +348,7 @@
                 "team_panel.member_row_4.button_kick_4"
               ],
               1,
-              "eca_lobby_kick_4"
+              "eca_lobby_kick"
             ],
             [
               "RUN_LOOP_TIMER_NO_SAVE",
@@ -6586,14 +6590,14 @@
       ]
     },
     {
-      "name": "ECA大厅UI - 转移队长1",
+      "name": "ECA大厅UI - 转移队长",
       "id": 1942000006,
       "event": [
         [
           "TRIGGER_COMPONENT_EVENT",
           [
             "STR_TO_UI_EVENT",
-            "eca_lobby_transfer_1"
+            "eca_lobby_transfer"
           ]
         ]
       ],
@@ -6612,17 +6616,33 @@
             "c3eb744a-f544-45d2-8e24-a2e279a67662",
             "chat_panel.label_chat_result"
           ],
-          "ECA大厅UI - 转移队长1：处理中"
+          "ECA大厅UI - 转移队长：处理中"
         ],
         {
           "call_function": {
             "func_id": "ff8d602fd5235532934fcc588f045d96",
             "args": [
-              1
+              [
+                "STR_TO_INT",
+                [
+                  "STR_REPLACE",
+                  [
+                    "GET_UI_COMP_NAME",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    [
+                      "GET_UI_COMP_FROM_EVENT"
+                    ]
+                  ],
+                  "button_transfer_",
+                  ""
+                ]
+              ]
             ],
             "returns": [
               {
-                "var": "成员操作目标1",
+                "var": "ECA大厅UI - 转移队长操作目标",
                 "type": "TABLE"
               }
             ]
@@ -6639,7 +6659,7 @@
                   [
                     "GET_TABLE_TABLE_VAR_1D",
                     {
-                      "var": "成员操作目标1",
+                      "var": "ECA大厅UI - 转移队长操作目标",
                       "type": "TABLE"
                     },
                     "result_data"
@@ -6651,7 +6671,7 @@
             ],
             "returns": [
               {
-                "var": "ECA大厅UI - 转移队长1立即结果",
+                "var": "ECA大厅UI - 转移队长立即结果",
                 "type": "TABLE"
               }
             ]
@@ -6665,7 +6685,7 @@
               [
                 "GET_BOOLEAN_TABLE_VAR_1D",
                 {
-                  "var": "ECA大厅UI - 转移队长1立即结果",
+                  "var": "ECA大厅UI - 转移队长立即结果",
                   "type": "TABLE"
                 },
                 "accepted"
@@ -6683,7 +6703,7 @@
                   [
                     "GET_STRING_TABLE_VAR_1D",
                     {
-                      "var": "ECA大厅UI - 转移队长1立即结果",
+                      "var": "ECA大厅UI - 转移队长立即结果",
                       "type": "TABLE"
                     },
                     "request_id"
@@ -6706,10 +6726,10 @@
                     "c3eb744a-f544-45d2-8e24-a2e279a67662",
                     "chat_panel.label_chat_result"
                   ],
-                  "ECA大厅UI - 转移队长1：请求已受理"
+                  "ECA大厅UI - 转移队长：请求已受理"
                 ],
                 {
-                  "register_sub_trigger": "ECA大厅UI - 转移队长1完成回调"
+                  "register_sub_trigger": "ECA大厅UI - 转移队长完成回调"
                 }
               ],
               [
@@ -6726,12 +6746,12 @@
                     "c3eb744a-f544-45d2-8e24-a2e279a67662",
                     "chat_panel.label_chat_result"
                   ],
-                  "ECA大厅UI - 转移队长1：同步完成"
+                  "ECA大厅UI - 转移队长：同步完成"
                 ],
                 [
                   "DUMP_TABLE",
                   {
-                    "var": "ECA大厅UI - 转移队长1立即结果",
+                    "var": "ECA大厅UI - 转移队长立即结果",
                     "type": "TABLE"
                   }
                 ]
@@ -6752,12 +6772,12 @@
                 "c3eb744a-f544-45d2-8e24-a2e279a67662",
                 "chat_panel.label_chat_result"
               ],
-              "ECA大厅UI - 转移队长1：失败，请查看日志"
+              "ECA大厅UI - 转移队长：失败，请查看日志"
             ],
             [
               "DUMP_TABLE",
               {
-                "var": "ECA大厅UI - 转移队长1立即结果",
+                "var": "ECA大厅UI - 转移队长立即结果",
                 "type": "TABLE"
               }
             ]
@@ -6766,7 +6786,7 @@
       ],
       "sub_triggers": [
         {
-          "name": "ECA大厅UI - 转移队长1完成回调",
+          "name": "ECA大厅UI - 转移队长完成回调",
           "id": 1942100005,
           "event": [
             [
@@ -6792,7 +6812,7 @@
                   [
                     "GET_STRING_TABLE_VAR_1D",
                     {
-                      "var": "ECA大厅UI - 转移队长1立即结果",
+                      "var": "ECA大厅UI - 转移队长立即结果",
                       "type": "TABLE"
                     },
                     "request_id"
@@ -6831,7 +6851,7 @@
                         "c3eb744a-f544-45d2-8e24-a2e279a67662",
                         "chat_panel.label_chat_result"
                       ],
-                      "ECA大厅UI - 转移队长1：操作成功"
+                      "ECA大厅UI - 转移队长：操作成功"
                     ]
                   ],
                   [
@@ -6848,7 +6868,7 @@
                         "c3eb744a-f544-45d2-8e24-a2e279a67662",
                         "chat_panel.label_chat_result"
                       ],
-                      "ECA大厅UI - 转移队长1：失败，请查看日志"
+                      "ECA大厅UI - 转移队长：失败，请查看日志"
                     ]
                   ]
                 ],
@@ -6873,14 +6893,14 @@
       ]
     },
     {
-      "name": "ECA大厅UI - 移出队员1",
+      "name": "ECA大厅UI - 移出队员",
       "id": 1942000007,
       "event": [
         [
           "TRIGGER_COMPONENT_EVENT",
           [
             "STR_TO_UI_EVENT",
-            "eca_lobby_kick_1"
+            "eca_lobby_kick"
           ]
         ]
       ],
@@ -6899,17 +6919,33 @@
             "c3eb744a-f544-45d2-8e24-a2e279a67662",
             "chat_panel.label_chat_result"
           ],
-          "ECA大厅UI - 移出队员1：处理中"
+          "ECA大厅UI - 移出队员：处理中"
         ],
         {
           "call_function": {
             "func_id": "ff8d602fd5235532934fcc588f045d96",
             "args": [
-              1
+              [
+                "STR_TO_INT",
+                [
+                  "STR_REPLACE",
+                  [
+                    "GET_UI_COMP_NAME",
+                    [
+                      "TRIGGER_PLAYER"
+                    ],
+                    [
+                      "GET_UI_COMP_FROM_EVENT"
+                    ]
+                  ],
+                  "button_kick_",
+                  ""
+                ]
+              ]
             ],
             "returns": [
               {
-                "var": "成员操作目标1",
+                "var": "ECA大厅UI - 移出队员操作目标",
                 "type": "TABLE"
               }
             ]
@@ -6926,7 +6962,7 @@
                   [
                     "GET_TABLE_TABLE_VAR_1D",
                     {
-                      "var": "成员操作目标1",
+                      "var": "ECA大厅UI - 移出队员操作目标",
                       "type": "TABLE"
                     },
                     "result_data"
@@ -6938,7 +6974,7 @@
             ],
             "returns": [
               {
-                "var": "ECA大厅UI - 移出队员1立即结果",
+                "var": "ECA大厅UI - 移出队员立即结果",
                 "type": "TABLE"
               }
             ]
@@ -6952,7 +6988,7 @@
               [
                 "GET_BOOLEAN_TABLE_VAR_1D",
                 {
-                  "var": "ECA大厅UI - 移出队员1立即结果",
+                  "var": "ECA大厅UI - 移出队员立即结果",
                   "type": "TABLE"
                 },
                 "accepted"
@@ -6970,7 +7006,7 @@
                   [
                     "GET_STRING_TABLE_VAR_1D",
                     {
-                      "var": "ECA大厅UI - 移出队员1立即结果",
+                      "var": "ECA大厅UI - 移出队员立即结果",
                       "type": "TABLE"
                     },
                     "request_id"
@@ -6993,10 +7029,10 @@
                     "c3eb744a-f544-45d2-8e24-a2e279a67662",
                     "chat_panel.label_chat_result"
                   ],
-                  "ECA大厅UI - 移出队员1：请求已受理"
+                  "ECA大厅UI - 移出队员：请求已受理"
                 ],
                 {
-                  "register_sub_trigger": "ECA大厅UI - 移出队员1完成回调"
+                  "register_sub_trigger": "ECA大厅UI - 移出队员完成回调"
                 }
               ],
               [
@@ -7013,12 +7049,12 @@
                     "c3eb744a-f544-45d2-8e24-a2e279a67662",
                     "chat_panel.label_chat_result"
                   ],
-                  "ECA大厅UI - 移出队员1：同步完成"
+                  "ECA大厅UI - 移出队员：同步完成"
                 ],
                 [
                   "DUMP_TABLE",
                   {
-                    "var": "ECA大厅UI - 移出队员1立即结果",
+                    "var": "ECA大厅UI - 移出队员立即结果",
                     "type": "TABLE"
                   }
                 ]
@@ -7039,12 +7075,12 @@
                 "c3eb744a-f544-45d2-8e24-a2e279a67662",
                 "chat_panel.label_chat_result"
               ],
-              "ECA大厅UI - 移出队员1：失败，请查看日志"
+              "ECA大厅UI - 移出队员：失败，请查看日志"
             ],
             [
               "DUMP_TABLE",
               {
-                "var": "ECA大厅UI - 移出队员1立即结果",
+                "var": "ECA大厅UI - 移出队员立即结果",
                 "type": "TABLE"
               }
             ]
@@ -7053,7 +7089,7 @@
       ],
       "sub_triggers": [
         {
-          "name": "ECA大厅UI - 移出队员1完成回调",
+          "name": "ECA大厅UI - 移出队员完成回调",
           "id": 1942100006,
           "event": [
             [
@@ -7079,7 +7115,7 @@
                   [
                     "GET_STRING_TABLE_VAR_1D",
                     {
-                      "var": "ECA大厅UI - 移出队员1立即结果",
+                      "var": "ECA大厅UI - 移出队员立即结果",
                       "type": "TABLE"
                     },
                     "request_id"
@@ -7118,7 +7154,7 @@
                         "c3eb744a-f544-45d2-8e24-a2e279a67662",
                         "chat_panel.label_chat_result"
                       ],
-                      "ECA大厅UI - 移出队员1：操作成功"
+                      "ECA大厅UI - 移出队员：操作成功"
                     ]
                   ],
                   [
@@ -7135,1729 +7171,7 @@
                         "c3eb744a-f544-45d2-8e24-a2e279a67662",
                         "chat_panel.label_chat_result"
                       ],
-                      "ECA大厅UI - 移出队员1：失败，请查看日志"
-                    ]
-                  ]
-                ],
-                [
-                  "DUMP_TABLE",
-                  [
-                    "GET_CUS_EVENT_PARAM",
-                    "回调数据"
-                  ]
-                ],
-                [
-                  "UNREG_TRIGGER",
-                  [
-                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
-                  ]
-                ]
-              ],
-              []
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ECA大厅UI - 转移队长2",
-      "id": 1942000008,
-      "event": [
-        [
-          "TRIGGER_COMPONENT_EVENT",
-          [
-            "STR_TO_UI_EVENT",
-            "eca_lobby_transfer_2"
-          ]
-        ]
-      ],
-      "condition": [],
-      "action": [
-        [
-          "SET_UI_COMP_TEXT",
-          [
-            "TRIGGER_PLAYER"
-          ],
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "TRIGGER_PLAYER"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.label_chat_result"
-          ],
-          "ECA大厅UI - 转移队长2：处理中"
-        ],
-        {
-          "call_function": {
-            "func_id": "ff8d602fd5235532934fcc588f045d96",
-            "args": [
-              2
-            ],
-            "returns": [
-              {
-                "var": "成员操作目标2",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        {
-          "call_function": {
-            "func_id": "83b1f3fc8b595bdfbd913e7b09695ca5",
-            "args": [
-              [
-                "GET_INTEGER_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "成员操作目标2",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "member"
-                ],
-                "aid"
-              ]
-            ],
-            "returns": [
-              {
-                "var": "ECA大厅UI - 转移队长2立即结果",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        [
-          "IF_THEN_ELSE",
-          [
-            [
-              "BOOL_COMPARE",
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                {
-                  "var": "ECA大厅UI - 转移队长2立即结果",
-                  "type": "TABLE"
-                },
-                "accepted"
-              ],
-              "==",
-              true
-            ]
-          ],
-          [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 转移队长2立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ],
-                  "!=",
-                  ""
-                ]
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 转移队长2：请求已受理"
-                ],
-                {
-                  "register_sub_trigger": "ECA大厅UI - 转移队长2完成回调"
-                }
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 转移队长2：同步完成"
-                ],
-                [
-                  "DUMP_TABLE",
-                  {
-                    "var": "ECA大厅UI - 转移队长2立即结果",
-                    "type": "TABLE"
-                  }
-                ]
-              ]
-            ]
-          ],
-          [
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "TRIGGER_PLAYER"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "TRIGGER_PLAYER"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_result"
-              ],
-              "ECA大厅UI - 转移队长2：失败，请查看日志"
-            ],
-            [
-              "DUMP_TABLE",
-              {
-                "var": "ECA大厅UI - 转移队长2立即结果",
-                "type": "TABLE"
-              }
-            ]
-          ]
-        ]
-      ],
-      "sub_triggers": [
-        {
-          "name": "ECA大厅UI - 转移队长2完成回调",
-          "id": 1942100007,
-          "event": [
-            [
-              "RECEIVE_CUSTOM_EVENT",
-              "大厅服务请求完成"
-            ]
-          ],
-          "action": [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_CUS_EVENT_PARAM",
-                      "回调数据"
-                    ],
-                    "request_id"
-                  ],
-                  "==",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 转移队长2立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ]
-                ]
-              ],
-              [
-                [
-                  "IF_THEN_ELSE",
-                  [
-                    [
-                      "BOOL_COMPARE",
-                      [
-                        "GET_BOOLEAN_TABLE_VAR_1D",
-                        [
-                          "GET_CUS_EVENT_PARAM",
-                          "回调数据"
-                        ],
-                        "success"
-                      ],
-                      "==",
-                      true
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 转移队长2：操作成功"
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 转移队长2：失败，请查看日志"
-                    ]
-                  ]
-                ],
-                [
-                  "DUMP_TABLE",
-                  [
-                    "GET_CUS_EVENT_PARAM",
-                    "回调数据"
-                  ]
-                ],
-                [
-                  "UNREG_TRIGGER",
-                  [
-                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
-                  ]
-                ]
-              ],
-              []
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ECA大厅UI - 移出队员2",
-      "id": 1942000009,
-      "event": [
-        [
-          "TRIGGER_COMPONENT_EVENT",
-          [
-            "STR_TO_UI_EVENT",
-            "eca_lobby_kick_2"
-          ]
-        ]
-      ],
-      "condition": [],
-      "action": [
-        [
-          "SET_UI_COMP_TEXT",
-          [
-            "TRIGGER_PLAYER"
-          ],
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "TRIGGER_PLAYER"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.label_chat_result"
-          ],
-          "ECA大厅UI - 移出队员2：处理中"
-        ],
-        {
-          "call_function": {
-            "func_id": "ff8d602fd5235532934fcc588f045d96",
-            "args": [
-              2
-            ],
-            "returns": [
-              {
-                "var": "成员操作目标2",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        {
-          "call_function": {
-            "func_id": "54499d6fa32853e1870acd409a6515ea",
-            "args": [
-              [
-                "GET_INTEGER_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "成员操作目标2",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "member"
-                ],
-                "aid"
-              ]
-            ],
-            "returns": [
-              {
-                "var": "ECA大厅UI - 移出队员2立即结果",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        [
-          "IF_THEN_ELSE",
-          [
-            [
-              "BOOL_COMPARE",
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                {
-                  "var": "ECA大厅UI - 移出队员2立即结果",
-                  "type": "TABLE"
-                },
-                "accepted"
-              ],
-              "==",
-              true
-            ]
-          ],
-          [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 移出队员2立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ],
-                  "!=",
-                  ""
-                ]
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 移出队员2：请求已受理"
-                ],
-                {
-                  "register_sub_trigger": "ECA大厅UI - 移出队员2完成回调"
-                }
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 移出队员2：同步完成"
-                ],
-                [
-                  "DUMP_TABLE",
-                  {
-                    "var": "ECA大厅UI - 移出队员2立即结果",
-                    "type": "TABLE"
-                  }
-                ]
-              ]
-            ]
-          ],
-          [
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "TRIGGER_PLAYER"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "TRIGGER_PLAYER"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_result"
-              ],
-              "ECA大厅UI - 移出队员2：失败，请查看日志"
-            ],
-            [
-              "DUMP_TABLE",
-              {
-                "var": "ECA大厅UI - 移出队员2立即结果",
-                "type": "TABLE"
-              }
-            ]
-          ]
-        ]
-      ],
-      "sub_triggers": [
-        {
-          "name": "ECA大厅UI - 移出队员2完成回调",
-          "id": 1942100008,
-          "event": [
-            [
-              "RECEIVE_CUSTOM_EVENT",
-              "大厅服务请求完成"
-            ]
-          ],
-          "action": [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_CUS_EVENT_PARAM",
-                      "回调数据"
-                    ],
-                    "request_id"
-                  ],
-                  "==",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 移出队员2立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ]
-                ]
-              ],
-              [
-                [
-                  "IF_THEN_ELSE",
-                  [
-                    [
-                      "BOOL_COMPARE",
-                      [
-                        "GET_BOOLEAN_TABLE_VAR_1D",
-                        [
-                          "GET_CUS_EVENT_PARAM",
-                          "回调数据"
-                        ],
-                        "success"
-                      ],
-                      "==",
-                      true
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 移出队员2：操作成功"
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 移出队员2：失败，请查看日志"
-                    ]
-                  ]
-                ],
-                [
-                  "DUMP_TABLE",
-                  [
-                    "GET_CUS_EVENT_PARAM",
-                    "回调数据"
-                  ]
-                ],
-                [
-                  "UNREG_TRIGGER",
-                  [
-                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
-                  ]
-                ]
-              ],
-              []
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ECA大厅UI - 转移队长3",
-      "id": 1942000010,
-      "event": [
-        [
-          "TRIGGER_COMPONENT_EVENT",
-          [
-            "STR_TO_UI_EVENT",
-            "eca_lobby_transfer_3"
-          ]
-        ]
-      ],
-      "condition": [],
-      "action": [
-        [
-          "SET_UI_COMP_TEXT",
-          [
-            "TRIGGER_PLAYER"
-          ],
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "TRIGGER_PLAYER"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.label_chat_result"
-          ],
-          "ECA大厅UI - 转移队长3：处理中"
-        ],
-        {
-          "call_function": {
-            "func_id": "ff8d602fd5235532934fcc588f045d96",
-            "args": [
-              3
-            ],
-            "returns": [
-              {
-                "var": "成员操作目标3",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        {
-          "call_function": {
-            "func_id": "83b1f3fc8b595bdfbd913e7b09695ca5",
-            "args": [
-              [
-                "GET_INTEGER_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "成员操作目标3",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "member"
-                ],
-                "aid"
-              ]
-            ],
-            "returns": [
-              {
-                "var": "ECA大厅UI - 转移队长3立即结果",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        [
-          "IF_THEN_ELSE",
-          [
-            [
-              "BOOL_COMPARE",
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                {
-                  "var": "ECA大厅UI - 转移队长3立即结果",
-                  "type": "TABLE"
-                },
-                "accepted"
-              ],
-              "==",
-              true
-            ]
-          ],
-          [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 转移队长3立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ],
-                  "!=",
-                  ""
-                ]
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 转移队长3：请求已受理"
-                ],
-                {
-                  "register_sub_trigger": "ECA大厅UI - 转移队长3完成回调"
-                }
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 转移队长3：同步完成"
-                ],
-                [
-                  "DUMP_TABLE",
-                  {
-                    "var": "ECA大厅UI - 转移队长3立即结果",
-                    "type": "TABLE"
-                  }
-                ]
-              ]
-            ]
-          ],
-          [
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "TRIGGER_PLAYER"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "TRIGGER_PLAYER"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_result"
-              ],
-              "ECA大厅UI - 转移队长3：失败，请查看日志"
-            ],
-            [
-              "DUMP_TABLE",
-              {
-                "var": "ECA大厅UI - 转移队长3立即结果",
-                "type": "TABLE"
-              }
-            ]
-          ]
-        ]
-      ],
-      "sub_triggers": [
-        {
-          "name": "ECA大厅UI - 转移队长3完成回调",
-          "id": 1942100009,
-          "event": [
-            [
-              "RECEIVE_CUSTOM_EVENT",
-              "大厅服务请求完成"
-            ]
-          ],
-          "action": [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_CUS_EVENT_PARAM",
-                      "回调数据"
-                    ],
-                    "request_id"
-                  ],
-                  "==",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 转移队长3立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ]
-                ]
-              ],
-              [
-                [
-                  "IF_THEN_ELSE",
-                  [
-                    [
-                      "BOOL_COMPARE",
-                      [
-                        "GET_BOOLEAN_TABLE_VAR_1D",
-                        [
-                          "GET_CUS_EVENT_PARAM",
-                          "回调数据"
-                        ],
-                        "success"
-                      ],
-                      "==",
-                      true
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 转移队长3：操作成功"
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 转移队长3：失败，请查看日志"
-                    ]
-                  ]
-                ],
-                [
-                  "DUMP_TABLE",
-                  [
-                    "GET_CUS_EVENT_PARAM",
-                    "回调数据"
-                  ]
-                ],
-                [
-                  "UNREG_TRIGGER",
-                  [
-                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
-                  ]
-                ]
-              ],
-              []
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ECA大厅UI - 移出队员3",
-      "id": 1942000011,
-      "event": [
-        [
-          "TRIGGER_COMPONENT_EVENT",
-          [
-            "STR_TO_UI_EVENT",
-            "eca_lobby_kick_3"
-          ]
-        ]
-      ],
-      "condition": [],
-      "action": [
-        [
-          "SET_UI_COMP_TEXT",
-          [
-            "TRIGGER_PLAYER"
-          ],
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "TRIGGER_PLAYER"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.label_chat_result"
-          ],
-          "ECA大厅UI - 移出队员3：处理中"
-        ],
-        {
-          "call_function": {
-            "func_id": "ff8d602fd5235532934fcc588f045d96",
-            "args": [
-              3
-            ],
-            "returns": [
-              {
-                "var": "成员操作目标3",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        {
-          "call_function": {
-            "func_id": "54499d6fa32853e1870acd409a6515ea",
-            "args": [
-              [
-                "GET_INTEGER_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "成员操作目标3",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "member"
-                ],
-                "aid"
-              ]
-            ],
-            "returns": [
-              {
-                "var": "ECA大厅UI - 移出队员3立即结果",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        [
-          "IF_THEN_ELSE",
-          [
-            [
-              "BOOL_COMPARE",
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                {
-                  "var": "ECA大厅UI - 移出队员3立即结果",
-                  "type": "TABLE"
-                },
-                "accepted"
-              ],
-              "==",
-              true
-            ]
-          ],
-          [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 移出队员3立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ],
-                  "!=",
-                  ""
-                ]
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 移出队员3：请求已受理"
-                ],
-                {
-                  "register_sub_trigger": "ECA大厅UI - 移出队员3完成回调"
-                }
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 移出队员3：同步完成"
-                ],
-                [
-                  "DUMP_TABLE",
-                  {
-                    "var": "ECA大厅UI - 移出队员3立即结果",
-                    "type": "TABLE"
-                  }
-                ]
-              ]
-            ]
-          ],
-          [
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "TRIGGER_PLAYER"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "TRIGGER_PLAYER"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_result"
-              ],
-              "ECA大厅UI - 移出队员3：失败，请查看日志"
-            ],
-            [
-              "DUMP_TABLE",
-              {
-                "var": "ECA大厅UI - 移出队员3立即结果",
-                "type": "TABLE"
-              }
-            ]
-          ]
-        ]
-      ],
-      "sub_triggers": [
-        {
-          "name": "ECA大厅UI - 移出队员3完成回调",
-          "id": 1942100010,
-          "event": [
-            [
-              "RECEIVE_CUSTOM_EVENT",
-              "大厅服务请求完成"
-            ]
-          ],
-          "action": [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_CUS_EVENT_PARAM",
-                      "回调数据"
-                    ],
-                    "request_id"
-                  ],
-                  "==",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 移出队员3立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ]
-                ]
-              ],
-              [
-                [
-                  "IF_THEN_ELSE",
-                  [
-                    [
-                      "BOOL_COMPARE",
-                      [
-                        "GET_BOOLEAN_TABLE_VAR_1D",
-                        [
-                          "GET_CUS_EVENT_PARAM",
-                          "回调数据"
-                        ],
-                        "success"
-                      ],
-                      "==",
-                      true
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 移出队员3：操作成功"
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 移出队员3：失败，请查看日志"
-                    ]
-                  ]
-                ],
-                [
-                  "DUMP_TABLE",
-                  [
-                    "GET_CUS_EVENT_PARAM",
-                    "回调数据"
-                  ]
-                ],
-                [
-                  "UNREG_TRIGGER",
-                  [
-                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
-                  ]
-                ]
-              ],
-              []
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ECA大厅UI - 转移队长4",
-      "id": 1942000012,
-      "event": [
-        [
-          "TRIGGER_COMPONENT_EVENT",
-          [
-            "STR_TO_UI_EVENT",
-            "eca_lobby_transfer_4"
-          ]
-        ]
-      ],
-      "condition": [],
-      "action": [
-        [
-          "SET_UI_COMP_TEXT",
-          [
-            "TRIGGER_PLAYER"
-          ],
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "TRIGGER_PLAYER"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.label_chat_result"
-          ],
-          "ECA大厅UI - 转移队长4：处理中"
-        ],
-        {
-          "call_function": {
-            "func_id": "ff8d602fd5235532934fcc588f045d96",
-            "args": [
-              4
-            ],
-            "returns": [
-              {
-                "var": "成员操作目标4",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        {
-          "call_function": {
-            "func_id": "83b1f3fc8b595bdfbd913e7b09695ca5",
-            "args": [
-              [
-                "GET_INTEGER_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "成员操作目标4",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "member"
-                ],
-                "aid"
-              ]
-            ],
-            "returns": [
-              {
-                "var": "ECA大厅UI - 转移队长4立即结果",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        [
-          "IF_THEN_ELSE",
-          [
-            [
-              "BOOL_COMPARE",
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                {
-                  "var": "ECA大厅UI - 转移队长4立即结果",
-                  "type": "TABLE"
-                },
-                "accepted"
-              ],
-              "==",
-              true
-            ]
-          ],
-          [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 转移队长4立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ],
-                  "!=",
-                  ""
-                ]
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 转移队长4：请求已受理"
-                ],
-                {
-                  "register_sub_trigger": "ECA大厅UI - 转移队长4完成回调"
-                }
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 转移队长4：同步完成"
-                ],
-                [
-                  "DUMP_TABLE",
-                  {
-                    "var": "ECA大厅UI - 转移队长4立即结果",
-                    "type": "TABLE"
-                  }
-                ]
-              ]
-            ]
-          ],
-          [
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "TRIGGER_PLAYER"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "TRIGGER_PLAYER"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_result"
-              ],
-              "ECA大厅UI - 转移队长4：失败，请查看日志"
-            ],
-            [
-              "DUMP_TABLE",
-              {
-                "var": "ECA大厅UI - 转移队长4立即结果",
-                "type": "TABLE"
-              }
-            ]
-          ]
-        ]
-      ],
-      "sub_triggers": [
-        {
-          "name": "ECA大厅UI - 转移队长4完成回调",
-          "id": 1942100011,
-          "event": [
-            [
-              "RECEIVE_CUSTOM_EVENT",
-              "大厅服务请求完成"
-            ]
-          ],
-          "action": [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_CUS_EVENT_PARAM",
-                      "回调数据"
-                    ],
-                    "request_id"
-                  ],
-                  "==",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 转移队长4立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ]
-                ]
-              ],
-              [
-                [
-                  "IF_THEN_ELSE",
-                  [
-                    [
-                      "BOOL_COMPARE",
-                      [
-                        "GET_BOOLEAN_TABLE_VAR_1D",
-                        [
-                          "GET_CUS_EVENT_PARAM",
-                          "回调数据"
-                        ],
-                        "success"
-                      ],
-                      "==",
-                      true
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 转移队长4：操作成功"
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 转移队长4：失败，请查看日志"
-                    ]
-                  ]
-                ],
-                [
-                  "DUMP_TABLE",
-                  [
-                    "GET_CUS_EVENT_PARAM",
-                    "回调数据"
-                  ]
-                ],
-                [
-                  "UNREG_TRIGGER",
-                  [
-                    "CURRENT_DYNAMIC_TRIGGER_INSTANCE"
-                  ]
-                ]
-              ],
-              []
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ECA大厅UI - 移出队员4",
-      "id": 1942000013,
-      "event": [
-        [
-          "TRIGGER_COMPONENT_EVENT",
-          [
-            "STR_TO_UI_EVENT",
-            "eca_lobby_kick_4"
-          ]
-        ]
-      ],
-      "condition": [],
-      "action": [
-        [
-          "SET_UI_COMP_TEXT",
-          [
-            "TRIGGER_PLAYER"
-          ],
-          [
-            "GET_UI_COMP_BY_PATH",
-            [
-              "TRIGGER_PLAYER"
-            ],
-            "c3eb744a-f544-45d2-8e24-a2e279a67662",
-            "chat_panel.label_chat_result"
-          ],
-          "ECA大厅UI - 移出队员4：处理中"
-        ],
-        {
-          "call_function": {
-            "func_id": "ff8d602fd5235532934fcc588f045d96",
-            "args": [
-              4
-            ],
-            "returns": [
-              {
-                "var": "成员操作目标4",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        {
-          "call_function": {
-            "func_id": "54499d6fa32853e1870acd409a6515ea",
-            "args": [
-              [
-                "GET_INTEGER_TABLE_VAR_1D",
-                [
-                  "GET_TABLE_TABLE_VAR_1D",
-                  [
-                    "GET_TABLE_TABLE_VAR_1D",
-                    {
-                      "var": "成员操作目标4",
-                      "type": "TABLE"
-                    },
-                    "result_data"
-                  ],
-                  "member"
-                ],
-                "aid"
-              ]
-            ],
-            "returns": [
-              {
-                "var": "ECA大厅UI - 移出队员4立即结果",
-                "type": "TABLE"
-              }
-            ]
-          }
-        },
-        [
-          "IF_THEN_ELSE",
-          [
-            [
-              "BOOL_COMPARE",
-              [
-                "GET_BOOLEAN_TABLE_VAR_1D",
-                {
-                  "var": "ECA大厅UI - 移出队员4立即结果",
-                  "type": "TABLE"
-                },
-                "accepted"
-              ],
-              "==",
-              true
-            ]
-          ],
-          [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 移出队员4立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ],
-                  "!=",
-                  ""
-                ]
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 移出队员4：请求已受理"
-                ],
-                {
-                  "register_sub_trigger": "ECA大厅UI - 移出队员4完成回调"
-                }
-              ],
-              [
-                [
-                  "SET_UI_COMP_TEXT",
-                  [
-                    "TRIGGER_PLAYER"
-                  ],
-                  [
-                    "GET_UI_COMP_BY_PATH",
-                    [
-                      "TRIGGER_PLAYER"
-                    ],
-                    "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                    "chat_panel.label_chat_result"
-                  ],
-                  "ECA大厅UI - 移出队员4：同步完成"
-                ],
-                [
-                  "DUMP_TABLE",
-                  {
-                    "var": "ECA大厅UI - 移出队员4立即结果",
-                    "type": "TABLE"
-                  }
-                ]
-              ]
-            ]
-          ],
-          [
-            [
-              "SET_UI_COMP_TEXT",
-              [
-                "TRIGGER_PLAYER"
-              ],
-              [
-                "GET_UI_COMP_BY_PATH",
-                [
-                  "TRIGGER_PLAYER"
-                ],
-                "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                "chat_panel.label_chat_result"
-              ],
-              "ECA大厅UI - 移出队员4：失败，请查看日志"
-            ],
-            [
-              "DUMP_TABLE",
-              {
-                "var": "ECA大厅UI - 移出队员4立即结果",
-                "type": "TABLE"
-              }
-            ]
-          ]
-        ]
-      ],
-      "sub_triggers": [
-        {
-          "name": "ECA大厅UI - 移出队员4完成回调",
-          "id": 1942100012,
-          "event": [
-            [
-              "RECEIVE_CUSTOM_EVENT",
-              "大厅服务请求完成"
-            ]
-          ],
-          "action": [
-            [
-              "IF_THEN_ELSE",
-              [
-                [
-                  "STRING_COMPARE",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    [
-                      "GET_CUS_EVENT_PARAM",
-                      "回调数据"
-                    ],
-                    "request_id"
-                  ],
-                  "==",
-                  [
-                    "GET_STRING_TABLE_VAR_1D",
-                    {
-                      "var": "ECA大厅UI - 移出队员4立即结果",
-                      "type": "TABLE"
-                    },
-                    "request_id"
-                  ]
-                ]
-              ],
-              [
-                [
-                  "IF_THEN_ELSE",
-                  [
-                    [
-                      "BOOL_COMPARE",
-                      [
-                        "GET_BOOLEAN_TABLE_VAR_1D",
-                        [
-                          "GET_CUS_EVENT_PARAM",
-                          "回调数据"
-                        ],
-                        "success"
-                      ],
-                      "==",
-                      true
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 移出队员4：操作成功"
-                    ]
-                  ],
-                  [
-                    [
-                      "SET_UI_COMP_TEXT",
-                      [
-                        "TRIGGER_PLAYER"
-                      ],
-                      [
-                        "GET_UI_COMP_BY_PATH",
-                        [
-                          "TRIGGER_PLAYER"
-                        ],
-                        "c3eb744a-f544-45d2-8e24-a2e279a67662",
-                        "chat_panel.label_chat_result"
-                      ],
-                      "ECA大厅UI - 移出队员4：失败，请查看日志"
+                      "ECA大厅UI - 移出队员：失败，请查看日志"
                     ]
                   ]
                 ],

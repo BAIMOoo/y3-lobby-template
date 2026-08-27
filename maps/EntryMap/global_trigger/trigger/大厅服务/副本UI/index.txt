@@ -1,0 +1,10 @@
+{
+    "ECA副本UI - 初始化.json": 0, 
+    "ECA副本UI - 发送世界聊天.json": 2, 
+    "ECA副本UI - 发送队伍聊天.json": 1, 
+    "ECA副本UI - 取消退出.json": 6, 
+    "ECA副本UI - 复制口令.json": 4, 
+    "ECA副本UI - 显示退出确认.json": 5, 
+    "ECA副本UI - 确认退出游戏.json": 7, 
+    "ECA副本UI - 返回大厅.json": 3
+}

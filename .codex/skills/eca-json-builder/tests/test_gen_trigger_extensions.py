@@ -636,6 +636,48 @@ class TriggerExtensionTests(unittest.TestCase):
             self.assertEqual(Path(out_dir), Path(root) / "maps" / "EntryMap" / "global_trigger" / "trigger")
             self.assertEqual(json.loads(Path(path).read_text(encoding="utf-8")), trigger)
 
+    def test_write_trigger_creates_nested_editor_folder_indexes(self):
+        trigger = {"trigger_name": "分类触发器"}
+        with tempfile.TemporaryDirectory() as root:
+            path, filename, out_dir = gen_trigger.write_trigger(
+                trigger,
+                "EntryMap",
+                root,
+                folder=["大厅服务", "大厅UI"],
+            )
+            trigger_root = (
+                Path(root) / "maps" / "EntryMap" / "global_trigger" / "trigger"
+            )
+            self.assertEqual("分类触发器.json", filename)
+            self.assertEqual(trigger_root / "大厅服务" / "大厅UI", Path(out_dir))
+            self.assertEqual(Path(out_dir) / filename, Path(path))
+            gen_trigger.update_index(out_dir, filename)
+            self.assertIn(
+                "大厅服务.folder",
+                json.loads((trigger_root / "index.txt").read_text(encoding="utf-8")),
+            )
+            self.assertIn(
+                "大厅UI.folder",
+                json.loads(
+                    (trigger_root / "大厅服务" / "index.txt").read_text(
+                        encoding="utf-8"
+                    )
+                ),
+            )
+            self.assertEqual(
+                {"分类触发器.json": 0},
+                json.loads((Path(out_dir) / "index.txt").read_text(encoding="utf-8")),
+            )
+
+        for folder in ["大厅服务", [], [".."], ["大厅服务/大厅UI"]]:
+            with self.subTest(folder=folder), self.assertRaises(ValueError):
+                gen_trigger.write_trigger(
+                    trigger,
+                    "EntryMap",
+                    root,
+                    folder=folder,
+                )
+
     def test_main_finds_project_from_dsl_when_called_outside_project(self):
         with tempfile.TemporaryDirectory() as project, tempfile.TemporaryDirectory() as outside:
             project_path = Path(project)

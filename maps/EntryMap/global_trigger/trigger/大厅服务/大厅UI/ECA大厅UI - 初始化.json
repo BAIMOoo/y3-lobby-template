@@ -932,7 +932,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_transfer_1"
+                                        "eca_lobby_transfer"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -987,7 +987,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_kick_1"
+                                        "eca_lobby_kick"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -1042,7 +1042,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_transfer_2"
+                                        "eca_lobby_transfer"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -1097,7 +1097,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_kick_2"
+                                        "eca_lobby_kick"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -1152,7 +1152,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_transfer_3"
+                                        "eca_lobby_transfer"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -1207,7 +1207,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_kick_3"
+                                        "eca_lobby_kick"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -1262,7 +1262,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_transfer_4"
+                                        "eca_lobby_transfer"
                                     ], 
                                     "sub_type": 1
                                 }
@@ -1317,7 +1317,7 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_lobby_kick_4"
+                                        "eca_lobby_kick"
                                     ], 
                                     "sub_type": 1
                                 }

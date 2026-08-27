@@ -1,5 +1,9 @@
 {
   "map": "EntryMap",
+  "folder": [
+    "大厅服务",
+    "副本UI"
+  ],
   "triggers": [
     {
       "name": "ECA副本UI - 初始化",

@@ -766,6 +766,17 @@ py -3 .codex\skills\eca-json-builder\lookup.py CREATE_UNIT
    }
    ```
 
+   需要在编辑器中分类时，在触发器 DSL 顶层声明文件夹段：
+   ```json
+   {
+     "map": "EntryMap",
+     "folder": ["大厅服务", "大厅UI"],
+     "triggers": []
+   }
+   ```
+   `gen_trigger.py` 会把触发器写入对应子目录，并在每一级 `index.txt` 中维护
+   `<文件夹名>.folder` 条目。`folder` 必须是非空字符串数组，每段只表示一级目录。
+
 6. **刷新编辑器**：关闭并重新打开触发器编辑面板即可看到。
 
 ---

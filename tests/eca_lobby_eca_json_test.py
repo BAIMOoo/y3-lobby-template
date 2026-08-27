@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 import unittest
 from pathlib import Path
 
@@ -9,11 +11,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 FUNCTION_DSL = ROOT / "tools" / "eca" / "lobby_service_functions.json"
 TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_service_tests.json"
+ENTRY_TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_service_entry_map_tests.json"
 STATUS_TRIGGER_DSL = ROOT / "tools" / "eca" / "lobby_status_event_listener.json"
 ENTRY_UI_DSL = ROOT / "tools" / "eca" / "lobby_ui_entry_map.json"
 DUNGEON_UI_DSL = ROOT / "tools" / "eca" / "lobby_ui_dungeon_map.json"
 MAP_NAMES = ["EntryMap", "MapName001"]
 ENTRY_LEVEL_ID = "172371058548994502264384971909138463342"
+TRIGGER_ROOT = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
+LOBBY_TRIGGER_ROOT = TRIGGER_ROOT / "大厅服务"
+LOBBY_UI_TRIGGER_ROOT = LOBBY_TRIGGER_ROOT / "大厅UI"
+DUNGEON_UI_TRIGGER_ROOT = LOBBY_TRIGGER_ROOT / "副本UI"
+LOBBY_TEST_TRIGGER_ROOT = LOBBY_TRIGGER_ROOT / "接口测试"
 
 EXPECTED_ECA_NAMES = [
     "大厅服务 - 建立连接",
@@ -86,6 +94,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
     def setUp(self):
         self.function_dsl = load_json(FUNCTION_DSL)
         self.trigger_dsl = load_json(TRIGGER_DSL)
+        self.entry_trigger_dsl = load_json(ENTRY_TRIGGER_DSL)
         self.status_trigger_dsl = load_json(STATUS_TRIGGER_DSL)
         self.entry_ui_dsl = load_json(ENTRY_UI_DSL)
         self.dungeon_ui_dsl = load_json(DUNGEON_UI_DSL)
@@ -128,11 +137,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
         )
 
         generated = load_json(
-            ROOT
-            / "maps"
-            / "EntryMap"
-            / "global_trigger"
-            / "trigger"
+            LOBBY_TEST_TRIGGER_ROOT
             / "大厅服务 - 状态变化打印.json"
         )
         self.assertEqual(1931000009, generated["trigger_id"])
@@ -422,11 +427,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
 
     def test_entry_map_return_lobby_trigger_uses_real_engine_target_and_is_request_only(self):
         trigger = load_json(
-            ROOT
-            / "maps"
-            / "EntryMap"
-            / "global_trigger"
-            / "trigger"
+            LOBBY_TEST_TRIGGER_ROOT
             / "大厅服务 - 返回大厅测试.json"
         )
         fields = {}
@@ -449,6 +450,42 @@ class LobbyEcaJsonTests(unittest.TestCase):
         self.assertNotIn("大厅服务请求完成", serialized)
         self.assertFalse(trigger.get("sub_trigger"))
         self.assertIn("platform_requested", serialized)
+
+    def test_entry_map_private_dungeon_trigger_uses_real_cross_map_targets(self):
+        trigger = load_json(
+            LOBBY_TEST_TRIGGER_ROOT
+            / "大厅服务 - 局内私人副本测试.json"
+        )
+        serialized = json.dumps(trigger, ensure_ascii=False)
+        literal_fields = {}
+        for action in trigger["action"]:
+            if action["action_type"] != "SET_TABLE_VALUE_1D":
+                continue
+            key_arg, value_arg = action["args_list"][1:3]
+            value = value_arg.get("args_list", [None])[0]
+            if isinstance(value, (str, int)):
+                literal_fields[key_arg["args_list"][0]] = value
+        self.assertEqual(
+            {
+                "action": "private_dungeon",
+                "level_id": "50377054694119407947881484918402159964",
+                "engine_level_id": "25e6448f-7e73-11f1-88ae-03dc5a85955c",
+                "game_mode": 1003,
+                "team_game_mode": 1002,
+                "max_player": 2,
+            },
+            literal_fields,
+        )
+        for expected in [
+            '"game_map_id"',
+            "状态快照立即结果",
+            "06baf266d22b5844b236f6a8dea1828e",
+        ]:
+            with self.subTest(expected=expected):
+                self.assertIn(expected, serialized)
+        self.assertNotIn("your_level_id", serialized)
+        self.assertNotIn("your_game_map_id", serialized)
+        self.assertNotIn("optional_custom_param", serialized)
 
     def test_trigger_examples_are_not_documenting_immediate_success_for_async_calls(self):
         serialized = json.dumps(self.trigger_dsl, ensure_ascii=False)
@@ -550,7 +587,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
             for trigger in dsl["triggers"]
             if trigger.get("sub_triggers")
         ]
-        self.assertGreaterEqual(len(triggers), 19)
+        self.assertGreaterEqual(len(triggers), 13)
         for trigger in triggers:
             serialized = json.dumps(trigger, ensure_ascii=False)
             with self.subTest(trigger=trigger["name"]):
@@ -560,11 +597,96 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertIn("request_id", serialized)
                 self.assertIn("UNREG_TRIGGER", serialized)
 
+    def test_member_management_buttons_share_one_dynamic_trigger_per_action(self):
+        cases = [
+            {
+                "trigger_name": "ECA大厅UI - 转移队长",
+                "button_prefix": "button_transfer_",
+                "event_name": "eca_lobby_transfer",
+                "function_id": "83b1f3fc8b595bdfbd913e7b09695ca5",
+                "trigger_id": 1942000006,
+                "child_id": 1942100005,
+            },
+            {
+                "trigger_name": "ECA大厅UI - 移出队员",
+                "button_prefix": "button_kick_",
+                "event_name": "eca_lobby_kick",
+                "function_id": "54499d6fa32853e1870acd409a6515ea",
+                "trigger_id": 1942000007,
+                "child_id": 1942100006,
+            },
+        ]
+        trigger_names = [trigger["name"] for trigger in self.entry_ui_dsl["triggers"]]
+        initializer = next(
+            trigger
+            for trigger in self.entry_ui_dsl["triggers"]
+            if trigger["name"] == "ECA大厅UI - 初始化"
+        )
+        trigger_root = LOBBY_UI_TRIGGER_ROOT
+        for case in cases:
+            trigger_name = case["trigger_name"]
+            with self.subTest(trigger=trigger_name):
+                self.assertEqual(1, trigger_names.count(trigger_name))
+                for index in range(1, 5):
+                    self.assertNotIn(f"{trigger_name}{index}", trigger_names)
+
+                bindings = [
+                    node
+                    for node in walk_json(initializer)
+                    if isinstance(node, list)
+                    and len(node) == 4
+                    and node[0] == "CREATE_UI_COMP_EVENT_EX_EX"
+                    and isinstance(node[1], list)
+                    and len(node[1]) == 4
+                    and node[1][0] == "GET_UI_COMP_BY_PATH"
+                    and case["button_prefix"] in node[1][3]
+                ]
+                self.assertEqual(4, len(bindings))
+                self.assertEqual(
+                    {case["event_name"]},
+                    {binding[3] for binding in bindings},
+                )
+
+                trigger = next(
+                    trigger
+                    for trigger in self.entry_ui_dsl["triggers"]
+                    if trigger["name"] == trigger_name
+                )
+                serialized = json.dumps(trigger, ensure_ascii=False)
+                for expected in [
+                    "GET_UI_COMP_FROM_EVENT",
+                    "GET_UI_COMP_NAME",
+                    "STR_REPLACE",
+                    case["button_prefix"],
+                    "STR_TO_INT",
+                    "ff8d602fd5235532934fcc588f045d96",
+                    case["function_id"],
+                    "request_id",
+                    "UNREG_TRIGGER",
+                ]:
+                    self.assertIn(expected, serialized)
+                self.assertEqual(1, len(trigger.get("sub_triggers", [])))
+
+                generated_path = trigger_root / f"{trigger_name}.json"
+                self.assertTrue(generated_path.is_file())
+                for index in range(1, 5):
+                    self.assertFalse(
+                        (trigger_root / f"{trigger_name}{index}.json").exists()
+                    )
+
+                generated = load_json(generated_path)
+                self.assertEqual(case["trigger_id"], generated["trigger_id"])
+                child_id = str(case["child_id"])
+                self.assertEqual([child_id], list(generated.get("sub_trigger", {})))
+                child = generated["sub_trigger"][child_id]
+                self.assertEqual(case["trigger_id"], child["p_trigger_id"])
+                self.assertFalse(child["enabled"])
+                self.assertIn(child_id, json.dumps(generated["action"]))
+
     def test_generated_button_enable_actions_use_literal_boolean_values(self):
-        trigger_root = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
         initializers = [
-            load_json(trigger_root / "ECA大厅UI - 初始化.json"),
-            load_json(trigger_root / "ECA副本UI - 初始化.json"),
+            load_json(LOBBY_UI_TRIGGER_ROOT / "ECA大厅UI - 初始化.json"),
+            load_json(DUNGEON_UI_TRIGGER_ROOT / "ECA副本UI - 初始化.json"),
         ]
         enable_actions = [
             node
@@ -632,18 +754,15 @@ class LobbyEcaJsonTests(unittest.TestCase):
         )
 
     def test_generated_ui_triggers_keep_editor_ui_type_ids_and_timer_metadata(self):
-        generated = []
-        for map_name, pattern in [
-            ("EntryMap", "ECA大厅UI - *.json"),
-            ("EntryMap", "ECA副本UI - *.json"),
-        ]:
-            generated.extend(
-                load_json(path)
-                for path in (
-                    ROOT / "maps" / map_name / "global_trigger" / "trigger"
-                ).glob(pattern)
-            )
-        self.assertEqual(30, len(generated))
+        generated = [
+            load_json(path)
+            for trigger_root, pattern in [
+                (LOBBY_UI_TRIGGER_ROOT, "ECA大厅UI - *.json"),
+                (DUNGEON_UI_TRIGGER_ROOT, "ECA副本UI - *.json"),
+            ]
+            for path in trigger_root.glob(pattern)
+        ]
+        self.assertEqual(24, len(generated))
         all_nodes = [node for trigger in generated for node in walk_json(trigger)]
         ui_args = [
             node
@@ -718,11 +837,70 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 for name in ("EcaLobbyExample", "EcaDungeonExample")
             },
         )
-        entry_trigger_root = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
         child_trigger_root = ROOT / "maps" / "MapName001" / "global_trigger" / "trigger"
-        self.assertEqual(22, len(list(entry_trigger_root.glob("ECA大厅UI - *.json"))))
-        self.assertEqual(8, len(list(entry_trigger_root.glob("ECA副本UI - *.json"))))
+        self.assertEqual(16, len(list(LOBBY_UI_TRIGGER_ROOT.glob("ECA大厅UI - *.json"))))
+        self.assertEqual(8, len(list(DUNGEON_UI_TRIGGER_ROOT.glob("ECA副本UI - *.json"))))
         self.assertEqual([], list(child_trigger_root.glob("ECA副本UI - *.json")))
+
+    def test_entry_map_groups_generated_triggers_by_domain(self):
+        self.assertEqual(["大厅服务", "大厅UI"], self.entry_ui_dsl["folder"])
+        self.assertEqual(["大厅服务", "副本UI"], self.dungeon_ui_dsl["folder"])
+        self.assertEqual(["大厅服务", "接口测试"], self.trigger_dsl["folder"])
+        self.assertEqual(["大厅服务", "接口测试"], self.entry_trigger_dsl["folder"])
+        self.assertEqual(
+            ["大厅服务", "接口测试"],
+            self.status_trigger_dsl["folder"],
+        )
+
+        root_index = load_json(TRIGGER_ROOT / "index.txt")
+        self.assertEqual(
+            {"New trigger.json", "UI.folder", "大厅服务.folder"},
+            set(root_index),
+        )
+        self.assertEqual(
+            {"大厅UI.folder", "副本UI.folder", "接口测试.folder"},
+            set(load_json(LOBBY_TRIGGER_ROOT / "index.txt")),
+        )
+
+        expected_by_folder = {
+            LOBBY_UI_TRIGGER_ROOT: {
+                f"{trigger['name']}.json"
+                for trigger in self.entry_ui_dsl["triggers"]
+            },
+            DUNGEON_UI_TRIGGER_ROOT: {
+                f"{trigger['name']}.json"
+                for trigger in self.dungeon_ui_dsl["triggers"]
+            },
+            LOBBY_TEST_TRIGGER_ROOT: {
+                f"{trigger['name']}.json"
+                for dsl in (self.entry_trigger_dsl, self.status_trigger_dsl)
+                for trigger in dsl["triggers"]
+            },
+        }
+        for folder, expected in expected_by_folder.items():
+            with self.subTest(folder=folder.name):
+                self.assertEqual(expected, set(load_json(folder / "index.txt")))
+                self.assertEqual(
+                    expected,
+                    {path.name for path in folder.glob("*.json")},
+                )
+
+        root_business_files = [
+            path.name
+            for path in TRIGGER_ROOT.glob("*.json")
+            if path.name.startswith(("ECA", "大厅服务 - "))
+        ]
+        self.assertEqual([], root_business_files)
+
+    def test_entry_map_service_test_dsl_is_current(self):
+        result = subprocess.run(
+            [sys.executable, "tools/eca/build_entry_map_service_tests.py", "--check"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
     def test_ui_initializers_use_exact_lobby_runtime_context(self):
         expected = [
@@ -802,14 +980,12 @@ class LobbyEcaJsonTests(unittest.TestCase):
     def test_generated_runtime_context_only_compares_converted_mode_strings(self):
         generated = [
             load_json(
-                ROOT
-                / "maps"
-                / "EntryMap"
-                / "global_trigger"
-                / "trigger"
+                LOBBY_UI_TRIGGER_ROOT
                 / name
             )
-            for name in ["ECA大厅UI - 初始化.json", "ECA副本UI - 初始化.json"]
+            for name in ["ECA大厅UI - 初始化.json"]
+        ] + [
+            load_json(DUNGEON_UI_TRIGGER_ROOT / "ECA副本UI - 初始化.json")
         ]
         for trigger in generated:
             conditions = trigger["action"][0]["args_list"][0]["args_list"]

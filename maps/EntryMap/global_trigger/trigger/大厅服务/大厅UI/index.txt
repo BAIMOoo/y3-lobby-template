@@ -1,0 +1,18 @@
+{
+    "ECA大厅UI - 创建队伍.json": 1, 
+    "ECA大厅UI - 初始化.json": 0, 
+    "ECA大厅UI - 加入口令.json": 10, 
+    "ECA大厅UI - 加入队伍.json": 2, 
+    "ECA大厅UI - 匹配切换.json": 11, 
+    "ECA大厅UI - 发送世界聊天.json": 8, 
+    "ECA大厅UI - 发送队伍聊天.json": 7, 
+    "ECA大厅UI - 取消退出.json": 13, 
+    "ECA大厅UI - 同关卡不同模式.json": 15, 
+    "ECA大厅UI - 局内私人副本.json": 9, 
+    "ECA大厅UI - 显示退出确认.json": 12, 
+    "ECA大厅UI - 确认退出游戏.json": 14, 
+    "ECA大厅UI - 离开队伍.json": 3, 
+    "ECA大厅UI - 移出队员.json": 6, 
+    "ECA大厅UI - 解散队伍.json": 4, 
+    "ECA大厅UI - 转移队长.json": 5
+}

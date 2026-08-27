@@ -887,9 +887,32 @@ def build_trigger(spec, idx_data, default_id, parent_id=None, is_sub_trigger=Fal
 # IO
 # ---------------------------------------------------------------------------
 
-def write_trigger(trigger, map_name, project_root):
+def normalize_folder_parts(folder):
+    if folder is None:
+        return []
+    if not isinstance(folder, list) or not folder:
+        raise ValueError("folder must be a non-empty list of folder names")
+    for part in folder:
+        if (
+            not isinstance(part, str)
+            or not part
+            or part != part.strip()
+            or part in (".", "..")
+            or "/" in part
+            or "\\" in part
+        ):
+            raise ValueError(f"invalid trigger folder name: {part!r}")
+    return list(folder)
+
+
+def write_trigger(trigger, map_name, project_root, folder=None):
+    folder_parts = normalize_folder_parts(folder)
     out_dir = os.path.join(project_root, "maps", map_name, "global_trigger", "trigger")
     os.makedirs(out_dir, exist_ok=True)
+    for part in folder_parts:
+        update_index(out_dir, part + ".folder")
+        out_dir = os.path.join(out_dir, part)
+        os.makedirs(out_dir, exist_ok=True)
     fname = trigger["trigger_name"] + ".json"
     path = os.path.join(out_dir, fname)
     with open(path, "w", encoding="utf-8") as f:
@@ -962,6 +985,8 @@ def main(argv=None):
         if root is None:
             raise ValueError("project root not found; pass --root")
     custom_event_ids = load_custom_event_name_map(root, map_name)
+    folder = dsl.get("folder")
+    normalize_folder_parts(folder)
 
     # auto-id seed: 1718000001 + N
     base_id = 1718000001
@@ -982,7 +1007,12 @@ def main(argv=None):
             print(json.dumps(trig, ensure_ascii=False, indent=2))
             results.append((trig["trigger_name"], None, None))
         else:
-            path, fname, out_dir = write_trigger(trig, map_name, root)
+            path, fname, out_dir = write_trigger(
+                trig,
+                map_name,
+                root,
+                folder=folder,
+            )
             idx = update_index(out_dir, fname)
             results.append((trig["trigger_name"], path, idx))
 

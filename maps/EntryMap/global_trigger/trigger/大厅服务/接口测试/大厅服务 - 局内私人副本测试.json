@@ -56,7 +56,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1931000004000015, 
+            "element_id": 1931000004000003, 
             "enable": true
         }, 
         {
@@ -92,7 +92,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000003, 
+            "element_id": 1931000004000004, 
             "enable": true
         }, 
         {
@@ -128,7 +128,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000004, 
+            "element_id": 1931000004000005, 
             "enable": true
         }, 
         {
@@ -164,7 +164,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000007, 
+            "element_id": 1931000004000006, 
             "enable": true
         }, 
         {
@@ -233,7 +233,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000016, 
+            "element_id": 1931000004000007, 
             "enable": true
         }, 
         {
@@ -269,7 +269,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000005, 
+            "element_id": 1931000004000008, 
             "enable": true
         }, 
         {
@@ -305,7 +305,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000017, 
+            "element_id": 1931000004000009, 
             "enable": true
         }, 
         {
@@ -341,7 +341,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000006, 
+            "element_id": 1931000004000010, 
             "enable": true
         }, 
         {
@@ -363,7 +363,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000009, 
+            "element_id": 1931000004000011, 
             "enable": true
         }, 
         {
@@ -410,7 +410,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1931000004000010, 
+            "element_id": 1931000004000012, 
             "enable": true
         }, 
         {
@@ -432,7 +432,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000011, 
+            "element_id": 1931000004000013, 
             "enable": true
         }, 
         {
@@ -486,7 +486,7 @@
                                 }
                             ], 
                             "condition_type": "STRING_COMPARE", 
-                            "element_id": 1931000004000012, 
+                            "element_id": 1931000004000014, 
                             "enable": true
                         }
                     ], 
@@ -521,7 +521,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1931000004000013, 
+                            "element_id": 1931000004000015, 
                             "enable": true
                         }
                     ], 
@@ -529,7 +529,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1931000004000014, 
+            "element_id": 1931000004000016, 
             "enable": true, 
             "fake_op": [
                 2
@@ -762,8 +762,8 @@
         }, 
         [
             "副本参数", 
-            "局内私人副本立即结果", 
-            "状态快照立即结果"
+            "状态快照立即结果", 
+            "局内私人副本立即结果"
         ]
     ]
 }

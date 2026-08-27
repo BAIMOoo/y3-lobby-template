@@ -293,6 +293,41 @@ def async_trigger(
     }
 
 
+def member_async_trigger(
+    ids: Ids,
+    *,
+    name: str,
+    event_name: str,
+    button_name_prefix: str,
+    function_key: str,
+):
+    member_index = [
+        "STR_TO_INT",
+        [
+            "STR_REPLACE",
+            ["GET_UI_COMP_NAME", player(), ["GET_UI_COMP_FROM_EVENT"]],
+            button_name_prefix,
+            "",
+        ],
+    ]
+    member_result = f"{name}操作目标"
+    member_aid = integer_field(
+        table_field(result_data(member_result), "member"),
+        "aid",
+    )
+    return async_trigger(
+        ids,
+        name=name,
+        event_name=event_name,
+        root=ENTRY_ROOT,
+        button_path=f"team_panel.member_row_1.{button_name_prefix}1",
+        result_path="chat_panel.label_chat_result",
+        function_key=function_key,
+        args=[member_aid],
+        pre_actions=[call("member", member_result, [member_index])],
+    )
+
+
 def request_only_trigger(
     ids: Ids,
     *,
@@ -587,8 +622,8 @@ def entry_dsl():
     ]
     for index in range(1, 5):
         bindings.extend([
-            (f"team_panel.member_row_{index}.button_transfer_{index}", f"eca_lobby_transfer_{index}"),
-            (f"team_panel.member_row_{index}.button_kick_{index}", f"eca_lobby_kick_{index}"),
+            (f"team_panel.member_row_{index}.button_transfer_{index}", "eca_lobby_transfer"),
+            (f"team_panel.member_row_{index}.button_kick_{index}", "eca_lobby_kick"),
         ])
 
     triggers = [init_trigger(
@@ -642,34 +677,26 @@ def entry_dsl():
         ),
     ])
 
-    for index in range(1, 5):
-        member_result = f"成员操作目标{index}"
-        member_aid = integer_field(table_field(result_data(member_result), "member"), "aid")
-        pre = [call("member", member_result, [index])]
-        triggers.extend([
-            async_trigger(
-                ids,
-                name=f"ECA大厅UI - 转移队长{index}",
-                event_name=f"eca_lobby_transfer_{index}",
-                root=ENTRY_ROOT,
-                button_path=f"team_panel.member_row_{index}.button_transfer_{index}",
-                result_path="chat_panel.label_chat_result",
-                function_key="transfer",
-                args=[member_aid],
-                pre_actions=pre,
-            ),
-            async_trigger(
-                ids,
-                name=f"ECA大厅UI - 移出队员{index}",
-                event_name=f"eca_lobby_kick_{index}",
-                root=ENTRY_ROOT,
-                button_path=f"team_panel.member_row_{index}.button_kick_{index}",
-                result_path="chat_panel.label_chat_result",
-                function_key="kick",
-                args=[member_aid],
-                pre_actions=pre,
-            ),
-        ])
+    triggers.extend([
+        member_async_trigger(
+            ids,
+            name="ECA大厅UI - 转移队长",
+            event_name="eca_lobby_transfer",
+            button_name_prefix="button_transfer_",
+            function_key="transfer",
+        ),
+        member_async_trigger(
+            ids,
+            name="ECA大厅UI - 移出队员",
+            event_name="eca_lobby_kick",
+            button_name_prefix="button_kick_",
+            function_key="kick",
+        ),
+    ])
+    for _ in range(6):
+        # Preserve the six old duplicate trigger ID slots so later IDs stay stable.
+        ids.next_child()
+        ids.next_parent()
 
     chat_input = ["GET_INPUT_FIELD_CONTENT", player(), ui(ENTRY_ROOT, "chat_panel.input_chat")]
     triggers.extend([
@@ -853,7 +880,11 @@ def entry_dsl():
             ["SET_TABLE_VALUE_1D", table_var(same_level_params), "max_player", 2],
         ],
     ))
-    return {"map": "EntryMap", "triggers": triggers}
+    return {
+        "map": "EntryMap",
+        "folder": ["大厅服务", "大厅UI"],
+        "triggers": triggers,
+    }
 
 
 def dungeon_dsl():
@@ -970,7 +1001,11 @@ def dungeon_dsl():
             pre_actions=[set_visible(DUNGEON_ROOT, "exit_confirm_overlay", False)],
         ),
     ])
-    return {"map": "EntryMap", "triggers": triggers}
+    return {
+        "map": "EntryMap",
+        "folder": ["大厅服务", "副本UI"],
+        "triggers": triggers,
+    }
 
 
 def render(data) -> str:

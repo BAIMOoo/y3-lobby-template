@@ -36,13 +36,13 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "ECA大厅UI - 移出队员2：处理中"
+                        "ECA大厅UI - 移出队员：处理中"
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000009000002, 
+            "element_id": 1942000007000002, 
             "enable": true
         }, 
         {
@@ -54,9 +54,50 @@
                         {
                             "arg_type": 100002, 
                             "args_list": [
-                                2
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "TRIGGER_PLAYER"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [], 
+                                                    "sub_type": "GET_UI_COMP_FROM_EVENT"
+                                                }
+                                            ], 
+                                            "sub_type": "GET_UI_COMP_NAME"
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "button_kick_"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                ""
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "op_arg": [
+                                        null
+                                    ], 
+                                    "op_arg_enable": [
+                                        false
+                                    ], 
+                                    "sub_type": "STR_REPLACE"
+                                }
                             ], 
-                            "sub_type": 1
+                            "sub_type": "STR_TO_INT"
                         }
                     ], 
                     "op_arg": [], 
@@ -70,7 +111,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "成员操作目标2", 
+                                "ECA大厅UI - 移出队员操作目标", 
                                 "local"
                             ]
                         }
@@ -82,7 +123,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1942000009000003, 
+            "element_id": 1942000007000003, 
             "enable": true
         }, 
         {
@@ -107,7 +148,7 @@
                                                             "__tuple__": true, 
                                                             "items": [
                                                                 "TABLE", 
-                                                                "成员操作目标2", 
+                                                                "ECA大厅UI - 移出队员操作目标", 
                                                                 "local"
                                                             ]
                                                         }
@@ -156,7 +197,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "ECA大厅UI - 移出队员2立即结果", 
+                                "ECA大厅UI - 移出队员立即结果", 
                                 "local"
                             ]
                         }
@@ -168,7 +209,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1942000009000004, 
+            "element_id": 1942000007000004, 
             "enable": true
         }, 
         {
@@ -189,7 +230,7 @@
                                                     "__tuple__": true, 
                                                     "items": [
                                                         "TABLE", 
-                                                        "ECA大厅UI - 移出队员2立即结果", 
+                                                        "ECA大厅UI - 移出队员立即结果", 
                                                         "local"
                                                     ]
                                                 }
@@ -222,7 +263,7 @@
                                 }
                             ], 
                             "condition_type": "BOOL_COMPARE", 
-                            "element_id": 1942000009000005, 
+                            "element_id": 1942000007000005, 
                             "enable": true
                         }
                     ], 
@@ -249,7 +290,7 @@
                                                                     "__tuple__": true, 
                                                                     "items": [
                                                                         "TABLE", 
-                                                                        "ECA大厅UI - 移出队员2立即结果", 
+                                                                        "ECA大厅UI - 移出队员立即结果", 
                                                                         "local"
                                                                     ]
                                                                 }
@@ -282,7 +323,7 @@
                                                 }
                                             ], 
                                             "condition_type": "STRING_COMPARE", 
-                                            "element_id": 1942000009000006, 
+                                            "element_id": 1942000007000006, 
                                             "enable": true
                                         }
                                     ], 
@@ -327,16 +368,16 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        "ECA大厅UI - 移出队员2：请求已受理"
+                                                        "ECA大厅UI - 移出队员：请求已受理"
                                                     ], 
                                                     "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000009000007, 
+                                            "element_id": 1942000007000007, 
                                             "enable": true
                                         }, 
-                                        1942100008
+                                        1942100006
                                     ], 
                                     "sub_type": 1
                                 }, 
@@ -379,13 +420,13 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        "ECA大厅UI - 移出队员2：同步完成"
+                                                        "ECA大厅UI - 移出队员：同步完成"
                                                     ], 
                                                     "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000009000008, 
+                                            "element_id": 1942000007000008, 
                                             "enable": true
                                         }, 
                                         {
@@ -398,7 +439,7 @@
                                                             "__tuple__": true, 
                                                             "items": [
                                                                 "TABLE", 
-                                                                "ECA大厅UI - 移出队员2立即结果", 
+                                                                "ECA大厅UI - 移出队员立即结果", 
                                                                 "local"
                                                             ]
                                                         }
@@ -407,7 +448,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000009000009, 
+                                            "element_id": 1942000007000009, 
                                             "enable": true
                                         }
                                     ], 
@@ -415,7 +456,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000009000010, 
+                            "element_id": 1942000007000010, 
                             "enable": true, 
                             "fake_op": [
                                 2
@@ -463,13 +504,13 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "ECA大厅UI - 移出队员2：失败，请查看日志"
+                                        "ECA大厅UI - 移出队员：失败，请查看日志"
                                     ], 
                                     "sub_type": 1
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000009000011, 
+                            "element_id": 1942000007000011, 
                             "enable": true
                         }, 
                         {
@@ -482,7 +523,7 @@
                                             "__tuple__": true, 
                                             "items": [
                                                 "TABLE", 
-                                                "ECA大厅UI - 移出队员2立即结果", 
+                                                "ECA大厅UI - 移出队员立即结果", 
                                                 "local"
                                             ]
                                         }
@@ -491,7 +532,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000009000012, 
+                            "element_id": 1942000007000012, 
                             "enable": true
                         }
                     ], 
@@ -499,7 +540,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000009000013, 
+            "element_id": 1942000007000013, 
             "enable": true, 
             "fake_op": [
                 2
@@ -518,7 +559,7 @@
                         {
                             "arg_type": 100003, 
                             "args_list": [
-                                "eca_lobby_kick_2"
+                                "eca_lobby_kick"
                             ], 
                             "sub_type": 1
                         }
@@ -526,7 +567,7 @@
                     "sub_type": "STR_TO_UI_EVENT"
                 }
             ], 
-            "element_id": 1942000009000001, 
+            "element_id": 1942000007000001, 
             "enable": true, 
             "event_type": "TRIGGER_COMPONENT_EVENT"
         }
@@ -534,7 +575,7 @@
     "group_id": 0, 
     "p_trigger_id": null, 
     "sub_trigger": {
-        "1942100008": {
+        "1942100006": {
             "action": [
                 {
                     "action_type": "IF_THEN_ELSE", 
@@ -587,7 +628,7 @@
                                                             "__tuple__": true, 
                                                             "items": [
                                                                 "TABLE", 
-                                                                "ECA大厅UI - 移出队员2立即结果", 
+                                                                "ECA大厅UI - 移出队员立即结果", 
                                                                 "local"
                                                             ]
                                                         }
@@ -606,7 +647,7 @@
                                         }
                                     ], 
                                     "condition_type": "STRING_COMPARE", 
-                                    "element_id": 1942100008000002, 
+                                    "element_id": 1942100006000002, 
                                     "enable": true
                                 }
                             ], 
@@ -665,7 +706,7 @@
                                                         }
                                                     ], 
                                                     "condition_type": "BOOL_COMPARE", 
-                                                    "element_id": 1942100008000003, 
+                                                    "element_id": 1942100006000003, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -710,13 +751,13 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "ECA大厅UI - 移出队员2：操作成功"
+                                                                "ECA大厅UI - 移出队员：操作成功"
                                                             ], 
                                                             "sub_type": 1
                                                         }
                                                     ], 
                                                     "bp": false, 
-                                                    "element_id": 1942100008000004, 
+                                                    "element_id": 1942100006000004, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -761,13 +802,13 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "ECA大厅UI - 移出队员2：失败，请查看日志"
+                                                                "ECA大厅UI - 移出队员：失败，请查看日志"
                                                             ], 
                                                             "sub_type": 1
                                                         }
                                                     ], 
                                                     "bp": false, 
-                                                    "element_id": 1942100008000005, 
+                                                    "element_id": 1942100006000005, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -775,7 +816,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100008000006, 
+                                    "element_id": 1942100006000006, 
                                     "enable": true, 
                                     "fake_op": [
                                         2
@@ -799,7 +840,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100008000007, 
+                                    "element_id": 1942100006000007, 
                                     "enable": true
                                 }, 
                                 {
@@ -812,7 +853,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100008000008, 
+                                    "element_id": 1942100006000008, 
                                     "enable": true
                                 }
                             ], 
@@ -825,7 +866,7 @@
                         }
                     ], 
                     "bp": false, 
-                    "element_id": 1942100008000009, 
+                    "element_id": 1942100006000009, 
                     "enable": true, 
                     "fake_op": [
                         2
@@ -846,16 +887,16 @@
                             "sub_type": 1
                         }
                     ], 
-                    "element_id": 1942100008000001, 
+                    "element_id": 1942100006000001, 
                     "enable": true, 
                     "event_type": "RECEIVE_CUSTOM_EVENT"
                 }
             ], 
             "group_id": 0, 
             "is_conf": true, 
-            "p_trigger_id": 1942000009, 
-            "trigger_id": 1942100008, 
-            "trigger_name": "ECA大厅UI - 移出队员2完成回调", 
+            "p_trigger_id": 1942000007, 
+            "trigger_id": 1942100006, 
+            "trigger_name": "ECA大厅UI - 移出队员完成回调", 
             "valid": true, 
             "var_data": [
                 {}, 
@@ -864,23 +905,23 @@
             ]
         }
     }, 
-    "trigger_id": 1942000009, 
-    "trigger_name": "ECA大厅UI - 移出队员2", 
+    "trigger_id": 1942000007, 
+    "trigger_name": "ECA大厅UI - 移出队员", 
     "valid": true, 
     "var_data": [
         {
             "TABLE": {
-                "ECA大厅UI - 移出队员2立即结果": null, 
-                "成员操作目标2": null
+                "ECA大厅UI - 移出队员操作目标": null, 
+                "ECA大厅UI - 移出队员立即结果": null
             }
         }, 
         {
-            "ECA大厅UI - 移出队员2立即结果": 0, 
-            "成员操作目标2": 0
+            "ECA大厅UI - 移出队员操作目标": 0, 
+            "ECA大厅UI - 移出队员立即结果": 0
         }, 
         [
-            "成员操作目标2", 
-            "ECA大厅UI - 移出队员2立即结果"
+            "ECA大厅UI - 移出队员操作目标", 
+            "ECA大厅UI - 移出队员立即结果"
         ]
     ]
 }

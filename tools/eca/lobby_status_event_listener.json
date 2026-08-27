@@ -1,5 +1,6 @@
 {
     "map": "EntryMap",
+    "folder": ["大厅服务", "接口测试"],
     "triggers": [
         {
             "name": "大厅服务 - 状态变化打印",
