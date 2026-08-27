@@ -2,7 +2,7 @@
 
 [返回文档首页](./README.md)
 
-本文面向 ECA 作者，只说明 26 个 ECA 对外调用接口、返回字段和请求完成事件。迁移步骤见 [迁移](./02-迁移.md)。
+本文面向 ECA 作者，只说明 26 个 ECA 对外调用接口、返回字段和请求完成事件。仓库的 `main` 分支是 Lua 实现；ECA 作者应切换到 `eca-example-map` 分支参照编辑器内的函数、触发器和 UI。迁移步骤见 [迁移](./02-迁移.md)。
 
 退出游戏和普通异步请求的取消结果通过已有的 `大厅服务请求完成` 事件接收，不新增 ECA 对外调用接口。局内私人副本会先判断路由：无队伍或一人队伍路径是请求提交型跨图接口，不产生完成事件；多人队伍路径是组队异步接口，必须能发送 `大厅服务请求完成`。加入口令和返回大厅仍是请求提交型跨图接口，不产生完成事件。
 
@@ -17,6 +17,20 @@ ECA 项目需要先完成三件事：
 不要手工复制其他项目的事件编号或函数编号。目标项目已有同名事件或函数时，先按迁移文档处理冲突，不要同时保留两套同名内容。
 
 `大厅服务状态变化` 随触发包一并导入，用于实时刷新界面；项目不监听这个事件时不会阻断大厅功能。`大厅服务请求完成` 仍是异步接口必需事件。
+
+## 当前 ECA 模板实现
+
+`eca-example-map` 中的正式示例由 `EntryMap` 统一持有：
+
+- `EcaLobbyExample` 和 `EcaDungeonExample` 两套编辑器 UI；
+- 22 个大厅 UI 触发器和 8 个副本 UI 触发器；
+- 完整的 26 个“大厅服务 - ...”函数，以及函数测试和状态事件示例。
+
+两套 UI 不在 `MapName001` 重复保存。初始化触发器按当前模式切换界面：模式 `0` 或 `1001` 使用大厅 UI，其他模式使用副本 UI。ECA 分支保留 `test_ui.lua` 作为与 `main` 分支 Lua v22 界面的对照，但默认关闭，因此运行时只显示 ECA UI。
+
+正式玩家 UI 使用 21 个函数，并刻意排除开发面板及 5 个开发或初始化入口：“大厅服务 - 建立连接”“大厅服务 - 设置匹配分数”“大厅服务 - 获取队伍信息”“大厅服务 - 获取玩家信息”“大厅服务 - 刷新玩家信息”。完整触发包和函数测试仍包含这 5 个函数。当前模板用 `main.lua` 自动连接，仅是示例启动方式；纯 ECA 项目应在初始化触发器中调用“大厅服务 - 建立连接”。
+
+当前模板的跨图按钮“局内私人副本”“同关卡不同模式”“加入口令”和“返回大厅”统一显示“请求已提交，以切图结果为准”，不注册伪造的完成回调。接口契约仍以实际路由为准：多人队伍的局内私人副本可能返回非空 `request_id` 和真实异步完成事件；制作通用 ECA 流程时，应读取 `completion_mode` 后再决定是否等待回调。
 
 ## 编辑器操作路径
 
@@ -116,8 +130,16 @@ ECA 触发器中按下面方式调用：
 | 参数表 | 必填字段 | 可选字段 | 说明 |
 | --- | --- | --- | --- |
 | `匹配参数` | `level_id`、`game_mode` | `score` | `level_id` 和 `game_mode` 应与 `match.json` 对应 |
-| `副本参数` | `level_id`、`game_mode`、`max_player` | `engine_level_id`、`game_map_id`、`team_game_mode`、`custom_param` | 框架自动分流；若同一 ECA 调用需兼容单人和多人，实际应同时提供前三个路由字段。`level_id` 使用 `dungeon.json` 的 38 位配置键；`engine_level_id` 使用目标关卡 UUID；`game_map_id` 使用当前地图版本 UUID；`team_game_mode` 使用多人 BOB 模式；调用者不传 `players` |
+| `副本参数` | `level_id`、`game_mode`、`max_player` | `engine_level_id`、`game_map_id`、`team_game_mode`、`custom_param` | 框架自动分流。通用调用应同时提供 `level_id`、`engine_level_id`、`game_mode`、`game_map_id`、`team_game_mode`、`max_player`：单人路由使用目标关卡 UUID `engine_level_id`、`game_mode`、`max_player`；多人路由使用当前地图版本 UUID `game_map_id`、`dungeon.json` 的 38 位配置键 `level_id` 和 `team_game_mode`。调用者不传 `players` |
 | `大厅参数` | `level_id`、`game_mode`、`max_player` | `custom_param` | 用于返回大厅；`level_id` 是目标大厅关卡的引擎 UUID，不是 38 位平台关卡配置 ID，也不是当前地图的 `game_map_id` |
+
+`eca-example-map` 中的真实示例参数如下，仅用于核对字段含义，迁移时必须替换为目标项目自己的关卡和模式：
+
+| 示例动作 | 当前模板参数 |
+| --- | --- |
+| 进入 `MapName001` 私人副本 | `level_id = 50377054694119407947881484918402159964`、`engine_level_id = 25e6448f-7e73-11f1-88ae-03dc5a85955c`、`game_mode = 1003`、`team_game_mode = 1002`、`max_player = 2`，`game_map_id` 从状态快照读取 |
+| `EntryMap` 同关卡切换到私人副本模式 | `level_id = 172371058548994502264384971909138463342`、`engine_level_id = 81ad7554-7e6b-11f1-8f5c-c78cd393ba6e`、`game_mode = 1003`、`team_game_mode = 1003`、`max_player = 2`，`game_map_id` 从状态快照读取 |
+| 返回 `EntryMap` 大厅模式 | `level_id = 81ad7554-7e6b-11f1-8f5c-c78cd393ba6e`、`game_mode = 1001`、`max_player = 1` |
 
 `version` 字段由框架内部写入固定字符串 `"2.0"`，ECA 作者不需要传。
 
