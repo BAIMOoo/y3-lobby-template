@@ -7,11 +7,13 @@ local MATCH_GAME_MODE = 1002
 local PRIVATE_GAME_MODE = 1003
 local MATCH_LEVEL_ID = '50377054694119407947881484918402159964'
 local ENGINE_PRIVATE_LEVEL_ID = '25e6448f-7e73-11f1-88ae-03dc5a85955c'
+local LOBBY_PLATFORM_LEVEL_ID = '172371058548994502264384971909138463342'
 local LOBBY_LEVEL_ID = '81ad7554-7e6b-11f1-8f5c-c78cd393ba6e'
+local CURRENT_LEVEL_NAME = 'MapName001'
 local EXPECTED_PRIVATE_PLAYERS = 2
 local MAX_MEMBER_ROWS = 4
 local MAX_CHAT_LINES = 5
-local UI_LAYOUT_VERSION = 21
+local UI_LAYOUT_VERSION = 22
 
 local COLOR_TEXT = { 244, 234, 213, 255 }
 local COLOR_MUTED = { 197, 185, 159, 255 }
@@ -238,6 +240,11 @@ local function private_dungeon_summary(data)
     return string.format('队伍成员：传递 %d', selected)
 end
 
+local PRIVATE_DUNGEON_ACTIONS = {
+    ['局内私人副本'] = true,
+    ['同关卡不同模式'] = true,
+}
+
 local function write_log(level, message)
     local writer = log and (log[level] or log.info)
     if writer then
@@ -318,7 +325,7 @@ local function safe_action(name, action)
     if type(action_result) == 'table' and action_result.accepted ~= nil then
         if not action_result.accepted then
             runtime.notice = name .. '：' .. tostring(action_result.reason or action_result.code or '操作失败')
-            if name == '局内私人副本' then
+            if PRIVATE_DUNGEON_ACTIONS[name] then
                 runtime.notice = runtime.notice .. '；' .. private_dungeon_summary(action_result)
             end
             log_operation('warn', '操作拒绝', name, action_result)
@@ -327,7 +334,7 @@ local function safe_action(name, action)
         if action_result.result_data
             and action_result.result_data.cross_map_tracking == 'degraded' then
             runtime.notice = name .. '：' .. tostring(action_result.reason or '请求已发送，等待切图')
-            if name == '局内私人副本' then
+            if PRIVATE_DUNGEON_ACTIONS[name] then
                 runtime.notice = runtime.notice .. '；' .. private_dungeon_summary(action_result)
             end
             log_operation('info', '请求已发送', name, action_result)
@@ -336,7 +343,7 @@ local function safe_action(name, action)
         runtime.notice = name .. '：' .. tostring(action_result.sync
             and (action_result.reason or '操作完成')
             or '请求已受理')
-        if name == '局内私人副本' then
+        if PRIVATE_DUNGEON_ACTIONS[name] then
             runtime.notice = runtime.notice .. '；' .. private_dungeon_summary(action_result)
         end
         log_operation('info', action_result.sync and '同步完成' or '请求已受理', name, action_result)
@@ -523,7 +530,7 @@ local function get_private_dungeon_api()
     return y3.lobby.private_dungeon
 end
 
-local function request_private_dungeon()
+local function request_private_dungeon_to(level_id, engine_level_id, team_game_mode)
     local api = get_private_dungeon_api()
     if not api then
         return {
@@ -546,12 +553,20 @@ local function request_private_dungeon()
     local snapshot = lobby_state()
     return api({
         game_map_id = snapshot.game_map_id,
-        level_id = MATCH_LEVEL_ID,
-        engine_level_id = ENGINE_PRIVATE_LEVEL_ID,
+        level_id = level_id,
+        engine_level_id = engine_level_id,
         game_mode = PRIVATE_GAME_MODE,
-        team_game_mode = MATCH_GAME_MODE,
+        team_game_mode = team_game_mode,
         max_player = EXPECTED_PRIVATE_PLAYERS,
     })
+end
+
+local function request_private_dungeon()
+    return request_private_dungeon_to(MATCH_LEVEL_ID, ENGINE_PRIVATE_LEVEL_ID, MATCH_GAME_MODE)
+end
+
+local function request_same_level_private_dungeon()
+    return request_private_dungeon_to(LOBBY_PLATFORM_LEVEL_ID, LOBBY_LEVEL_ID, PRIVATE_GAME_MODE)
 end
 
 local function refresh()
@@ -582,7 +597,8 @@ local function refresh()
     runtime.return_button:set_visible(battle_mode)
     runtime.battle_chat_panel:set_visible(battle_mode)
     runtime.status_text:set_text(string.format(
-        '模式：%s (%s)    玩家：%s / ID=%s\n大厅服务：%s    连接：%s    AID=%s\n队伍：%s    人数：%s/%s    匹配：%s    启动：%s\n关卡口令：%s',
+        '关卡：%s    模式：%s (%s)\n玩家：%s / ID=%s    大厅服务：%s    连接：%s\nAID=%s    队伍：%s    人数：%s/%s\n匹配：%s    启动：%s\n关卡口令：%s',
+        CURRENT_LEVEL_NAME,
         mode_label(mode),
         tostring(mode),
         runtime.player:get_name(),
@@ -602,6 +618,7 @@ local function refresh()
         ready, in_team, is_captain, matching, launching)
     local private_dungeon_enabled = private_dungeon_reason == nil
     runtime.private_button:set_button_enable(private_dungeon_enabled)
+    runtime.same_level_private_button:set_button_enable(private_dungeon_enabled)
     local private_dungeon_log_state = private_dungeon_enabled and 'available' or private_dungeon_reason
     if runtime.private_dungeon_log_state ~= private_dungeon_log_state then
         runtime.private_dungeon_log_state = private_dungeon_log_state
@@ -945,9 +962,13 @@ local function build(player)
         safe_action('局内私人副本', request_private_dungeon)
         refresh()
     end, 'primary')
-    add_text(panel, 1358, 256, 160, 22, '关卡口令', 13, COLOR_MUTED)
-    runtime.dungeon_input = add_input(panel, 1358, 206, 340, 42)
-    runtime.dungeon_join_button = add_button(panel, 1710, 206, 166, 42, '加入副本', function()
+    runtime.same_level_private_button = add_button(panel, 1358, 244, 518, 42, '同关卡不同模式', function()
+        safe_action('同关卡不同模式', request_same_level_private_dungeon)
+        refresh()
+    end)
+    add_text(panel, 1358, 206, 160, 22, '关卡口令', 13, COLOR_MUTED)
+    runtime.dungeon_input = add_input(panel, 1358, 156, 340, 42)
+    runtime.dungeon_join_button = add_button(panel, 1710, 156, 166, 42, '加入副本', function()
         local token = runtime.dungeon_input:get_input_field_content()
         if token == '' or token:match('^%s*$') then
             runtime.notice = '加入口令：请输入关卡口令'
@@ -968,9 +989,9 @@ local function build(player)
         end
         refresh()
     end)
-    runtime.action_team_text = add_text(panel, 1358, 150, 518, 30, '', 14, COLOR_TEXT)
-    add_text(panel, 1358, 104, 518, 34,
-        '目标模式 1002 / 1003', 12, COLOR_MUTED)
+    runtime.action_team_text = add_text(panel, 1358, 108, 518, 30, '', 14, COLOR_TEXT)
+    add_text(panel, 1358, 62, 518, 34,
+        '跨关卡 1002 / 1003    同关卡 EntryMap / 1003', 12, COLOR_MUTED)
 
     local lobby_chat = build_chat_panel(panel, 24, 24, {
         context_label = '聊天上下文',
