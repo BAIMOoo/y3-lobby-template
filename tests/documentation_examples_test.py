@@ -29,6 +29,7 @@ MIGRATION_PACKAGE = DOCS / "迁移包"
 PACKAGE_Y3_ROOT = MIGRATION_PACKAGE / "script" / "y3"
 PACKAGE_PROTOCOL = MIGRATION_PACKAGE / "需要合并到项目" / "custom" / "protocol" / "protocol.pb"
 PACKAGE_ECA_TRIGGER = MIGRATION_PACKAGE / "大厅服务ECA触发包.zip"
+PACKAGE_ECA_UI = MIGRATION_PACKAGE / "大厅服务ECA示例UI.upui"
 WORKTREE = ROOT / ".omx" / "worktrees" / "y3-lualib-lobby"
 ENTRYMAP_Y3_ROOT = ROOT / "maps" / "EntryMap" / "script" / "y3"
 CHILD_MAP_Y3_ROOT = ROOT / "maps" / "MapName001" / "script" / "y3"
@@ -211,6 +212,7 @@ class DocumentationExamplesTest(unittest.TestCase):
         eca_doc = read_text(DOCS / "04-ECA功能使用.md")
         migration_doc = read_text(DOCS / "02-迁移.md")
         self.assertIn("导入迁移包中的 `大厅服务ECA触发包.zip`", eca_doc)
+        self.assertIn("导入只供 ECA 作者使用的 `大厅服务ECA示例UI.upui`", eca_doc)
         self.assertIn("从函数列表中选择导入的“大厅服务 - 接口名”", eca_doc)
         self.assertNotIn("执行 Lua 代码", eca_doc)
         self.assertNotIn("Bind['大厅服务 - 建立连接']", eca_doc)
@@ -285,7 +287,7 @@ class DocumentationExamplesTest(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertNotIn(value, corpus)
 
-    def test_migration_package_contains_only_official_lualib_protocol_and_eca_trigger(self):
+    def test_migration_package_contains_only_official_lualib_protocol_and_eca_artifacts(self):
         files = [path for path in MIGRATION_PACKAGE.rglob("*") if path.is_file()]
         unexpected = []
         for path in files:
@@ -296,13 +298,27 @@ class DocumentationExamplesTest(unittest.TestCase):
                 continue
             if rel == "大厅服务ECA触发包.zip":
                 continue
+            if rel == "大厅服务ECA示例UI.upui":
+                continue
             unexpected.append(rel)
         self.assertEqual([], unexpected, "迁移包存在白名单之外的文件：\n" + "\n".join(unexpected))
         self.assertTrue(PACKAGE_Y3_ROOT.is_dir())
         self.assertTrue((PACKAGE_Y3_ROOT / "game" / "lobby" / "proto" / "service_pb.lua").is_file())
         self.assertTrue(PACKAGE_PROTOCOL.is_file())
         self.assertTrue(PACKAGE_ECA_TRIGGER.is_file())
+        self.assertTrue(PACKAGE_ECA_UI.is_file())
         self.assertFalse((MIGRATION_PACKAGE / "script" / "pub").exists())
+
+    def test_migration_eca_ui_contains_both_example_layers(self):
+        with zipfile.ZipFile(PACKAGE_ECA_UI) as archive:
+            names = set(archive.namelist())
+            self.assertIn("ui/EcaLobbyExample.json", names)
+            self.assertIn("ui/EcaDungeonExample.json", names)
+            lobby = json.loads(archive.read("ui/EcaLobbyExample.json"))
+            dungeon = json.loads(archive.read("ui/EcaDungeonExample.json"))
+
+        self.assertEqual("EcaLobbyExample", lobby["name"])
+        self.assertEqual("EcaDungeonExample", dungeon["name"])
 
     def test_migration_eca_trigger_contains_event_and_all_functions(self):
         with zipfile.ZipFile(PACKAGE_ECA_TRIGGER) as archive:
@@ -339,6 +355,26 @@ class DocumentationExamplesTest(unittest.TestCase):
 
         collect_functions(trigger_data)
         self.assertEqual(set(EXPECTED_ECA_NAMES), function_names)
+
+        top_level = [entries[0][0] for entries in trigger_data["4"].values()]
+        trigger_names = {
+            item["trigger_name"]
+            for item in top_level
+            if not item.get("is_func")
+        }
+        self.assertEqual(32, len(trigger_names))
+        self.assertEqual(
+            16,
+            sum(name.startswith("ECA大厅UI - ") for name in trigger_names),
+        )
+        self.assertEqual(
+            8,
+            sum(name.startswith("ECA副本UI - ") for name in trigger_names),
+        )
+        self.assertEqual(
+            8,
+            sum(name.startswith("大厅服务 - ") for name in trigger_names),
+        )
 
     def test_migration_package_does_not_include_eca_json_or_project_specific_files(self):
         forbidden_suffixes = [
