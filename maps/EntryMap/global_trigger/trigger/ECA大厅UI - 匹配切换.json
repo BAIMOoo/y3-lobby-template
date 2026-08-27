@@ -1,51 +1,6 @@
 {
     "action": [
         {
-            "action_type": "SET_UI_COMP_ENABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100025, 
-                    "args_list": [], 
-                    "sub_type": "TRIGGER_PLAYER"
-                }, 
-                {
-                    "arg_type": 100070, 
-                    "args_list": [
-                        {
-                            "arg_type": 100025, 
-                            "args_list": [], 
-                            "sub_type": "TRIGGER_PLAYER"
-                        }, 
-                        {
-                            "arg_type": 100070, 
-                            "args_list": [
-                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                            ], 
-                            "sub_type": 1
-                        }, 
-                        {
-                            "arg_type": 100003, 
-                            "args_list": [
-                                "action_panel.button_match"
-                            ], 
-                            "sub_type": 1
-                        }
-                    ], 
-                    "sub_type": "GET_UI_COMP_BY_PATH"
-                }, 
-                {
-                    "arg_type": 100001, 
-                    "args_list": [
-                        false
-                    ], 
-                    "sub_type": 1
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1942000018000002, 
-            "enable": true
-        }, 
-        {
             "action_type": "CALL_TRIGGER_FUNC", 
             "args_list": [
                 {
@@ -74,7 +29,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1942000018000003, 
+            "element_id": 1942000018000002, 
             "enable": true
         }, 
         {
@@ -141,7 +96,7 @@
                                 }
                             ], 
                             "condition_type": "BOOL_COMPARE", 
-                            "element_id": 1942000018000004, 
+                            "element_id": 1942000018000003, 
                             "enable": true
                         }
                     ], 
@@ -179,7 +134,7 @@
                             "call_rt_arg_idxes": [
                                 0
                             ], 
-                            "element_id": 1942000018000005, 
+                            "element_id": 1942000018000004, 
                             "enable": true
                         }, 
                         {
@@ -233,7 +188,7 @@
                                                 }
                                             ], 
                                             "condition_type": "BOOL_COMPARE", 
-                                            "element_id": 1942000018000006, 
+                                            "element_id": 1942000018000005, 
                                             "enable": true
                                         }
                                     ], 
@@ -293,7 +248,7 @@
                                                                 }
                                                             ], 
                                                             "condition_type": "STRING_COMPARE", 
-                                                            "element_id": 1942000018000007, 
+                                                            "element_id": 1942000018000006, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -328,7 +283,7 @@
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                "action_panel.label_action_state"
+                                                                                "chat_panel.label_chat_result"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
@@ -344,7 +299,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1942000018000008, 
+                                                            "element_id": 1942000018000007, 
                                                             "enable": true
                                                         }, 
                                                         1942100016
@@ -354,51 +309,6 @@
                                                 {
                                                     "arg_type": 100022, 
                                                     "args_list": [
-                                                        {
-                                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                                            "args_list": [
-                                                                {
-                                                                    "arg_type": 100025, 
-                                                                    "args_list": [], 
-                                                                    "sub_type": "TRIGGER_PLAYER"
-                                                                }, 
-                                                                {
-                                                                    "arg_type": 100070, 
-                                                                    "args_list": [
-                                                                        {
-                                                                            "arg_type": 100025, 
-                                                                            "args_list": [], 
-                                                                            "sub_type": "TRIGGER_PLAYER"
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100070, 
-                                                                            "args_list": [
-                                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                                            ], 
-                                                                            "sub_type": 1
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100003, 
-                                                                            "args_list": [
-                                                                                "action_panel.button_match"
-                                                                            ], 
-                                                                            "sub_type": 1
-                                                                        }
-                                                                    ], 
-                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                                }, 
-                                                                {
-                                                                    "arg_type": 100001, 
-                                                                    "args_list": [
-                                                                        true
-                                                                    ], 
-                                                                    "sub_type": 1
-                                                                }
-                                                            ], 
-                                                            "bp": false, 
-                                                            "element_id": 1942000018000009, 
-                                                            "enable": true
-                                                        }, 
                                                         {
                                                             "action_type": "SET_UI_COMP_TEXT", 
                                                             "args_list": [
@@ -425,7 +335,7 @@
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                "action_panel.label_action_state"
+                                                                                "chat_panel.label_chat_result"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
@@ -441,7 +351,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1942000018000010, 
+                                                            "element_id": 1942000018000008, 
                                                             "enable": true
                                                         }, 
                                                         {
@@ -463,7 +373,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1942000018000011, 
+                                                            "element_id": 1942000018000009, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -471,7 +381,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000018000012, 
+                                            "element_id": 1942000018000010, 
                                             "enable": true, 
                                             "fake_op": [
                                                 2
@@ -483,51 +393,6 @@
                                 {
                                     "arg_type": 100022, 
                                     "args_list": [
-                                        {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "TRIGGER_PLAYER"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "action_panel.button_match"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        true
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "bp": false, 
-                                            "element_id": 1942000018000013, 
-                                            "enable": true
-                                        }, 
                                         {
                                             "action_type": "SET_UI_COMP_TEXT", 
                                             "args_list": [
@@ -554,7 +419,7 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "action_panel.label_action_state"
+                                                                "chat_panel.label_chat_result"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -570,7 +435,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000018000014, 
+                                            "element_id": 1942000018000011, 
                                             "enable": true
                                         }, 
                                         {
@@ -592,7 +457,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000018000015, 
+                                            "element_id": 1942000018000012, 
                                             "enable": true
                                         }
                                     ], 
@@ -600,7 +465,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000018000016, 
+                            "element_id": 1942000018000013, 
                             "enable": true, 
                             "fake_op": [
                                 2
@@ -636,7 +501,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000018000017, 
+                            "element_id": 1942000018000014, 
                             "enable": true
                         }, 
                         {
@@ -672,7 +537,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000018000018, 
+                            "element_id": 1942000018000015, 
                             "enable": true
                         }, 
                         {
@@ -708,7 +573,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000018000019, 
+                            "element_id": 1942000018000016, 
                             "enable": true
                         }, 
                         {
@@ -744,7 +609,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000018000020, 
+                            "element_id": 1942000018000017, 
                             "enable": true
                         }, 
                         {
@@ -791,7 +656,7 @@
                             "call_rt_arg_idxes": [
                                 0
                             ], 
-                            "element_id": 1942000018000021, 
+                            "element_id": 1942000018000018, 
                             "enable": true
                         }, 
                         {
@@ -845,7 +710,7 @@
                                                 }
                                             ], 
                                             "condition_type": "BOOL_COMPARE", 
-                                            "element_id": 1942000018000022, 
+                                            "element_id": 1942000018000019, 
                                             "enable": true
                                         }
                                     ], 
@@ -905,7 +770,7 @@
                                                                 }
                                                             ], 
                                                             "condition_type": "STRING_COMPARE", 
-                                                            "element_id": 1942000018000023, 
+                                                            "element_id": 1942000018000020, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -940,7 +805,7 @@
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                "action_panel.label_action_state"
+                                                                                "chat_panel.label_chat_result"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
@@ -956,7 +821,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1942000018000024, 
+                                                            "element_id": 1942000018000021, 
                                                             "enable": true
                                                         }, 
                                                         1942100015
@@ -966,51 +831,6 @@
                                                 {
                                                     "arg_type": 100022, 
                                                     "args_list": [
-                                                        {
-                                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                                            "args_list": [
-                                                                {
-                                                                    "arg_type": 100025, 
-                                                                    "args_list": [], 
-                                                                    "sub_type": "TRIGGER_PLAYER"
-                                                                }, 
-                                                                {
-                                                                    "arg_type": 100070, 
-                                                                    "args_list": [
-                                                                        {
-                                                                            "arg_type": 100025, 
-                                                                            "args_list": [], 
-                                                                            "sub_type": "TRIGGER_PLAYER"
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100070, 
-                                                                            "args_list": [
-                                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                                            ], 
-                                                                            "sub_type": 1
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100003, 
-                                                                            "args_list": [
-                                                                                "action_panel.button_match"
-                                                                            ], 
-                                                                            "sub_type": 1
-                                                                        }
-                                                                    ], 
-                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                                }, 
-                                                                {
-                                                                    "arg_type": 100001, 
-                                                                    "args_list": [
-                                                                        true
-                                                                    ], 
-                                                                    "sub_type": 1
-                                                                }
-                                                            ], 
-                                                            "bp": false, 
-                                                            "element_id": 1942000018000025, 
-                                                            "enable": true
-                                                        }, 
                                                         {
                                                             "action_type": "SET_UI_COMP_TEXT", 
                                                             "args_list": [
@@ -1037,7 +857,7 @@
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                "action_panel.label_action_state"
+                                                                                "chat_panel.label_chat_result"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }
@@ -1053,7 +873,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1942000018000026, 
+                                                            "element_id": 1942000018000022, 
                                                             "enable": true
                                                         }, 
                                                         {
@@ -1075,7 +895,7 @@
                                                                 }
                                                             ], 
                                                             "bp": false, 
-                                                            "element_id": 1942000018000027, 
+                                                            "element_id": 1942000018000023, 
                                                             "enable": true
                                                         }
                                                     ], 
@@ -1083,7 +903,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000018000028, 
+                                            "element_id": 1942000018000024, 
                                             "enable": true, 
                                             "fake_op": [
                                                 2
@@ -1095,51 +915,6 @@
                                 {
                                     "arg_type": 100022, 
                                     "args_list": [
-                                        {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "TRIGGER_PLAYER"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "action_panel.button_match"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        true
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "bp": false, 
-                                            "element_id": 1942000018000029, 
-                                            "enable": true
-                                        }, 
                                         {
                                             "action_type": "SET_UI_COMP_TEXT", 
                                             "args_list": [
@@ -1166,7 +941,7 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "action_panel.label_action_state"
+                                                                "chat_panel.label_chat_result"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -1182,7 +957,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000018000030, 
+                                            "element_id": 1942000018000025, 
                                             "enable": true
                                         }, 
                                         {
@@ -1204,7 +979,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000018000031, 
+                                            "element_id": 1942000018000026, 
                                             "enable": true
                                         }
                                     ], 
@@ -1212,7 +987,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000018000032, 
+                            "element_id": 1942000018000027, 
                             "enable": true, 
                             "fake_op": [
                                 2
@@ -1223,7 +998,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000018000033, 
+            "element_id": 1942000018000028, 
             "enable": true, 
             "fake_op": [
                 2
@@ -1340,51 +1115,6 @@
                             "arg_type": 100022, 
                             "args_list": [
                                 {
-                                    "action_type": "SET_UI_COMP_ENABLE", 
-                                    "args_list": [
-                                        {
-                                            "arg_type": 100025, 
-                                            "args_list": [], 
-                                            "sub_type": "TRIGGER_PLAYER"
-                                        }, 
-                                        {
-                                            "arg_type": 100070, 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }, 
-                                                {
-                                                    "arg_type": 100003, 
-                                                    "args_list": [
-                                                        "action_panel.button_match"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "sub_type": "GET_UI_COMP_BY_PATH"
-                                        }, 
-                                        {
-                                            "arg_type": 100001, 
-                                            "args_list": [
-                                                true
-                                            ], 
-                                            "sub_type": 1
-                                        }
-                                    ], 
-                                    "bp": false, 
-                                    "element_id": 1942100015000003, 
-                                    "enable": true
-                                }, 
-                                {
                                     "action_type": "SET_UI_COMP_TEXT", 
                                     "args_list": [
                                         {
@@ -1410,7 +1140,7 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        "action_panel.label_action_state"
+                                                        "chat_panel.label_chat_result"
                                                     ], 
                                                     "sub_type": 1
                                                 }
@@ -1426,7 +1156,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100015000004, 
+                                    "element_id": 1942100015000003, 
                                     "enable": true
                                 }, 
                                 {
@@ -1447,7 +1177,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100015000005, 
+                                    "element_id": 1942100015000004, 
                                     "enable": true
                                 }, 
                                 {
@@ -1460,7 +1190,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100015000006, 
+                                    "element_id": 1942100015000005, 
                                     "enable": true
                                 }
                             ], 
@@ -1473,7 +1203,7 @@
                         }
                     ], 
                     "bp": false, 
-                    "element_id": 1942100015000007, 
+                    "element_id": 1942100015000006, 
                     "enable": true, 
                     "fake_op": [
                         2
@@ -1593,51 +1323,6 @@
                             "arg_type": 100022, 
                             "args_list": [
                                 {
-                                    "action_type": "SET_UI_COMP_ENABLE", 
-                                    "args_list": [
-                                        {
-                                            "arg_type": 100025, 
-                                            "args_list": [], 
-                                            "sub_type": "TRIGGER_PLAYER"
-                                        }, 
-                                        {
-                                            "arg_type": 100070, 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }, 
-                                                {
-                                                    "arg_type": 100003, 
-                                                    "args_list": [
-                                                        "action_panel.button_match"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "sub_type": "GET_UI_COMP_BY_PATH"
-                                        }, 
-                                        {
-                                            "arg_type": 100001, 
-                                            "args_list": [
-                                                true
-                                            ], 
-                                            "sub_type": 1
-                                        }
-                                    ], 
-                                    "bp": false, 
-                                    "element_id": 1942100016000003, 
-                                    "enable": true
-                                }, 
-                                {
                                     "action_type": "SET_UI_COMP_TEXT", 
                                     "args_list": [
                                         {
@@ -1663,7 +1348,7 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        "action_panel.label_action_state"
+                                                        "chat_panel.label_chat_result"
                                                     ], 
                                                     "sub_type": 1
                                                 }
@@ -1679,7 +1364,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100016000004, 
+                                    "element_id": 1942100016000003, 
                                     "enable": true
                                 }, 
                                 {
@@ -1700,7 +1385,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100016000005, 
+                                    "element_id": 1942100016000004, 
                                     "enable": true
                                 }, 
                                 {
@@ -1713,7 +1398,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100016000006, 
+                                    "element_id": 1942100016000005, 
                                     "enable": true
                                 }
                             ], 
@@ -1726,7 +1411,7 @@
                         }
                     ], 
                     "bp": false, 
-                    "element_id": 1942100016000007, 
+                    "element_id": 1942100016000006, 
                     "enable": true, 
                     "fake_op": [
                         2

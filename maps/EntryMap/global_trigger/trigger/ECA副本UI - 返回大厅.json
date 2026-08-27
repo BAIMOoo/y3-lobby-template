@@ -1,51 +1,6 @@
 {
     "action": [
         {
-            "action_type": "SET_UI_COMP_ENABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100025, 
-                    "args_list": [], 
-                    "sub_type": "TRIGGER_PLAYER"
-                }, 
-                {
-                    "arg_type": 100070, 
-                    "args_list": [
-                        {
-                            "arg_type": 100025, 
-                            "args_list": [], 
-                            "sub_type": "TRIGGER_PLAYER"
-                        }, 
-                        {
-                            "arg_type": 100070, 
-                            "args_list": [
-                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
-                            ], 
-                            "sub_type": 1
-                        }, 
-                        {
-                            "arg_type": 100003, 
-                            "args_list": [
-                                "dungeon_status_panel.button_return_lobby"
-                            ], 
-                            "sub_type": 1
-                        }
-                    ], 
-                    "sub_type": "GET_UI_COMP_BY_PATH"
-                }, 
-                {
-                    "arg_type": 100001, 
-                    "args_list": [
-                        false
-                    ], 
-                    "sub_type": 1
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1943000004000002, 
-            "enable": true
-        }, 
-        {
             "action_type": "SET_UI_COMP_TEXT", 
             "args_list": [
                 {
@@ -87,7 +42,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000004000003, 
+            "element_id": 1943000004000002, 
             "enable": true
         }, 
         {
@@ -114,7 +69,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000004000004, 
+            "element_id": 1943000004000003, 
             "enable": true
         }, 
         {
@@ -150,7 +105,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000004000005, 
+            "element_id": 1943000004000004, 
             "enable": true
         }, 
         {
@@ -186,7 +141,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000004000006, 
+            "element_id": 1943000004000005, 
             "enable": true
         }, 
         {
@@ -222,7 +177,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000004000007, 
+            "element_id": 1943000004000006, 
             "enable": true
         }, 
         {
@@ -269,52 +224,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1943000004000008, 
-            "enable": true
-        }, 
-        {
-            "action_type": "SET_UI_COMP_ENABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100025, 
-                    "args_list": [], 
-                    "sub_type": "TRIGGER_PLAYER"
-                }, 
-                {
-                    "arg_type": 100070, 
-                    "args_list": [
-                        {
-                            "arg_type": 100025, 
-                            "args_list": [], 
-                            "sub_type": "TRIGGER_PLAYER"
-                        }, 
-                        {
-                            "arg_type": 100070, 
-                            "args_list": [
-                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
-                            ], 
-                            "sub_type": 1
-                        }, 
-                        {
-                            "arg_type": 100003, 
-                            "args_list": [
-                                "dungeon_status_panel.button_return_lobby"
-                            ], 
-                            "sub_type": 1
-                        }
-                    ], 
-                    "sub_type": "GET_UI_COMP_BY_PATH"
-                }, 
-                {
-                    "arg_type": 100001, 
-                    "args_list": [
-                        true
-                    ], 
-                    "sub_type": 1
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1943000004000009, 
+            "element_id": 1943000004000007, 
             "enable": true
         }, 
         {
@@ -368,7 +278,7 @@
                                 }
                             ], 
                             "condition_type": "BOOL_COMPARE", 
-                            "element_id": 1943000004000010, 
+                            "element_id": 1943000004000008, 
                             "enable": true
                         }
                     ], 
@@ -419,7 +329,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000004000011, 
+                            "element_id": 1943000004000009, 
                             "enable": true
                         }, 
                         {
@@ -441,7 +351,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000004000012, 
+                            "element_id": 1943000004000010, 
                             "enable": true
                         }
                     ], 
@@ -492,7 +402,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000004000013, 
+                            "element_id": 1943000004000011, 
                             "enable": true
                         }, 
                         {
@@ -514,7 +424,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000004000014, 
+                            "element_id": 1943000004000012, 
                             "enable": true
                         }
                     ], 
@@ -522,7 +432,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000004000015, 
+            "element_id": 1943000004000013, 
             "enable": true, 
             "fake_op": [
                 2

@@ -463,7 +463,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
             with self.subTest(fragment=fragment):
                 self.assertNotIn(fragment, serialized)
 
-    def test_ui_dsl_covers_all_26_lobby_functions(self):
+    def test_formal_ui_excludes_developer_only_functions(self):
         expected_ids = {
             load_json(path)["func_id"]
             for path in lobby_function_files("EntryMap")
@@ -474,10 +474,22 @@ class LobbyEcaJsonTests(unittest.TestCase):
             for node in walk_json(dsl)
             if isinstance(node, dict) and "call_function" in node
         }
-        self.assertEqual(expected_ids, used_ids)
-        self.assertEqual(26, len(used_ids))
+        developer_only_names = {
+            "大厅服务 - 建立连接",
+            "大厅服务 - 设置匹配分数",
+            "大厅服务 - 获取队伍信息",
+            "大厅服务 - 获取玩家信息",
+            "大厅服务 - 刷新玩家信息",
+        }
+        developer_only_ids = {
+            load_json(path)["func_id"]
+            for path in lobby_function_files("EntryMap")
+            if path.stem in developer_only_names
+        }
+        self.assertEqual(expected_ids - developer_only_ids, used_ids)
+        self.assertEqual(21, len(used_ids))
 
-    def test_entry_ui_contains_fixed_rows_and_developer_controls(self):
+    def test_entry_ui_contains_semantic_rows_and_no_developer_controls(self):
         tree = load_json(ROOT / "ui_tree" / "EcaLobbyExample_Tree.json")
         paths = set(ui_paths(tree))
         self.assertIn(
@@ -494,15 +506,17 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 f"EcaLobbyExample.team_panel.member_row_{index}.button_kick_{index}",
                 paths,
             )
-        for name in [
-            "button_dev_connect",
-            "button_dev_score",
-            "button_dev_team_info",
-            "button_dev_player_info",
-            "button_dev_refresh_player",
-            "label_developer_result",
-        ]:
-            self.assertIn(f"EcaLobbyExample.developer_panel.{name}", paths)
+            for field in ["index", "name", "aid", "state", "current"]:
+                self.assertIn(
+                    f"EcaLobbyExample.team_panel.member_row_{index}.label_member_{field}_{index}",
+                    paths,
+                )
+        self.assertNotIn("EcaLobbyExample.developer_panel", paths)
+        self.assertNotIn("EcaLobbyExample.button_developer", paths)
+        self.assertIn(
+            "EcaLobbyExample.exit_confirm_overlay.exit_confirm_panel.button_exit_confirm",
+            paths,
+        )
 
     def test_every_ui_path_used_by_dsl_exists_in_its_map_tree(self):
         cases = [
@@ -529,20 +543,18 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertTrue(referenced)
                 self.assertEqual(set(), referenced - available)
 
-    def test_async_ui_triggers_disable_buttons_and_filter_completion_by_request_id(self):
+    def test_async_ui_triggers_filter_completion_without_overriding_snapshot_permissions(self):
         triggers = [
             trigger
             for dsl in (self.entry_ui_dsl, self.dungeon_ui_dsl)
             for trigger in dsl["triggers"]
             if trigger.get("sub_triggers")
         ]
-        self.assertGreaterEqual(len(triggers), 20)
+        self.assertGreaterEqual(len(triggers), 19)
         for trigger in triggers:
             serialized = json.dumps(trigger, ensure_ascii=False)
             with self.subTest(trigger=trigger["name"]):
-                self.assertIn("SET_UI_COMP_ENABLE", serialized)
-                self.assertIn("false", serialized)
-                self.assertIn("true", serialized)
+                self.assertNotIn("SET_UI_COMP_ENABLE", serialized)
                 self.assertIn("大厅服务请求完成", serialized)
                 self.assertIn("回调数据", serialized)
                 self.assertIn("request_id", serialized)
@@ -583,7 +595,6 @@ class LobbyEcaJsonTests(unittest.TestCase):
             '"game_mode", 1003',
             '"team_game_mode", 1003',
             '"max_player", 2',
-            "action_panel.button_same_level_private_dungeon",
             "eca_lobby_same_level_private_dungeon",
         ]:
             with self.subTest(expected=expected):
@@ -612,7 +623,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
                     ROOT / "maps" / map_name / "global_trigger" / "trigger"
                 ).glob(pattern)
             )
-        self.assertEqual(32, len(generated))
+        self.assertEqual(30, len(generated))
         all_nodes = [node for trigger in generated for node in walk_json(trigger)]
         ui_args = [
             node
@@ -689,8 +700,8 @@ class LobbyEcaJsonTests(unittest.TestCase):
         )
         entry_trigger_root = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
         child_trigger_root = ROOT / "maps" / "MapName001" / "global_trigger" / "trigger"
-        self.assertEqual(26, len(list(entry_trigger_root.glob("ECA大厅UI - *.json"))))
-        self.assertEqual(6, len(list(entry_trigger_root.glob("ECA副本UI - *.json"))))
+        self.assertEqual(22, len(list(entry_trigger_root.glob("ECA大厅UI - *.json"))))
+        self.assertEqual(8, len(list(entry_trigger_root.glob("ECA副本UI - *.json"))))
         self.assertEqual([], list(child_trigger_root.glob("ECA副本UI - *.json")))
 
     def test_ui_initializers_use_exact_lobby_runtime_context(self):
@@ -884,7 +895,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
             variant = "normal"
             if name == "button_private_dungeon":
                 variant = "primary"
-            elif name in {"button_exit", "button_dismiss_team"} or name.startswith(
+            elif name in {"button_exit", "button_exit_confirm", "button_dismiss_team"} or name.startswith(
                 "button_kick_"
             ):
                 variant = "danger"
@@ -920,13 +931,16 @@ class LobbyEcaJsonTests(unittest.TestCase):
             "member_row_3_bg",
             "member_row_4_bg",
             "status_mode_bg",
-            "status_connection_bg",
+            "status_player_bg",
+            "status_bob_bg",
+            "status_login_bg",
             "status_team_bg",
+            "status_count_bg",
             "status_match_bg",
             "status_launch_bg",
         ]:
             self.assertEqual(134217730, images[name]["image"])
-        self.assertEqual(134217731, images["developer_panel_bg"]["image"])
+        self.assertEqual(134217731, images["exit_confirm_panel_bg"]["image"])
         for name in [
             "image_input_chat_bg",
             "image_input_team_id_bg",

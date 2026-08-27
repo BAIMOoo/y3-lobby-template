@@ -231,6 +231,51 @@
                             "enable": true
                         }, 
                         {
+                            "action_type": "SET_UI_COMP_VISIBLE", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100025, 
+                                    "args_list": [], 
+                                    "sub_type": "GET_CLIENT_ROLE"
+                                }, 
+                                {
+                                    "arg_type": 100001, 
+                                    "args_list": [
+                                        false
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "GET_CLIENT_ROLE"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "image_backdrop"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1943000001000008, 
+                            "enable": true
+                        }, 
+                        {
                             "action_type": "CREATE_UI_COMP_EVENT_EX_EX", 
                             "args_list": [
                                 {
@@ -274,7 +319,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000008, 
+                            "element_id": 1943000001000009, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -329,7 +374,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000009, 
+                            "element_id": 1943000001000010, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -384,7 +429,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000010, 
+                            "element_id": 1943000001000011, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -439,7 +484,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000011, 
+                            "element_id": 1943000001000012, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -488,13 +533,123 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "eca_dungeon_exit"
+                                        "eca_dungeon_exit_show"
                                     ], 
                                     "sub_type": 1
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000012, 
+                            "element_id": 1943000001000013, 
+                            "enable": true, 
+                            "op_arg": [
+                                null, 
+                                null
+                            ], 
+                            "op_arg_enable": [
+                                false, 
+                                false
+                            ]
+                        }, 
+                        {
+                            "action_type": "CREATE_UI_COMP_EVENT_EX_EX", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "GET_CLIENT_ROLE"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "exit_confirm_overlay.exit_confirm_panel.button_exit_cancel"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100072, 
+                                    "args_list": [
+                                        1
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "eca_dungeon_exit_cancel"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1943000001000014, 
+                            "enable": true, 
+                            "op_arg": [
+                                null, 
+                                null
+                            ], 
+                            "op_arg_enable": [
+                                false, 
+                                false
+                            ]
+                        }, 
+                        {
+                            "action_type": "CREATE_UI_COMP_EVENT_EX_EX", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "GET_CLIENT_ROLE"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "exit_confirm_overlay.exit_confirm_panel.button_exit_confirm"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100072, 
+                                    "args_list": [
+                                        1
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "eca_dungeon_exit_confirm"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1943000001000015, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -511,7 +666,7 @@
                                 {
                                     "arg_type": 100000, 
                                     "args_list": [
-                                        1.0
+                                        0.5
                                     ], 
                                     "sub_type": 1
                                 }, 
@@ -554,7 +709,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000013, 
+                                            "element_id": 1943000001000016, 
                                             "enable": true
                                         }, 
                                         {
@@ -586,7 +741,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000014, 
+                                            "element_id": 1943000001000017, 
                                             "enable": true
                                         }, 
                                         {
@@ -618,7 +773,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000015, 
+                                            "element_id": 1943000001000018, 
                                             "enable": true
                                         }, 
                                         {
@@ -654,7 +809,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000016, 
+                                            "element_id": 1943000001000019, 
                                             "enable": true
                                         }, 
                                         {
@@ -698,7 +853,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000017, 
+                                            "element_id": 1943000001000020, 
                                             "enable": true
                                         }, 
                                         {
@@ -742,7 +897,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000018, 
+                                            "element_id": 1943000001000021, 
                                             "enable": true
                                         }, 
                                         {
@@ -786,7 +941,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000019, 
+                                            "element_id": 1943000001000022, 
                                             "enable": true
                                         }, 
                                         {
@@ -830,7 +985,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000020, 
+                                            "element_id": 1943000001000023, 
                                             "enable": true
                                         }, 
                                         {
@@ -874,7 +1029,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1943000001000021, 
+                                            "element_id": 1943000001000024, 
                                             "enable": true
                                         }, 
                                         {
@@ -1300,7 +1455,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1943000001000022, 
+                                            "element_id": 1943000001000025, 
                                             "enable": true
                                         }, 
                                         {
@@ -1378,11 +1533,11 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1943000001000023, 
+                                            "element_id": 1943000001000026, 
                                             "enable": true
                                         }, 
                                         {
-                                            "action_type": "SET_UI_COMP_TEXT", 
+                                            "action_type": "SET_UI_COMP_ENABLE", 
                                             "args_list": [
                                                 {
                                                     "arg_type": 100025, 
@@ -1407,7 +1562,7 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "dungeon_chat_panel.label_chat_history"
+                                                                "dungeon_chat_panel.button_copy_token"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -1415,11 +1570,446 @@
                                                     "sub_type": "GET_UI_COMP_BY_PATH"
                                                 }, 
                                                 {
-                                                    "arg_type": 100003, 
+                                                    "arg_type": 100001, 
                                                     "args_list": [
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
+                                                                {
+                                                                    "arg_type": 100011, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100011, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "__tuple__": true, 
+                                                                                    "items": [
+                                                                                        "TABLE", 
+                                                                                        "副本刷新口令", 
+                                                                                        "local"
+                                                                                    ]
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "VARIABLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "result_data"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "token"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100035, 
+                                                            "args_list": [
+                                                                "!="
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                ""
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "STRING_COMPARE"
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1943000001000027, 
+                                            "enable": true
+                                        }, 
+                                        {
+                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "dungeon_chat_panel.button_team_chat"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                }, 
+                                                {
+                                                    "arg_type": 100001, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100021, 
+                                                            "args_list": [
+                                                                {
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100001, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "arg_type": 100011, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "arg_type": 100011, 
+                                                                                            "args_list": [
+                                                                                                {
+                                                                                                    "__tuple__": true, 
+                                                                                                    "items": [
+                                                                                                        "TABLE", 
+                                                                                                        "副本刷新状态快照", 
+                                                                                                        "local"
+                                                                                                    ]
+                                                                                                }
+                                                                                            ], 
+                                                                                            "sub_type": "VARIABLE"
+                                                                                        }, 
+                                                                                        {
+                                                                                            "arg_type": 100003, 
+                                                                                            "args_list": [
+                                                                                                "result_data"
+                                                                                            ], 
+                                                                                            "sub_type": 1
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100003, 
+                                                                                    "args_list": [
+                                                                                        "connected"
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100035, 
+                                                                            "args_list": [
+                                                                                "=="
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100001, 
+                                                                            "args_list": [
+                                                                                true
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "condition_type": "BOOL_COMPARE", 
+                                                                    "element_id": 1943000001000028, 
+                                                                    "enable": true
+                                                                }, 
+                                                                {
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100001, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "arg_type": 100011, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "arg_type": 100011, 
+                                                                                            "args_list": [
+                                                                                                {
+                                                                                                    "__tuple__": true, 
+                                                                                                    "items": [
+                                                                                                        "TABLE", 
+                                                                                                        "副本刷新状态快照", 
+                                                                                                        "local"
+                                                                                                    ]
+                                                                                                }
+                                                                                            ], 
+                                                                                            "sub_type": "VARIABLE"
+                                                                                        }, 
+                                                                                        {
+                                                                                            "arg_type": 100003, 
+                                                                                            "args_list": [
+                                                                                                "result_data"
+                                                                                            ], 
+                                                                                            "sub_type": 1
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100003, 
+                                                                                    "args_list": [
+                                                                                        "has_team"
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100035, 
+                                                                            "args_list": [
+                                                                                "=="
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100001, 
+                                                                            "args_list": [
+                                                                                true
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "condition_type": "BOOL_COMPARE", 
+                                                                    "element_id": 1943000001000029, 
+                                                                    "enable": true
+                                                                }
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "AND"
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1943000001000030, 
+                                            "enable": true
+                                        }, 
+                                        {
+                                            "action_type": "SET_UI_COMP_ENABLE", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100025, 
+                                                    "args_list": [], 
+                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                }, 
+                                                {
+                                                    "arg_type": 100070, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "dungeon_chat_panel.button_world_chat"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                }, 
+                                                {
+                                                    "arg_type": 100001, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100001, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100011, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100011, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "__tuple__": true, 
+                                                                                    "items": [
+                                                                                        "TABLE", 
+                                                                                        "副本刷新状态快照", 
+                                                                                        "local"
+                                                                                    ]
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "VARIABLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "result_data"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "connected"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100035, 
+                                                            "args_list": [
+                                                                "=="
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100001, 
+                                                            "args_list": [
+                                                                true
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "sub_type": "BOOL_COMPARE"
+                                                }
+                                            ], 
+                                            "bp": false, 
+                                            "element_id": 1943000001000031, 
+                                            "enable": true
+                                        }, 
+                                        {
+                                            "action_type": "IF_THEN_ELSE", 
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100021, 
+                                                    "args_list": [
+                                                        {
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100011, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "arg_type": 100011, 
+                                                                                    "args_list": [
+                                                                                        {
+                                                                                            "__tuple__": true, 
+                                                                                            "items": [
+                                                                                                "TABLE", 
+                                                                                                "副本刷新聊天1", 
+                                                                                                "local"
+                                                                                            ]
+                                                                                        }
+                                                                                    ], 
+                                                                                    "sub_type": "VARIABLE"
+                                                                                }, 
+                                                                                {
+                                                                                    "arg_type": 100003, 
+                                                                                    "args_list": [
+                                                                                        "result_data"
+                                                                                    ], 
+                                                                                    "sub_type": 1
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "exists"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100035, 
+                                                                    "args_list": [
+                                                                        "=="
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100001, 
+                                                                    "args_list": [
+                                                                        true
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "condition_type": "BOOL_COMPARE", 
+                                                            "element_id": 1943000001000032, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_TEXT", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
+                                                                            "args_list": [
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "dungeon_chat_panel.label_chat_history"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                                                }, 
                                                                 {
                                                                     "arg_type": 100003, 
                                                                     "args_list": [
@@ -1433,10 +2023,10 @@
                                                                                             "arg_type": 100003, 
                                                                                             "args_list": [
                                                                                                 {
-                                                                                                    "arg_type": 100011, 
+                                                                                                    "arg_type": 100003, 
                                                                                                     "args_list": [
                                                                                                         {
-                                                                                                            "arg_type": 100011, 
+                                                                                                            "arg_type": 100003, 
                                                                                                             "args_list": [
                                                                                                                 {
                                                                                                                     "arg_type": 100011, 
@@ -1445,20 +2035,46 @@
                                                                                                                             "arg_type": 100011, 
                                                                                                                             "args_list": [
                                                                                                                                 {
-                                                                                                                                    "__tuple__": true, 
-                                                                                                                                    "items": [
-                                                                                                                                        "TABLE", 
-                                                                                                                                        "副本刷新聊天1", 
-                                                                                                                                        "local"
-                                                                                                                                    ]
+                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100011, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                {
+                                                                                                                                                    "__tuple__": true, 
+                                                                                                                                                    "items": [
+                                                                                                                                                        "TABLE", 
+                                                                                                                                                        "副本刷新聊天1", 
+                                                                                                                                                        "local"
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": "VARIABLE"
+                                                                                                                                        }, 
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100003, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                "result_data"
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": 1
+                                                                                                                                        }
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                }, 
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        "message"
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": 1
                                                                                                                                 }
                                                                                                                             ], 
-                                                                                                                            "sub_type": "VARIABLE"
+                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
                                                                                                                         }, 
                                                                                                                         {
                                                                                                                             "arg_type": 100003, 
                                                                                                                             "args_list": [
-                                                                                                                                "result_data"
+                                                                                                                                "sender"
                                                                                                                             ], 
                                                                                                                             "sub_type": 1
                                                                                                                         }
@@ -1468,32 +2084,355 @@
                                                                                                                 {
                                                                                                                     "arg_type": 100003, 
                                                                                                                     "args_list": [
-                                                                                                                        "message"
+                                                                                                                        "name"
                                                                                                                     ], 
                                                                                                                     "sub_type": 1
                                                                                                                 }
                                                                                                             ], 
-                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
                                                                                                         }, 
                                                                                                         {
                                                                                                             "arg_type": 100003, 
                                                                                                             "args_list": [
-                                                                                                                "sender"
+                                                                                                                {
+                                                                                                                    "arg_type": 100003, 
+                                                                                                                    "args_list": [
+                                                                                                                        "："
+                                                                                                                    ], 
+                                                                                                                    "sub_type": 1
+                                                                                                                }, 
+                                                                                                                {
+                                                                                                                    "arg_type": 100003, 
+                                                                                                                    "args_list": [
+                                                                                                                        {
+                                                                                                                            "arg_type": 100011, 
+                                                                                                                            "args_list": [
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100011, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                {
+                                                                                                                                                    "__tuple__": true, 
+                                                                                                                                                    "items": [
+                                                                                                                                                        "TABLE", 
+                                                                                                                                                        "副本刷新聊天1", 
+                                                                                                                                                        "local"
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": "VARIABLE"
+                                                                                                                                        }, 
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100003, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                "result_data"
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": 1
+                                                                                                                                        }
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                }, 
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        "message"
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": 1
+                                                                                                                                }
+                                                                                                                            ], 
+                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                        }, 
+                                                                                                                        {
+                                                                                                                            "arg_type": 100003, 
+                                                                                                                            "args_list": [
+                                                                                                                                "message"
+                                                                                                                            ], 
+                                                                                                                            "sub_type": 1
+                                                                                                                        }
+                                                                                                                    ], 
+                                                                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                                                                }
                                                                                                             ], 
-                                                                                                            "sub_type": 1
+                                                                                                            "op_arg": [
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null
+                                                                                                            ], 
+                                                                                                            "op_arg_enable": [
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false
+                                                                                                            ], 
+                                                                                                            "sub_type": "STR_JOIN"
                                                                                                         }
                                                                                                     ], 
-                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                    "op_arg": [
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null
+                                                                                                    ], 
+                                                                                                    "op_arg_enable": [
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false
+                                                                                                    ], 
+                                                                                                    "sub_type": "STR_JOIN"
                                                                                                 }, 
                                                                                                 {
                                                                                                     "arg_type": 100003, 
                                                                                                     "args_list": [
-                                                                                                        "name"
+                                                                                                        {
+                                                                                                            "arg_type": 100003, 
+                                                                                                            "args_list": [
+                                                                                                                "\n"
+                                                                                                            ], 
+                                                                                                            "sub_type": 1
+                                                                                                        }, 
+                                                                                                        {
+                                                                                                            "arg_type": 100003, 
+                                                                                                            "args_list": [
+                                                                                                                {
+                                                                                                                    "arg_type": 100003, 
+                                                                                                                    "args_list": [
+                                                                                                                        {
+                                                                                                                            "arg_type": 100011, 
+                                                                                                                            "args_list": [
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100011, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                {
+                                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                                    "args_list": [
+                                                                                                                                                        {
+                                                                                                                                                            "__tuple__": true, 
+                                                                                                                                                            "items": [
+                                                                                                                                                                "TABLE", 
+                                                                                                                                                                "副本刷新聊天2", 
+                                                                                                                                                                "local"
+                                                                                                                                                            ]
+                                                                                                                                                        }
+                                                                                                                                                    ], 
+                                                                                                                                                    "sub_type": "VARIABLE"
+                                                                                                                                                }, 
+                                                                                                                                                {
+                                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                                    "args_list": [
+                                                                                                                                                        "result_data"
+                                                                                                                                                    ], 
+                                                                                                                                                    "sub_type": 1
+                                                                                                                                                }
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                        }, 
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100003, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                "message"
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": 1
+                                                                                                                                        }
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                }, 
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        "sender"
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": 1
+                                                                                                                                }
+                                                                                                                            ], 
+                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                        }, 
+                                                                                                                        {
+                                                                                                                            "arg_type": 100003, 
+                                                                                                                            "args_list": [
+                                                                                                                                "name"
+                                                                                                                            ], 
+                                                                                                                            "sub_type": 1
+                                                                                                                        }
+                                                                                                                    ], 
+                                                                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                                                                }, 
+                                                                                                                {
+                                                                                                                    "arg_type": 100003, 
+                                                                                                                    "args_list": [
+                                                                                                                        {
+                                                                                                                            "arg_type": 100003, 
+                                                                                                                            "args_list": [
+                                                                                                                                "："
+                                                                                                                            ], 
+                                                                                                                            "sub_type": 1
+                                                                                                                        }, 
+                                                                                                                        {
+                                                                                                                            "arg_type": 100003, 
+                                                                                                                            "args_list": [
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100011, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                {
+                                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                                    "args_list": [
+                                                                                                                                                        {
+                                                                                                                                                            "__tuple__": true, 
+                                                                                                                                                            "items": [
+                                                                                                                                                                "TABLE", 
+                                                                                                                                                                "副本刷新聊天2", 
+                                                                                                                                                                "local"
+                                                                                                                                                            ]
+                                                                                                                                                        }
+                                                                                                                                                    ], 
+                                                                                                                                                    "sub_type": "VARIABLE"
+                                                                                                                                                }, 
+                                                                                                                                                {
+                                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                                    "args_list": [
+                                                                                                                                                        "result_data"
+                                                                                                                                                    ], 
+                                                                                                                                                    "sub_type": 1
+                                                                                                                                                }
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                        }, 
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100003, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                "message"
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": 1
+                                                                                                                                        }
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                }, 
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        "message"
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": 1
+                                                                                                                                }
+                                                                                                                            ], 
+                                                                                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                                                                        }
+                                                                                                                    ], 
+                                                                                                                    "op_arg": [
+                                                                                                                        null, 
+                                                                                                                        null, 
+                                                                                                                        null, 
+                                                                                                                        null, 
+                                                                                                                        null, 
+                                                                                                                        null, 
+                                                                                                                        null, 
+                                                                                                                        null
+                                                                                                                    ], 
+                                                                                                                    "op_arg_enable": [
+                                                                                                                        false, 
+                                                                                                                        false, 
+                                                                                                                        false, 
+                                                                                                                        false, 
+                                                                                                                        false, 
+                                                                                                                        false, 
+                                                                                                                        false, 
+                                                                                                                        false
+                                                                                                                    ], 
+                                                                                                                    "sub_type": "STR_JOIN"
+                                                                                                                }
+                                                                                                            ], 
+                                                                                                            "op_arg": [
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null
+                                                                                                            ], 
+                                                                                                            "op_arg_enable": [
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false
+                                                                                                            ], 
+                                                                                                            "sub_type": "STR_JOIN"
+                                                                                                        }
                                                                                                     ], 
-                                                                                                    "sub_type": 1
+                                                                                                    "op_arg": [
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null
+                                                                                                    ], 
+                                                                                                    "op_arg_enable": [
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false
+                                                                                                    ], 
+                                                                                                    "sub_type": "STR_JOIN"
                                                                                                 }
                                                                                             ], 
-                                                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                                            "op_arg": [
+                                                                                                null, 
+                                                                                                null, 
+                                                                                                null, 
+                                                                                                null, 
+                                                                                                null, 
+                                                                                                null, 
+                                                                                                null, 
+                                                                                                null
+                                                                                            ], 
+                                                                                            "op_arg_enable": [
+                                                                                                false, 
+                                                                                                false, 
+                                                                                                false, 
+                                                                                                false, 
+                                                                                                false, 
+                                                                                                false, 
+                                                                                                false, 
+                                                                                                false
+                                                                                            ], 
+                                                                                            "sub_type": "STR_JOIN"
                                                                                         }, 
                                                                                         {
                                                                                             "arg_type": 100003, 
@@ -1501,7 +2440,7 @@
                                                                                                 {
                                                                                                     "arg_type": 100003, 
                                                                                                     "args_list": [
-                                                                                                        "："
+                                                                                                        "\n"
                                                                                                     ], 
                                                                                                     "sub_type": 1
                                                                                                 }, 
@@ -1509,7 +2448,7 @@
                                                                                                     "arg_type": 100003, 
                                                                                                     "args_list": [
                                                                                                         {
-                                                                                                            "arg_type": 100011, 
+                                                                                                            "arg_type": 100003, 
                                                                                                             "args_list": [
                                                                                                                 {
                                                                                                                     "arg_type": 100011, 
@@ -1518,20 +2457,46 @@
                                                                                                                             "arg_type": 100011, 
                                                                                                                             "args_list": [
                                                                                                                                 {
-                                                                                                                                    "__tuple__": true, 
-                                                                                                                                    "items": [
-                                                                                                                                        "TABLE", 
-                                                                                                                                        "副本刷新聊天1", 
-                                                                                                                                        "local"
-                                                                                                                                    ]
+                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100011, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                {
+                                                                                                                                                    "__tuple__": true, 
+                                                                                                                                                    "items": [
+                                                                                                                                                        "TABLE", 
+                                                                                                                                                        "副本刷新聊天3", 
+                                                                                                                                                        "local"
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": "VARIABLE"
+                                                                                                                                        }, 
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100003, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                "result_data"
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": 1
+                                                                                                                                        }
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                }, 
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        "message"
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": 1
                                                                                                                                 }
                                                                                                                             ], 
-                                                                                                                            "sub_type": "VARIABLE"
+                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
                                                                                                                         }, 
                                                                                                                         {
                                                                                                                             "arg_type": 100003, 
                                                                                                                             "args_list": [
-                                                                                                                                "result_data"
+                                                                                                                                "sender"
                                                                                                                             ], 
                                                                                                                             "sub_type": 1
                                                                                                                         }
@@ -1541,22 +2506,121 @@
                                                                                                                 {
                                                                                                                     "arg_type": 100003, 
                                                                                                                     "args_list": [
-                                                                                                                        "message"
+                                                                                                                        "name"
                                                                                                                     ], 
                                                                                                                     "sub_type": 1
                                                                                                                 }
                                                                                                             ], 
-                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
                                                                                                         }, 
                                                                                                         {
                                                                                                             "arg_type": 100003, 
                                                                                                             "args_list": [
-                                                                                                                "message"
+                                                                                                                {
+                                                                                                                    "arg_type": 100003, 
+                                                                                                                    "args_list": [
+                                                                                                                        "："
+                                                                                                                    ], 
+                                                                                                                    "sub_type": 1
+                                                                                                                }, 
+                                                                                                                {
+                                                                                                                    "arg_type": 100003, 
+                                                                                                                    "args_list": [
+                                                                                                                        {
+                                                                                                                            "arg_type": 100011, 
+                                                                                                                            "args_list": [
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100011, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100011, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                {
+                                                                                                                                                    "__tuple__": true, 
+                                                                                                                                                    "items": [
+                                                                                                                                                        "TABLE", 
+                                                                                                                                                        "副本刷新聊天3", 
+                                                                                                                                                        "local"
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": "VARIABLE"
+                                                                                                                                        }, 
+                                                                                                                                        {
+                                                                                                                                            "arg_type": 100003, 
+                                                                                                                                            "args_list": [
+                                                                                                                                                "result_data"
+                                                                                                                                            ], 
+                                                                                                                                            "sub_type": 1
+                                                                                                                                        }
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                                }, 
+                                                                                                                                {
+                                                                                                                                    "arg_type": 100003, 
+                                                                                                                                    "args_list": [
+                                                                                                                                        "message"
+                                                                                                                                    ], 
+                                                                                                                                    "sub_type": 1
+                                                                                                                                }
+                                                                                                                            ], 
+                                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                                                                        }, 
+                                                                                                                        {
+                                                                                                                            "arg_type": 100003, 
+                                                                                                                            "args_list": [
+                                                                                                                                "message"
+                                                                                                                            ], 
+                                                                                                                            "sub_type": 1
+                                                                                                                        }
+                                                                                                                    ], 
+                                                                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                                                                }
                                                                                                             ], 
-                                                                                                            "sub_type": 1
+                                                                                                            "op_arg": [
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null, 
+                                                                                                                null
+                                                                                                            ], 
+                                                                                                            "op_arg_enable": [
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false, 
+                                                                                                                false
+                                                                                                            ], 
+                                                                                                            "sub_type": "STR_JOIN"
                                                                                                         }
                                                                                                     ], 
-                                                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
+                                                                                                    "op_arg": [
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null, 
+                                                                                                        null
+                                                                                                    ], 
+                                                                                                    "op_arg_enable": [
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false, 
+                                                                                                        false
+                                                                                                    ], 
+                                                                                                    "sub_type": "STR_JOIN"
                                                                                                 }
                                                                                             ], 
                                                                                             "op_arg": [
@@ -1636,7 +2700,7 @@
                                                                                                                                             "__tuple__": true, 
                                                                                                                                             "items": [
                                                                                                                                                 "TABLE", 
-                                                                                                                                                "副本刷新聊天2", 
+                                                                                                                                                "副本刷新聊天4", 
                                                                                                                                                 "local"
                                                                                                                                             ]
                                                                                                                                         }
@@ -1709,7 +2773,7 @@
                                                                                                                                             "__tuple__": true, 
                                                                                                                                             "items": [
                                                                                                                                                 "TABLE", 
-                                                                                                                                                "副本刷新聊天2", 
+                                                                                                                                                "副本刷新聊天4", 
                                                                                                                                                 "local"
                                                                                                                                             ]
                                                                                                                                         }
@@ -1870,7 +2934,7 @@
                                                                                                                                     "__tuple__": true, 
                                                                                                                                     "items": [
                                                                                                                                         "TABLE", 
-                                                                                                                                        "副本刷新聊天3", 
+                                                                                                                                        "副本刷新聊天5", 
                                                                                                                                         "local"
                                                                                                                                     ]
                                                                                                                                 }
@@ -1943,7 +3007,7 @@
                                                                                                                                     "__tuple__": true, 
                                                                                                                                     "items": [
                                                                                                                                         "TABLE", 
-                                                                                                                                        "副本刷新聊天3", 
+                                                                                                                                        "副本刷新聊天5", 
                                                                                                                                         "local"
                                                                                                                                     ]
                                                                                                                                 }
@@ -2071,486 +3135,80 @@
                                                                         false
                                                                     ], 
                                                                     "sub_type": "STR_JOIN"
+                                                                }
+                                                            ], 
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000033, 
+                                                            "enable": true
+                                                        }
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100022, 
+                                                    "args_list": [
+                                                        {
+                                                            "action_type": "SET_UI_COMP_TEXT", 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "GET_CLIENT_ROLE"
                                                                 }, 
                                                                 {
-                                                                    "arg_type": 100003, 
+                                                                    "arg_type": 100070, 
                                                                     "args_list": [
                                                                         {
-                                                                            "arg_type": 100003, 
+                                                                            "arg_type": 100025, 
+                                                                            "args_list": [], 
+                                                                            "sub_type": "GET_CLIENT_ROLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100070, 
                                                                             "args_list": [
-                                                                                "\n"
+                                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                                                             ], 
                                                                             "sub_type": 1
                                                                         }, 
                                                                         {
                                                                             "arg_type": 100003, 
                                                                             "args_list": [
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        {
-                                                                                            "arg_type": 100011, 
-                                                                                            "args_list": [
-                                                                                                {
-                                                                                                    "arg_type": 100011, 
-                                                                                                    "args_list": [
-                                                                                                        {
-                                                                                                            "arg_type": 100011, 
-                                                                                                            "args_list": [
-                                                                                                                {
-                                                                                                                    "arg_type": 100011, 
-                                                                                                                    "args_list": [
-                                                                                                                        {
-                                                                                                                            "__tuple__": true, 
-                                                                                                                            "items": [
-                                                                                                                                "TABLE", 
-                                                                                                                                "副本刷新聊天4", 
-                                                                                                                                "local"
-                                                                                                                            ]
-                                                                                                                        }
-                                                                                                                    ], 
-                                                                                                                    "sub_type": "VARIABLE"
-                                                                                                                }, 
-                                                                                                                {
-                                                                                                                    "arg_type": 100003, 
-                                                                                                                    "args_list": [
-                                                                                                                        "result_data"
-                                                                                                                    ], 
-                                                                                                                    "sub_type": 1
-                                                                                                                }
-                                                                                                            ], 
-                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                                        }, 
-                                                                                                        {
-                                                                                                            "arg_type": 100003, 
-                                                                                                            "args_list": [
-                                                                                                                "message"
-                                                                                                            ], 
-                                                                                                            "sub_type": 1
-                                                                                                        }
-                                                                                                    ], 
-                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                                }, 
-                                                                                                {
-                                                                                                    "arg_type": 100003, 
-                                                                                                    "args_list": [
-                                                                                                        "sender"
-                                                                                                    ], 
-                                                                                                    "sub_type": 1
-                                                                                                }
-                                                                                            ], 
-                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                        }, 
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                "name"
-                                                                                            ], 
-                                                                                            "sub_type": 1
-                                                                                        }
-                                                                                    ], 
-                                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
-                                                                                }, 
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                "："
-                                                                                            ], 
-                                                                                            "sub_type": 1
-                                                                                        }, 
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                {
-                                                                                                    "arg_type": 100011, 
-                                                                                                    "args_list": [
-                                                                                                        {
-                                                                                                            "arg_type": 100011, 
-                                                                                                            "args_list": [
-                                                                                                                {
-                                                                                                                    "arg_type": 100011, 
-                                                                                                                    "args_list": [
-                                                                                                                        {
-                                                                                                                            "__tuple__": true, 
-                                                                                                                            "items": [
-                                                                                                                                "TABLE", 
-                                                                                                                                "副本刷新聊天4", 
-                                                                                                                                "local"
-                                                                                                                            ]
-                                                                                                                        }
-                                                                                                                    ], 
-                                                                                                                    "sub_type": "VARIABLE"
-                                                                                                                }, 
-                                                                                                                {
-                                                                                                                    "arg_type": 100003, 
-                                                                                                                    "args_list": [
-                                                                                                                        "result_data"
-                                                                                                                    ], 
-                                                                                                                    "sub_type": 1
-                                                                                                                }
-                                                                                                            ], 
-                                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                                        }, 
-                                                                                                        {
-                                                                                                            "arg_type": 100003, 
-                                                                                                            "args_list": [
-                                                                                                                "message"
-                                                                                                            ], 
-                                                                                                            "sub_type": 1
-                                                                                                        }
-                                                                                                    ], 
-                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                                }, 
-                                                                                                {
-                                                                                                    "arg_type": 100003, 
-                                                                                                    "args_list": [
-                                                                                                        "message"
-                                                                                                    ], 
-                                                                                                    "sub_type": 1
-                                                                                                }
-                                                                                            ], 
-                                                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
-                                                                                        }
-                                                                                    ], 
-                                                                                    "op_arg": [
-                                                                                        null, 
-                                                                                        null, 
-                                                                                        null, 
-                                                                                        null, 
-                                                                                        null, 
-                                                                                        null, 
-                                                                                        null, 
-                                                                                        null
-                                                                                    ], 
-                                                                                    "op_arg_enable": [
-                                                                                        false, 
-                                                                                        false, 
-                                                                                        false, 
-                                                                                        false, 
-                                                                                        false, 
-                                                                                        false, 
-                                                                                        false, 
-                                                                                        false
-                                                                                    ], 
-                                                                                    "sub_type": "STR_JOIN"
-                                                                                }
+                                                                                "dungeon_chat_panel.label_chat_history"
                                                                             ], 
-                                                                            "op_arg": [
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null
-                                                                            ], 
-                                                                            "op_arg_enable": [
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false
-                                                                            ], 
-                                                                            "sub_type": "STR_JOIN"
+                                                                            "sub_type": 1
                                                                         }
                                                                     ], 
-                                                                    "op_arg": [
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null
-                                                                    ], 
-                                                                    "op_arg_enable": [
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false
-                                                                    ], 
-                                                                    "sub_type": "STR_JOIN"
-                                                                }
-                                                            ], 
-                                                            "op_arg": [
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null
-                                                            ], 
-                                                            "op_arg_enable": [
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false
-                                                            ], 
-                                                            "sub_type": "STR_JOIN"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                {
-                                                                    "arg_type": 100003, 
-                                                                    "args_list": [
-                                                                        "\n"
-                                                                    ], 
-                                                                    "sub_type": 1
+                                                                    "sub_type": "GET_UI_COMP_BY_PATH"
                                                                 }, 
                                                                 {
                                                                     "arg_type": 100003, 
                                                                     "args_list": [
-                                                                        {
-                                                                            "arg_type": 100003, 
-                                                                            "args_list": [
-                                                                                {
-                                                                                    "arg_type": 100011, 
-                                                                                    "args_list": [
-                                                                                        {
-                                                                                            "arg_type": 100011, 
-                                                                                            "args_list": [
-                                                                                                {
-                                                                                                    "arg_type": 100011, 
-                                                                                                    "args_list": [
-                                                                                                        {
-                                                                                                            "arg_type": 100011, 
-                                                                                                            "args_list": [
-                                                                                                                {
-                                                                                                                    "__tuple__": true, 
-                                                                                                                    "items": [
-                                                                                                                        "TABLE", 
-                                                                                                                        "副本刷新聊天5", 
-                                                                                                                        "local"
-                                                                                                                    ]
-                                                                                                                }
-                                                                                                            ], 
-                                                                                                            "sub_type": "VARIABLE"
-                                                                                                        }, 
-                                                                                                        {
-                                                                                                            "arg_type": 100003, 
-                                                                                                            "args_list": [
-                                                                                                                "result_data"
-                                                                                                            ], 
-                                                                                                            "sub_type": 1
-                                                                                                        }
-                                                                                                    ], 
-                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                                }, 
-                                                                                                {
-                                                                                                    "arg_type": 100003, 
-                                                                                                    "args_list": [
-                                                                                                        "message"
-                                                                                                    ], 
-                                                                                                    "sub_type": 1
-                                                                                                }
-                                                                                            ], 
-                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                        }, 
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                "sender"
-                                                                                            ], 
-                                                                                            "sub_type": 1
-                                                                                        }
-                                                                                    ], 
-                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                }, 
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        "name"
-                                                                                    ], 
-                                                                                    "sub_type": 1
-                                                                                }
-                                                                            ], 
-                                                                            "sub_type": "GET_STRING_TABLE_VAR_1D"
-                                                                        }, 
-                                                                        {
-                                                                            "arg_type": 100003, 
-                                                                            "args_list": [
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        "："
-                                                                                    ], 
-                                                                                    "sub_type": 1
-                                                                                }, 
-                                                                                {
-                                                                                    "arg_type": 100003, 
-                                                                                    "args_list": [
-                                                                                        {
-                                                                                            "arg_type": 100011, 
-                                                                                            "args_list": [
-                                                                                                {
-                                                                                                    "arg_type": 100011, 
-                                                                                                    "args_list": [
-                                                                                                        {
-                                                                                                            "arg_type": 100011, 
-                                                                                                            "args_list": [
-                                                                                                                {
-                                                                                                                    "__tuple__": true, 
-                                                                                                                    "items": [
-                                                                                                                        "TABLE", 
-                                                                                                                        "副本刷新聊天5", 
-                                                                                                                        "local"
-                                                                                                                    ]
-                                                                                                                }
-                                                                                                            ], 
-                                                                                                            "sub_type": "VARIABLE"
-                                                                                                        }, 
-                                                                                                        {
-                                                                                                            "arg_type": 100003, 
-                                                                                                            "args_list": [
-                                                                                                                "result_data"
-                                                                                                            ], 
-                                                                                                            "sub_type": 1
-                                                                                                        }
-                                                                                                    ], 
-                                                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                                }, 
-                                                                                                {
-                                                                                                    "arg_type": 100003, 
-                                                                                                    "args_list": [
-                                                                                                        "message"
-                                                                                                    ], 
-                                                                                                    "sub_type": 1
-                                                                                                }
-                                                                                            ], 
-                                                                                            "sub_type": "GET_TABLE_TABLE_VAR_1D"
-                                                                                        }, 
-                                                                                        {
-                                                                                            "arg_type": 100003, 
-                                                                                            "args_list": [
-                                                                                                "message"
-                                                                                            ], 
-                                                                                            "sub_type": 1
-                                                                                        }
-                                                                                    ], 
-                                                                                    "sub_type": "GET_STRING_TABLE_VAR_1D"
-                                                                                }
-                                                                            ], 
-                                                                            "op_arg": [
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null, 
-                                                                                null
-                                                                            ], 
-                                                                            "op_arg_enable": [
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false, 
-                                                                                false
-                                                                            ], 
-                                                                            "sub_type": "STR_JOIN"
-                                                                        }
+                                                                        "暂无聊天消息"
                                                                     ], 
-                                                                    "op_arg": [
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null, 
-                                                                        null
-                                                                    ], 
-                                                                    "op_arg_enable": [
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false, 
-                                                                        false
-                                                                    ], 
-                                                                    "sub_type": "STR_JOIN"
+                                                                    "sub_type": 1
                                                                 }
                                                             ], 
-                                                            "op_arg": [
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null, 
-                                                                null
-                                                            ], 
-                                                            "op_arg_enable": [
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false, 
-                                                                false
-                                                            ], 
-                                                            "sub_type": "STR_JOIN"
+                                                            "bp": false, 
+                                                            "element_id": 1943000001000034, 
+                                                            "enable": true
                                                         }
                                                     ], 
-                                                    "op_arg": [
-                                                        null, 
-                                                        null, 
-                                                        null, 
-                                                        null, 
-                                                        null, 
-                                                        null, 
-                                                        null, 
-                                                        null
-                                                    ], 
-                                                    "op_arg_enable": [
-                                                        false, 
-                                                        false, 
-                                                        false, 
-                                                        false, 
-                                                        false, 
-                                                        false, 
-                                                        false, 
-                                                        false
-                                                    ], 
-                                                    "sub_type": "STR_JOIN"
+                                                    "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1943000001000024, 
-                                            "enable": true
+                                            "element_id": 1943000001000035, 
+                                            "enable": true, 
+                                            "fake_op": [
+                                                2
+                                            ]
                                         }
                                     ], 
                                     "sub_type": 1
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1943000001000025, 
+                            "element_id": 1943000001000036, 
                             "enable": true, 
                             "local_var": {
                                 "__tuple__": true, 
@@ -2565,7 +3223,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1943000001000026, 
+            "element_id": 1943000001000037, 
             "enable": true, 
             "fake_op": [
                 2

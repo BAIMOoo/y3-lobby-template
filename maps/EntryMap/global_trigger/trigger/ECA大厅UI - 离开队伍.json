@@ -1,51 +1,6 @@
 {
     "action": [
         {
-            "action_type": "SET_UI_COMP_ENABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100025, 
-                    "args_list": [], 
-                    "sub_type": "TRIGGER_PLAYER"
-                }, 
-                {
-                    "arg_type": 100070, 
-                    "args_list": [
-                        {
-                            "arg_type": 100025, 
-                            "args_list": [], 
-                            "sub_type": "TRIGGER_PLAYER"
-                        }, 
-                        {
-                            "arg_type": 100070, 
-                            "args_list": [
-                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                            ], 
-                            "sub_type": 1
-                        }, 
-                        {
-                            "arg_type": 100003, 
-                            "args_list": [
-                                "team_panel.button_leave_team"
-                            ], 
-                            "sub_type": 1
-                        }
-                    ], 
-                    "sub_type": "GET_UI_COMP_BY_PATH"
-                }, 
-                {
-                    "arg_type": 100001, 
-                    "args_list": [
-                        false
-                    ], 
-                    "sub_type": 1
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1942000004000002, 
-            "enable": true
-        }, 
-        {
             "action_type": "SET_UI_COMP_TEXT", 
             "args_list": [
                 {
@@ -71,7 +26,7 @@
                         {
                             "arg_type": 100003, 
                             "args_list": [
-                                "team_panel.label_team_hint"
+                                "chat_panel.label_chat_result"
                             ], 
                             "sub_type": 1
                         }
@@ -87,7 +42,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000004000003, 
+            "element_id": 1942000004000002, 
             "enable": true
         }, 
         {
@@ -119,7 +74,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1942000004000004, 
+            "element_id": 1942000004000003, 
             "enable": true
         }, 
         {
@@ -173,7 +128,7 @@
                                 }
                             ], 
                             "condition_type": "BOOL_COMPARE", 
-                            "element_id": 1942000004000005, 
+                            "element_id": 1942000004000004, 
                             "enable": true
                         }
                     ], 
@@ -233,7 +188,7 @@
                                                 }
                                             ], 
                                             "condition_type": "STRING_COMPARE", 
-                                            "element_id": 1942000004000006, 
+                                            "element_id": 1942000004000005, 
                                             "enable": true
                                         }
                                     ], 
@@ -268,7 +223,7 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "team_panel.label_team_hint"
+                                                                "chat_panel.label_chat_result"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -284,7 +239,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000004000007, 
+                                            "element_id": 1942000004000006, 
                                             "enable": true
                                         }, 
                                         1942100003
@@ -294,51 +249,6 @@
                                 {
                                     "arg_type": 100022, 
                                     "args_list": [
-                                        {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "TRIGGER_PLAYER"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "team_panel.button_leave_team"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        true
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "bp": false, 
-                                            "element_id": 1942000004000008, 
-                                            "enable": true
-                                        }, 
                                         {
                                             "action_type": "SET_UI_COMP_TEXT", 
                                             "args_list": [
@@ -365,7 +275,7 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "team_panel.label_team_hint"
+                                                                "chat_panel.label_chat_result"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -381,7 +291,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000004000009, 
+                                            "element_id": 1942000004000007, 
                                             "enable": true
                                         }, 
                                         {
@@ -403,7 +313,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000004000010, 
+                                            "element_id": 1942000004000008, 
                                             "enable": true
                                         }
                                     ], 
@@ -411,7 +321,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000004000011, 
+                            "element_id": 1942000004000009, 
                             "enable": true, 
                             "fake_op": [
                                 2
@@ -423,51 +333,6 @@
                 {
                     "arg_type": 100022, 
                     "args_list": [
-                        {
-                            "action_type": "SET_UI_COMP_ENABLE", 
-                            "args_list": [
-                                {
-                                    "arg_type": 100025, 
-                                    "args_list": [], 
-                                    "sub_type": "TRIGGER_PLAYER"
-                                }, 
-                                {
-                                    "arg_type": 100070, 
-                                    "args_list": [
-                                        {
-                                            "arg_type": 100025, 
-                                            "args_list": [], 
-                                            "sub_type": "TRIGGER_PLAYER"
-                                        }, 
-                                        {
-                                            "arg_type": 100070, 
-                                            "args_list": [
-                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                            ], 
-                                            "sub_type": 1
-                                        }, 
-                                        {
-                                            "arg_type": 100003, 
-                                            "args_list": [
-                                                "team_panel.button_leave_team"
-                                            ], 
-                                            "sub_type": 1
-                                        }
-                                    ], 
-                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                }, 
-                                {
-                                    "arg_type": 100001, 
-                                    "args_list": [
-                                        true
-                                    ], 
-                                    "sub_type": 1
-                                }
-                            ], 
-                            "bp": false, 
-                            "element_id": 1942000004000012, 
-                            "enable": true
-                        }, 
                         {
                             "action_type": "SET_UI_COMP_TEXT", 
                             "args_list": [
@@ -494,7 +359,7 @@
                                         {
                                             "arg_type": 100003, 
                                             "args_list": [
-                                                "team_panel.label_team_hint"
+                                                "chat_panel.label_chat_result"
                                             ], 
                                             "sub_type": 1
                                         }
@@ -510,7 +375,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000004000013, 
+                            "element_id": 1942000004000010, 
                             "enable": true
                         }, 
                         {
@@ -532,7 +397,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000004000014, 
+                            "element_id": 1942000004000011, 
                             "enable": true
                         }
                     ], 
@@ -540,7 +405,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000004000015, 
+            "element_id": 1942000004000012, 
             "enable": true, 
             "fake_op": [
                 2
@@ -657,51 +522,6 @@
                             "arg_type": 100022, 
                             "args_list": [
                                 {
-                                    "action_type": "SET_UI_COMP_ENABLE", 
-                                    "args_list": [
-                                        {
-                                            "arg_type": 100025, 
-                                            "args_list": [], 
-                                            "sub_type": "TRIGGER_PLAYER"
-                                        }, 
-                                        {
-                                            "arg_type": 100070, 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }, 
-                                                {
-                                                    "arg_type": 100003, 
-                                                    "args_list": [
-                                                        "team_panel.button_leave_team"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "sub_type": "GET_UI_COMP_BY_PATH"
-                                        }, 
-                                        {
-                                            "arg_type": 100001, 
-                                            "args_list": [
-                                                true
-                                            ], 
-                                            "sub_type": 1
-                                        }
-                                    ], 
-                                    "bp": false, 
-                                    "element_id": 1942100003000003, 
-                                    "enable": true
-                                }, 
-                                {
                                     "action_type": "IF_THEN_ELSE", 
                                     "args_list": [
                                         {
@@ -751,6 +571,57 @@
                                                         }
                                                     ], 
                                                     "condition_type": "BOOL_COMPARE", 
+                                                    "element_id": 1942100003000003, 
+                                                    "enable": true
+                                                }
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100022, 
+                                            "args_list": [
+                                                {
+                                                    "action_type": "SET_UI_COMP_TEXT", 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100025, 
+                                                            "args_list": [], 
+                                                            "sub_type": "TRIGGER_PLAYER"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100070, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100025, 
+                                                                    "args_list": [], 
+                                                                    "sub_type": "TRIGGER_PLAYER"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100070, 
+                                                                    "args_list": [
+                                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "chat_panel.label_chat_result"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_UI_COMP_BY_PATH"
+                                                        }, 
+                                                        {
+                                                            "arg_type": 100003, 
+                                                            "args_list": [
+                                                                "ECA大厅UI - 离开队伍：操作成功"
+                                                            ], 
+                                                            "sub_type": 1
+                                                        }
+                                                    ], 
+                                                    "bp": false, 
                                                     "element_id": 1942100003000004, 
                                                     "enable": true
                                                 }
@@ -786,58 +657,7 @@
                                                                 {
                                                                     "arg_type": 100003, 
                                                                     "args_list": [
-                                                                        "team_panel.label_team_hint"
-                                                                    ], 
-                                                                    "sub_type": 1
-                                                                }
-                                                            ], 
-                                                            "sub_type": "GET_UI_COMP_BY_PATH"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "ECA大厅UI - 离开队伍：操作成功"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "bp": false, 
-                                                    "element_id": 1942100003000005, 
-                                                    "enable": true
-                                                }
-                                            ], 
-                                            "sub_type": 1
-                                        }, 
-                                        {
-                                            "arg_type": 100022, 
-                                            "args_list": [
-                                                {
-                                                    "action_type": "SET_UI_COMP_TEXT", 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "TRIGGER_PLAYER"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                {
-                                                                    "arg_type": 100025, 
-                                                                    "args_list": [], 
-                                                                    "sub_type": "TRIGGER_PLAYER"
-                                                                }, 
-                                                                {
-                                                                    "arg_type": 100070, 
-                                                                    "args_list": [
-                                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                                    ], 
-                                                                    "sub_type": 1
-                                                                }, 
-                                                                {
-                                                                    "arg_type": 100003, 
-                                                                    "args_list": [
-                                                                        "team_panel.label_team_hint"
+                                                                        "chat_panel.label_chat_result"
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }
@@ -853,7 +673,7 @@
                                                         }
                                                     ], 
                                                     "bp": false, 
-                                                    "element_id": 1942100003000006, 
+                                                    "element_id": 1942100003000005, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -861,7 +681,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100003000007, 
+                                    "element_id": 1942100003000006, 
                                     "enable": true, 
                                     "fake_op": [
                                         2
@@ -885,7 +705,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100003000008, 
+                                    "element_id": 1942100003000007, 
                                     "enable": true
                                 }, 
                                 {
@@ -898,7 +718,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100003000009, 
+                                    "element_id": 1942100003000008, 
                                     "enable": true
                                 }
                             ], 
@@ -911,7 +731,7 @@
                         }
                     ], 
                     "bp": false, 
-                    "element_id": 1942100003000010, 
+                    "element_id": 1942100003000009, 
                     "enable": true, 
                     "fake_op": [
                         2

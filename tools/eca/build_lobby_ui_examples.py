@@ -126,6 +126,32 @@ def set_visible(root: str, path: str, visible, local: bool = False):
     return ["SET_UI_COMP_VISIBLE", player(local), visible, ui(root, path, local)]
 
 
+def set_button_text(root: str, path: str, value, local: bool = False):
+    return [set_text(root, path, value, local)]
+
+
+def bool_is(source, key: str, expected: bool):
+    return ["BOOL_COMPARE", boolean_field(source, key), "==", expected]
+
+
+def all_of(*conditions):
+    return ["AND", list(conditions)]
+
+
+def any_of(*conditions):
+    return ["OR", list(conditions)]
+
+
+def integer_equals(left, right):
+    return ["INTEGER_COMPARE", left, "==", right]
+
+
+def without_whitespace(value):
+    for whitespace in (" ", "\t", "\r", "\n"):
+        value = ["STR_REPLACE", value, whitespace, ""]
+    return value
+
+
 def lobby_context_conditions():
     return [
         [
@@ -176,6 +202,8 @@ def async_trigger(
     optional_args=None,
     pre_actions=None,
     accepted_actions=None,
+    guard_conditions=None,
+    rejected_actions=None,
     redacted: bool = False,
 ):
     result_name = f"{name}立即结果"
@@ -184,7 +212,6 @@ def async_trigger(
     log_actions = dump_or_redact(result_ref, redacted)
     callback_log = dump_or_redact(custom_payload(), redacted)
     actions = [
-        set_enabled(root, button_path, False),
         set_text(root, result_path, f"{name}：处理中"),
         *(pre_actions or []),
         call(function_key, result_name, args, optional_args),
@@ -201,19 +228,24 @@ def async_trigger(
                         {"register_sub_trigger": callback_name},
                     ],
                     [
-                        set_enabled(root, button_path, True),
                         set_text(root, result_path, f"{name}：同步完成"),
                         *log_actions,
                     ],
                 ],
             ],
             [
-                set_enabled(root, button_path, True),
                 set_text(root, result_path, f"{name}：失败，请查看日志"),
                 *log_actions,
             ],
         ],
     ]
+    if guard_conditions:
+        actions = [[
+            "IF_THEN_ELSE",
+            guard_conditions,
+            actions,
+            rejected_actions or [set_text(root, result_path, f"{name}：输入无效")],
+        ]]
     callback = {
         "name": callback_name,
         "id": ids.next_child(),
@@ -228,7 +260,6 @@ def async_trigger(
                     string_field(result_ref, "request_id"),
                 ]],
                 [
-                    set_enabled(root, button_path, True),
                     [
                         "IF_THEN_ELSE",
                         [["BOOL_COMPARE", boolean_field(custom_payload(), "success"), "==", True]],
@@ -263,29 +294,37 @@ def request_only_trigger(
     function_key: str,
     args,
     pre_actions=None,
+    guard_conditions=None,
+    rejected_actions=None,
     redacted: bool = False,
 ):
     result_name = f"{name}立即结果"
     result_ref = table_var(result_name)
     logs = dump_or_redact(result_ref, redacted)
+    actions = [
+        set_text(root, result_path, f"{name}：提交中"),
+        *(pre_actions or []),
+        call(function_key, result_name, args),
+        [
+            "IF_THEN_ELSE",
+            [["BOOL_COMPARE", boolean_field(result_ref, "accepted"), "==", True]],
+            [set_text(root, result_path, f"{name}：请求已提交，以切图结果为准"), *logs],
+            [set_text(root, result_path, f"{name}：失败，请查看日志"), *logs],
+        ],
+    ]
+    if guard_conditions:
+        actions = [[
+            "IF_THEN_ELSE",
+            guard_conditions,
+            actions,
+            rejected_actions or [set_text(root, result_path, f"{name}：输入无效")],
+        ]]
     return {
         "name": name,
         "id": ids.next_parent(),
         "event": [event_trigger(event_name)],
         "condition": [],
-        "action": [
-            set_enabled(root, button_path, False),
-            set_text(root, result_path, f"{name}：提交中"),
-            *(pre_actions or []),
-            call(function_key, result_name, args),
-            set_enabled(root, button_path, True),
-            [
-                "IF_THEN_ELSE",
-                [["BOOL_COMPARE", boolean_field(result_ref, "accepted"), "==", True]],
-                [set_text(root, result_path, f"{name}：请求已提交，以切图结果为准"), *logs],
-                [set_text(root, result_path, f"{name}：失败，请查看日志"), *logs],
-            ],
-        ],
+        "action": actions,
     }
 
 
@@ -311,39 +350,125 @@ def entry_refresh_actions():
     snapshot = result_data("刷新状态快照")
     connection = result_data("刷新连接状态")
     token = result_data("刷新口令")
+    connected = bool_is(snapshot, "connected", True)
+    has_team = bool_is(snapshot, "has_team", True)
+    no_team = bool_is(snapshot, "has_team", False)
+    captain = bool_is(snapshot, "is_captain", True)
+    not_matching = bool_is(snapshot, "matching", False)
+    not_launching = bool_is(snapshot, "launching", False)
+    can_manage = all_of(has_team, captain, not_matching, not_launching)
+    can_leave = all_of(has_team, not_matching, not_launching)
+    solo_or_captain = any_of(no_team, captain)
+    can_match = all_of(connected, not_launching, solo_or_captain)
+    can_private = any_of(no_team, all_of(connected, captain, not_matching, not_launching))
     actions.extend([
         set_text(ENTRY_ROOT, "status_panel.status_aid.label_aid_value", as_text(integer_field(snapshot, "aid")), True),
-        set_text(ENTRY_ROOT, "status_panel.status_mode.label_mode_value", as_text(integer_field(snapshot, "game_mode")), True),
-        set_text(ENTRY_ROOT, "status_panel.status_connection.label_connection_value", string_field(connection, "status"), True),
-        set_text(ENTRY_ROOT, "status_panel.status_team.label_team_value", as_text(integer_field(snapshot, "team_id")), True),
-        set_text(ENTRY_ROOT, "status_panel.status_match.label_match_value", as_text(boolean_field(snapshot, "matching")), True),
-        set_text(ENTRY_ROOT, "status_panel.status_launch.label_launch_value", as_text(boolean_field(snapshot, "launching")), True),
+        set_text(ENTRY_ROOT, "status_panel.status_mode.label_mode_value", join_text("大厅 (", as_text(["GET_GAME_MODE"]), ")"), True),
+        set_text(ENTRY_ROOT, "status_panel.status_player.label_player_value", join_text(["GET_PLAYER_NAME", player(True)], " / ID=", as_text(["PLAYER_ID_NUMBER", player(True)])), True),
+        set_text(ENTRY_ROOT, "status_panel.status_bob.label_bob_value", string_field(snapshot, "status"), True),
+        ["IF_THEN_ELSE", [connected], [set_text(ENTRY_ROOT, "status_panel.status_login.label_login_value", "已连接", True)], [set_text(ENTRY_ROOT, "status_panel.status_login.label_login_value", "未连接", True)]],
+        ["IF_THEN_ELSE", [has_team], [set_text(ENTRY_ROOT, "status_panel.status_team.label_team_value", as_text(integer_field(snapshot, "team_id")), True)], [set_text(ENTRY_ROOT, "status_panel.status_team.label_team_value", "未加入", True)]],
+        set_text(ENTRY_ROOT, "status_panel.status_count.label_count_value", join_text(as_text(integer_field(snapshot, "member_count")), "/", as_text(integer_field(snapshot, "member_limit"))), True),
+        ["IF_THEN_ELSE", [bool_is(snapshot, "matching", True)], [set_text(ENTRY_ROOT, "status_panel.status_match.label_match_value", "匹配中", True)], [set_text(ENTRY_ROOT, "status_panel.status_match.label_match_value", "未匹配", True)]],
+        ["IF_THEN_ELSE", [bool_is(snapshot, "launching", True)], [set_text(ENTRY_ROOT, "status_panel.status_launch.label_launch_value", "启动中", True)], [set_text(ENTRY_ROOT, "status_panel.status_launch.label_launch_value", "未启动", True)]],
         set_text(ENTRY_ROOT, "team_panel.label_team_id", join_text("队伍编号：", as_text(integer_field(snapshot, "team_id"))), True),
-        set_text(ENTRY_ROOT, "action_panel.label_token", join_text("当前口令：", string_field(token, "token")), True),
+        set_text(ENTRY_ROOT, "team_panel.label_member_count", join_text(as_text(integer_field(snapshot, "member_count")), " / ", as_text(integer_field(snapshot, "member_limit"))), True),
+        set_enabled(ENTRY_ROOT, "team_panel.button_leave_team", can_leave, True),
+        set_enabled(ENTRY_ROOT, "team_panel.button_dismiss_team", can_manage, True),
+        set_enabled(ENTRY_ROOT, "action_panel.button_private_dungeon", can_private, True),
+        set_enabled(ENTRY_ROOT, "action_panel.button_same_level_private_dungeon", can_private, True),
+        set_enabled(ENTRY_ROOT, "action_panel.button_match", can_match, True),
+        set_enabled(ENTRY_ROOT, "chat_panel.button_team_chat", all_of(connected, has_team), True),
+        set_enabled(ENTRY_ROOT, "chat_panel.button_world_chat", connected, True),
+        [
+            "IF_THEN_ELSE",
+            [bool_is(snapshot, "launching", True)],
+            set_button_text(ENTRY_ROOT, "action_panel.button_match", "启动中", True),
+            [[
+                "IF_THEN_ELSE",
+                [bool_is(snapshot, "matching", True)],
+                set_button_text(ENTRY_ROOT, "action_panel.button_match", "取消匹配", True),
+                set_button_text(ENTRY_ROOT, "action_panel.button_match", "开始匹配", True),
+            ]],
+        ],
     ])
     for index in range(1, 5):
         member_data = table_field(result_data(f"刷新成员{index}"), "member")
         exists = boolean_field(result_data(f"刷新成员{index}"), "exists")
+        is_self = integer_equals(
+            integer_field(member_data, "aid"),
+            integer_field(snapshot, "aid"),
+        )
         actions.extend([
             set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}", exists, True),
             set_text(
                 ENTRY_ROOT,
-                f"team_panel.member_row_{index}.label_member_{index}",
-                join_text(
-                    f"#{index}  AID ",
-                    as_text(integer_field(member_data, "aid")),
-                    "  ",
-                    string_field(member_data, "name"),
-                    "  ",
-                    string_field(member_data, "state"),
-                ),
+                f"team_panel.member_row_{index}.label_member_index_{index}",
+                str(index),
                 True,
             ),
+            [
+                "IF_THEN_ELSE",
+                [all_of(is_self, captain)],
+                [set_text(ENTRY_ROOT, f"team_panel.member_row_{index}.label_member_name_{index}", join_text(string_field(member_data, "name"), " [队长]"), True)],
+                [set_text(ENTRY_ROOT, f"team_panel.member_row_{index}.label_member_name_{index}", string_field(member_data, "name"), True)],
+            ],
+            set_text(ENTRY_ROOT, f"team_panel.member_row_{index}.label_member_aid_{index}", as_text(integer_field(member_data, "aid")), True),
+            set_text(ENTRY_ROOT, f"team_panel.member_row_{index}.label_member_state_{index}", string_field(member_data, "state"), True),
+            set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}.label_member_current_{index}", is_self, True),
+            set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}.button_transfer_{index}", ["BOOL_COMPARE", is_self, "==", False], True),
+            set_visible(ENTRY_ROOT, f"team_panel.member_row_{index}.button_kick_{index}", ["BOOL_COMPARE", is_self, "==", False], True),
+            set_enabled(ENTRY_ROOT, f"team_panel.member_row_{index}.button_transfer_{index}", all_of(can_manage, ["BOOL_COMPARE", is_self, "==", False]), True),
+            set_enabled(ENTRY_ROOT, f"team_panel.member_row_{index}.button_kick_{index}", all_of(can_manage, ["BOOL_COMPARE", is_self, "==", False]), True),
         ])
+    team_count = join_text(
+        as_text(integer_field(snapshot, "member_count")),
+        "/",
+        as_text(integer_field(snapshot, "member_limit")),
+    )
+    def team_summary(role: str, reason: str):
+        return set_text(
+            ENTRY_ROOT,
+            "action_panel.label_action_team",
+            join_text("队伍就绪  ", team_count, "    当前身份  ", role, "    ", reason),
+            True,
+        )
+
+    actions.append([
+        "IF_THEN_ELSE",
+        [no_team],
+        [team_summary("单人", "无队伍：可单人进入")],
+        [[
+            "IF_THEN_ELSE",
+            [bool_is(snapshot, "is_captain", False)],
+            [team_summary("队员", "只有队长可以发起局内私人副本")],
+            [[
+                "IF_THEN_ELSE",
+                [bool_is(snapshot, "connected", False)],
+                [team_summary("队长", "队伍路径需要大厅服务已连接")],
+                [[
+                    "IF_THEN_ELSE",
+                    [bool_is(snapshot, "matching", True)],
+                    [team_summary("队长", "队伍正在匹配，不能发起局内私人副本")],
+                    [[
+                        "IF_THEN_ELSE",
+                        [bool_is(snapshot, "launching", True)],
+                        [team_summary("队长", "队伍正在启动关卡，不能发起局内私人副本")],
+                        [team_summary("队长", "可发起队伍副本")],
+                    ]],
+                ]],
+            ]],
+        ]],
+    ])
     history = message_line("刷新聊天1")
     for index in range(2, 6):
         history = join_text(history, "\n", message_line(f"刷新聊天{index}"))
-    actions.append(set_text(ENTRY_ROOT, "chat_panel.label_chat_history", history, True))
+    actions.append([
+        "IF_THEN_ELSE",
+        [bool_is(result_data("刷新聊天1"), "exists", True)],
+        [set_text(ENTRY_ROOT, "chat_panel.label_chat_history", history, True)],
+        [set_text(ENTRY_ROOT, "chat_panel.label_chat_history", "暂无聊天消息", True)],
+    ])
     return actions
 
 
@@ -359,6 +484,9 @@ def dungeon_refresh_actions():
     snapshot = result_data("副本刷新状态快照")
     connection = result_data("副本刷新连接状态")
     token = result_data("副本刷新口令")
+    connected = bool_is(snapshot, "connected", True)
+    has_team = bool_is(snapshot, "has_team", True)
+    token_available = ["STRING_COMPARE", string_field(token, "token"), "!=", ""]
     actions.extend([
         set_text(
             DUNGEON_ROOT,
@@ -372,11 +500,19 @@ def dungeon_refresh_actions():
             True,
         ),
         set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_token_value", string_field(token, "token"), True),
+        set_enabled(DUNGEON_ROOT, "dungeon_chat_panel.button_copy_token", token_available, True),
+        set_enabled(DUNGEON_ROOT, "dungeon_chat_panel.button_team_chat", all_of(connected, has_team), True),
+        set_enabled(DUNGEON_ROOT, "dungeon_chat_panel.button_world_chat", connected, True),
     ])
     history = message_line("副本刷新聊天1")
     for index in range(2, 6):
         history = join_text(history, "\n", message_line(f"副本刷新聊天{index}"))
-    actions.append(set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_history", history, True))
+    actions.append([
+        "IF_THEN_ELSE",
+        [bool_is(result_data("副本刷新聊天1"), "exists", True)],
+        [set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_history", history, True)],
+        [set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_history", "暂无聊天消息", True)],
+    ])
     return actions
 
 
@@ -391,7 +527,7 @@ def init_trigger(
 ):
     active_actions = [
         *[register_event(root, path, event_name) for path, event_name in bindings],
-        ["RUN_LOOP_TIMER_NO_SAVE", 1.0, True, refresh_actions],
+        ["RUN_LOOP_TIMER_NO_SAVE", 0.5, True, refresh_actions],
     ]
     if lobby_ui:
         lobby_actions = [
@@ -405,6 +541,7 @@ def init_trigger(
         dungeon_actions = [
             set_visible(ENTRY_ROOT, "", False, True),
             set_visible(DUNGEON_ROOT, "", True, True),
+            set_visible(DUNGEON_ROOT, "image_backdrop", False, True),
             *active_actions,
         ]
     return {
@@ -434,13 +571,9 @@ def entry_dsl():
         ("action_panel.button_join_dungeon", "eca_lobby_join_token"),
         ("chat_panel.button_team_chat", "eca_lobby_team_chat"),
         ("chat_panel.button_world_chat", "eca_lobby_world_chat"),
-        ("button_developer", "eca_lobby_developer_toggle"),
-        ("button_exit", "eca_lobby_exit"),
-        ("developer_panel.button_dev_connect", "eca_lobby_dev_connect"),
-        ("developer_panel.button_dev_score", "eca_lobby_dev_score"),
-        ("developer_panel.button_dev_team_info", "eca_lobby_dev_team_info"),
-        ("developer_panel.button_dev_player_info", "eca_lobby_dev_player_info"),
-        ("developer_panel.button_dev_refresh_player", "eca_lobby_dev_refresh_player"),
+        ("button_exit", "eca_lobby_exit_show"),
+        ("exit_confirm_overlay.exit_confirm_panel.button_exit_cancel", "eca_lobby_exit_cancel"),
+        ("exit_confirm_overlay.exit_confirm_panel.button_exit_confirm", "eca_lobby_exit_confirm"),
     ]
     for index in range(1, 5):
         bindings.extend([
@@ -463,9 +596,9 @@ def entry_dsl():
             event_name="eca_lobby_create_team",
             root=ENTRY_ROOT,
             button_path="team_panel.button_create_team",
-            result_path="team_panel.label_team_hint",
+            result_path="chat_panel.label_chat_result",
             function_key="create_team",
-            args=[4],
+            args=[2],
         ),
         async_trigger(
             ids,
@@ -473,9 +606,11 @@ def entry_dsl():
             event_name="eca_lobby_join_team",
             root=ENTRY_ROOT,
             button_path="team_panel.button_join_team",
-            result_path="team_panel.label_team_hint",
+            result_path="chat_panel.label_chat_result",
             function_key="join_team",
             args=[["STR_TO_INT", ["GET_INPUT_FIELD_CONTENT", player(), ui(ENTRY_ROOT, "team_panel.input_team_id")]]],
+            guard_conditions=[["INTEGER_COMPARE", ["STR_TO_INT", ["GET_INPUT_FIELD_CONTENT", player(), ui(ENTRY_ROOT, "team_panel.input_team_id")]], ">", 0]],
+            rejected_actions=[set_text(ENTRY_ROOT, "chat_panel.label_chat_result", "加入队伍：请输入有效数字编号")],
         ),
         async_trigger(
             ids,
@@ -483,7 +618,7 @@ def entry_dsl():
             event_name="eca_lobby_leave_team",
             root=ENTRY_ROOT,
             button_path="team_panel.button_leave_team",
-            result_path="team_panel.label_team_hint",
+            result_path="chat_panel.label_chat_result",
             function_key="leave_team",
         ),
         async_trigger(
@@ -492,7 +627,7 @@ def entry_dsl():
             event_name="eca_lobby_dismiss_team",
             root=ENTRY_ROOT,
             button_path="team_panel.button_dismiss_team",
-            result_path="team_panel.label_team_hint",
+            result_path="chat_panel.label_chat_result",
             function_key="dismiss_team",
         ),
     ])
@@ -508,7 +643,7 @@ def entry_dsl():
                 event_name=f"eca_lobby_transfer_{index}",
                 root=ENTRY_ROOT,
                 button_path=f"team_panel.member_row_{index}.button_transfer_{index}",
-                result_path="team_panel.label_team_hint",
+                result_path="chat_panel.label_chat_result",
                 function_key="transfer",
                 args=[member_aid],
                 pre_actions=pre,
@@ -519,7 +654,7 @@ def entry_dsl():
                 event_name=f"eca_lobby_kick_{index}",
                 root=ENTRY_ROOT,
                 button_path=f"team_panel.member_row_{index}.button_kick_{index}",
-                result_path="team_panel.label_team_hint",
+                result_path="chat_panel.label_chat_result",
                 function_key="kick",
                 args=[member_aid],
                 pre_actions=pre,
@@ -538,6 +673,8 @@ def entry_dsl():
             function_key="team_chat",
             args=[chat_input],
             accepted_actions=[set_text(ENTRY_ROOT, "chat_panel.input_chat", "")],
+            guard_conditions=[["STRING_COMPARE", chat_input, "!=", ""]],
+            rejected_actions=[set_text(ENTRY_ROOT, "chat_panel.label_chat_result", "队伍聊天：消息为空")],
             redacted=True,
         ),
         async_trigger(
@@ -550,6 +687,8 @@ def entry_dsl():
             function_key="world_chat",
             args=[chat_input],
             accepted_actions=[set_text(ENTRY_ROOT, "chat_panel.input_chat", "")],
+            guard_conditions=[["STRING_COMPARE", chat_input, "!=", ""]],
+            rejected_actions=[set_text(ENTRY_ROOT, "chat_panel.label_chat_result", "世界聊天：消息为空")],
             redacted=True,
         ),
     ])
@@ -572,7 +711,7 @@ def entry_dsl():
         event_name="eca_lobby_private_dungeon",
         root=ENTRY_ROOT,
         button_path="action_panel.button_private_dungeon",
-        result_path="action_panel.label_action_state",
+        result_path="chat_panel.label_chat_result",
         function_key="private_dungeon",
         args=[table_var(private_params)],
         pre_actions=private_pre,
@@ -584,9 +723,11 @@ def entry_dsl():
         event_name="eca_lobby_join_token",
         root=ENTRY_ROOT,
         button_path="action_panel.button_join_dungeon",
-        result_path="action_panel.label_action_state",
+        result_path="chat_panel.label_chat_result",
         function_key="join_token",
         args=[["GET_INPUT_FIELD_CONTENT", player(), ui(ENTRY_ROOT, "action_panel.input_token")]],
+        guard_conditions=[["STRING_COMPARE", without_whitespace(["GET_INPUT_FIELD_CONTENT", player(), ui(ENTRY_ROOT, "action_panel.input_token")]), "!=", ""]],
+        rejected_actions=[set_text(ENTRY_ROOT, "chat_panel.label_chat_result", "加入口令：请输入关卡口令")],
         redacted=True,
     ))
 
@@ -597,7 +738,7 @@ def entry_dsl():
     start_callback = "ECA大厅UI - 开始匹配完成回调"
     cancel_callback = "ECA大厅UI - 取消匹配完成回调"
     match_button = "action_panel.button_match"
-    match_label = "action_panel.label_action_state"
+    match_label = "chat_panel.label_chat_result"
 
     def match_resolution(result_name: str, callback_name: str, verb: str):
         ref = table_var(result_name)
@@ -608,9 +749,9 @@ def entry_dsl():
                 "IF_THEN_ELSE",
                 [["STRING_COMPARE", string_field(ref, "request_id"), "!=", ""]],
                 [set_text(ENTRY_ROOT, match_label, f"{verb}：请求已受理"), {"register_sub_trigger": callback_name}],
-                [set_enabled(ENTRY_ROOT, match_button, True), set_text(ENTRY_ROOT, match_label, f"{verb}：同步完成"), ["DUMP_TABLE", ref]],
+                [set_text(ENTRY_ROOT, match_label, f"{verb}：同步完成"), ["DUMP_TABLE", ref]],
             ]],
-            [set_enabled(ENTRY_ROOT, match_button, True), set_text(ENTRY_ROOT, match_label, f"{verb}：失败，请查看日志"), ["DUMP_TABLE", ref]],
+            [set_text(ENTRY_ROOT, match_label, f"{verb}：失败，请查看日志"), ["DUMP_TABLE", ref]],
         ]]
 
     def match_callback(name: str, trigger_id: int, result_name: str):
@@ -621,7 +762,7 @@ def entry_dsl():
             "action": [[
                 "IF_THEN_ELSE",
                 [["STRING_COMPARE", string_field(custom_payload(), "request_id"), "==", string_field(table_var(result_name), "request_id")]],
-                [set_enabled(ENTRY_ROOT, match_button, True), set_text(ENTRY_ROOT, match_label, "匹配状态已更新"), ["DUMP_TABLE", custom_payload()], ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]],
+                [set_text(ENTRY_ROOT, match_label, "匹配状态已更新"), ["DUMP_TABLE", custom_payload()], ["UNREG_TRIGGER", ["CURRENT_DYNAMIC_TRIGGER_INSTANCE"]]],
                 [],
             ]],
         }
@@ -632,7 +773,6 @@ def entry_dsl():
         "event": [event_trigger("eca_lobby_match")],
         "condition": [],
         "action": [
-            set_enabled(ENTRY_ROOT, match_button, False),
             call("snapshot", match_state),
             [
                 "IF_THEN_ELSE",
@@ -654,49 +794,32 @@ def entry_dsl():
         ],
     })
 
-    triggers.append({
-        "name": "ECA大厅UI - 开发面板切换",
-        "id": ids.next_parent(),
-        "event": [event_trigger("eca_lobby_developer_toggle")],
-        "condition": [],
-        "action": [[
-            "IF_THEN_ELSE",
-            [["BOOL_COMPARE", ["GET_UI_COMP_VISIBLE", player(), ui(ENTRY_ROOT, "developer_panel")], "==", True]],
-            [set_visible(ENTRY_ROOT, "developer_panel", False)],
-            [set_visible(ENTRY_ROOT, "developer_panel", True)],
-        ]],
-    })
-
-    dev_specs = [
-        ("建立连接", "eca_lobby_dev_connect", "developer_panel.button_dev_connect", "connect", [190356], [{"type": "BOOLEAN", "value": False}], True),
-        ("设置匹配分数", "eca_lobby_dev_score", "developer_panel.button_dev_score", "score", [1000], None, False),
-        ("获取队伍信息", "eca_lobby_dev_team_info", "developer_panel.button_dev_team_info", "team_info", [], [None], False),
-        ("获取玩家信息", "eca_lobby_dev_player_info", "developer_panel.button_dev_player_info", "player_info", [], [None], False),
-        ("刷新玩家信息", "eca_lobby_dev_refresh_player", "developer_panel.button_dev_refresh_player", "refresh_player", [], None, False),
-    ]
-    for title, event_name, button_path, key, args, optional, redacted in dev_specs:
-        triggers.append(async_trigger(
+    triggers.extend([
+        {
+            "name": "ECA大厅UI - 显示退出确认",
+            "id": ids.next_parent(),
+            "event": [event_trigger("eca_lobby_exit_show")],
+            "condition": [],
+            "action": [set_visible(ENTRY_ROOT, "exit_confirm_overlay", True)],
+        },
+        {
+            "name": "ECA大厅UI - 取消退出",
+            "id": ids.next_parent(),
+            "event": [event_trigger("eca_lobby_exit_cancel")],
+            "condition": [],
+            "action": [set_visible(ENTRY_ROOT, "exit_confirm_overlay", False)],
+        },
+        async_trigger(
             ids,
-            name=f"ECA大厅UI - {title}",
-            event_name=event_name,
+            name="ECA大厅UI - 确认退出游戏",
+            event_name="eca_lobby_exit_confirm",
             root=ENTRY_ROOT,
-            button_path=button_path,
-            result_path="developer_panel.label_developer_result",
-            function_key=key,
-            args=args,
-            optional_args=optional,
-            redacted=redacted,
-        ))
-
-    triggers.append(async_trigger(
-        ids,
-        name="ECA大厅UI - 退出游戏",
-        event_name="eca_lobby_exit",
-        root=ENTRY_ROOT,
-        button_path="button_exit",
-        result_path="header_panel.label_context",
-        function_key="exit",
-    ))
+            button_path="exit_confirm_overlay.exit_confirm_panel.button_exit_confirm",
+            result_path="chat_panel.label_chat_result",
+            function_key="exit",
+            pre_actions=[set_visible(ENTRY_ROOT, "exit_confirm_overlay", False)],
+        ),
+    ])
 
     same_level_state = "同关卡不同模式状态"
     same_level_params = "同关卡不同模式参数"
@@ -706,7 +829,7 @@ def entry_dsl():
         event_name="eca_lobby_same_level_private_dungeon",
         root=ENTRY_ROOT,
         button_path="action_panel.button_same_level_private_dungeon",
-        result_path="action_panel.label_action_state",
+        result_path="chat_panel.label_chat_result",
         function_key="private_dungeon",
         args=[table_var(same_level_params)],
         pre_actions=[
@@ -730,7 +853,9 @@ def dungeon_dsl():
         ("dungeon_chat_panel.button_team_chat", "eca_dungeon_team_chat"),
         ("dungeon_chat_panel.button_world_chat", "eca_dungeon_world_chat"),
         ("dungeon_chat_panel.button_copy_token", "eca_dungeon_copy_token"),
-        ("button_exit", "eca_dungeon_exit"),
+        ("button_exit", "eca_dungeon_exit_show"),
+        ("exit_confirm_overlay.exit_confirm_panel.button_exit_cancel", "eca_dungeon_exit_cancel"),
+        ("exit_confirm_overlay.exit_confirm_panel.button_exit_confirm", "eca_dungeon_exit_confirm"),
     ]
     triggers = [init_trigger(
         ids,
@@ -752,6 +877,8 @@ def dungeon_dsl():
             function_key="team_chat",
             args=[chat_input],
             accepted_actions=[set_text(DUNGEON_ROOT, "dungeon_chat_panel.input_chat", "")],
+            guard_conditions=[["STRING_COMPARE", chat_input, "!=", ""]],
+            rejected_actions=[set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_result", "队伍聊天：消息为空")],
             redacted=True,
         ),
         async_trigger(
@@ -764,6 +891,8 @@ def dungeon_dsl():
             function_key="world_chat",
             args=[chat_input],
             accepted_actions=[set_text(DUNGEON_ROOT, "dungeon_chat_panel.input_chat", "")],
+            guard_conditions=[["STRING_COMPARE", chat_input, "!=", ""]],
+            rejected_actions=[set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_result", "世界聊天：消息为空")],
             redacted=True,
         ),
     ])
@@ -787,25 +916,50 @@ def dungeon_dsl():
     ))
 
     triggers.append({
-        "name": "ECA副本UI - 显示口令",
+        "name": "ECA副本UI - 复制口令",
         "id": ids.next_parent(),
         "event": [event_trigger("eca_dungeon_copy_token")],
         "condition": [],
         "action": [
             call("token", "副本显示口令"),
-            set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_token_value", string_field(result_data("副本显示口令"), "token")),
-            set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_result", "口令已显示，请手动传递给另一客户端"),
+            [
+                "IF_THEN_ELSE",
+                [["STRING_COMPARE", string_field(result_data("副本显示口令"), "token"), "!=", ""]],
+                [
+                    set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_token_value", string_field(result_data("副本显示口令"), "token")),
+                    ["COPY_UI_TEXT_TO_CLIPBOARD", player(), ui(DUNGEON_ROOT, "dungeon_chat_panel.label_token_value")],
+                    set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_result", "关卡口令已复制到剪贴板"),
+                ],
+                [set_text(DUNGEON_ROOT, "dungeon_chat_panel.label_chat_result", "当前没有可复制的关卡口令")],
+            ],
         ],
     })
-    triggers.append(async_trigger(
-        ids,
-        name="ECA副本UI - 退出游戏",
-        event_name="eca_dungeon_exit",
-        root=DUNGEON_ROOT,
-        button_path="button_exit",
-        result_path="dungeon_status_panel.label_status",
-        function_key="exit",
-    ))
+    triggers.extend([
+        {
+            "name": "ECA副本UI - 显示退出确认",
+            "id": ids.next_parent(),
+            "event": [event_trigger("eca_dungeon_exit_show")],
+            "condition": [],
+            "action": [set_visible(DUNGEON_ROOT, "exit_confirm_overlay", True)],
+        },
+        {
+            "name": "ECA副本UI - 取消退出",
+            "id": ids.next_parent(),
+            "event": [event_trigger("eca_dungeon_exit_cancel")],
+            "condition": [],
+            "action": [set_visible(DUNGEON_ROOT, "exit_confirm_overlay", False)],
+        },
+        async_trigger(
+            ids,
+            name="ECA副本UI - 确认退出游戏",
+            event_name="eca_dungeon_exit_confirm",
+            root=DUNGEON_ROOT,
+            button_path="exit_confirm_overlay.exit_confirm_panel.button_exit_confirm",
+            result_path="dungeon_chat_panel.label_chat_result",
+            function_key="exit",
+            pre_actions=[set_visible(DUNGEON_ROOT, "exit_confirm_overlay", False)],
+        ),
+    ])
     return {"map": "EntryMap", "triggers": triggers}
 
 

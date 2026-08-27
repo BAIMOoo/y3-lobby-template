@@ -1,51 +1,6 @@
 {
     "action": [
         {
-            "action_type": "SET_UI_COMP_ENABLE", 
-            "args_list": [
-                {
-                    "arg_type": 100025, 
-                    "args_list": [], 
-                    "sub_type": "TRIGGER_PLAYER"
-                }, 
-                {
-                    "arg_type": 100070, 
-                    "args_list": [
-                        {
-                            "arg_type": 100025, 
-                            "args_list": [], 
-                            "sub_type": "TRIGGER_PLAYER"
-                        }, 
-                        {
-                            "arg_type": 100070, 
-                            "args_list": [
-                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                            ], 
-                            "sub_type": 1
-                        }, 
-                        {
-                            "arg_type": 100003, 
-                            "args_list": [
-                                "developer_panel.button_dev_score"
-                            ], 
-                            "sub_type": 1
-                        }
-                    ], 
-                    "sub_type": "GET_UI_COMP_BY_PATH"
-                }, 
-                {
-                    "arg_type": 100001, 
-                    "args_list": [
-                        false
-                    ], 
-                    "sub_type": 1
-                }
-            ], 
-            "bp": false, 
-            "element_id": 1942000021000002, 
-            "enable": true
-        }, 
-        {
             "action_type": "SET_UI_COMP_TEXT", 
             "args_list": [
                 {
@@ -64,14 +19,14 @@
                         {
                             "arg_type": 100070, 
                             "args_list": [
-                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                             ], 
                             "sub_type": 1
                         }, 
                         {
                             "arg_type": 100003, 
                             "args_list": [
-                                "developer_panel.label_developer_result"
+                                "dungeon_chat_panel.label_chat_result"
                             ], 
                             "sub_type": 1
                         }
@@ -81,13 +36,58 @@
                 {
                     "arg_type": 100003, 
                     "args_list": [
-                        "ECA大厅UI - 设置匹配分数：处理中"
+                        "ECA副本UI - 确认退出游戏：处理中"
                     ], 
                     "sub_type": 1
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000021000003, 
+            "element_id": 1943000008000002, 
+            "enable": true
+        }, 
+        {
+            "action_type": "SET_UI_COMP_VISIBLE", 
+            "args_list": [
+                {
+                    "arg_type": 100025, 
+                    "args_list": [], 
+                    "sub_type": "TRIGGER_PLAYER"
+                }, 
+                {
+                    "arg_type": 100001, 
+                    "args_list": [
+                        false
+                    ], 
+                    "sub_type": 1
+                }, 
+                {
+                    "arg_type": 100070, 
+                    "args_list": [
+                        {
+                            "arg_type": 100025, 
+                            "args_list": [], 
+                            "sub_type": "TRIGGER_PLAYER"
+                        }, 
+                        {
+                            "arg_type": 100070, 
+                            "args_list": [
+                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
+                            ], 
+                            "sub_type": 1
+                        }, 
+                        {
+                            "arg_type": 100003, 
+                            "args_list": [
+                                "exit_confirm_overlay"
+                            ], 
+                            "sub_type": 1
+                        }
+                    ], 
+                    "sub_type": "GET_UI_COMP_BY_PATH"
+                }
+            ], 
+            "bp": false, 
+            "element_id": 1943000008000003, 
             "enable": true
         }, 
         {
@@ -95,18 +95,10 @@
             "args_list": [
                 {
                     "arg_type": 100177, 
-                    "args_list": [
-                        {
-                            "arg_type": 100002, 
-                            "args_list": [
-                                1000
-                            ], 
-                            "sub_type": 1
-                        }
-                    ], 
+                    "args_list": [], 
                     "op_arg": [], 
                     "op_arg_enable": [], 
-                    "sub_type": "b5c349b3c7685d6b83ff25ccf0e1b672"
+                    "sub_type": "f384a7cfa22959a09b7ea36e9ddbff86"
                 }, 
                 {
                     "arg_type": 100011, 
@@ -115,7 +107,7 @@
                             "__tuple__": true, 
                             "items": [
                                 "TABLE", 
-                                "ECA大厅UI - 设置匹配分数立即结果", 
+                                "ECA副本UI - 确认退出游戏立即结果", 
                                 "local"
                             ]
                         }
@@ -127,7 +119,7 @@
             "call_rt_arg_idxes": [
                 0
             ], 
-            "element_id": 1942000021000004, 
+            "element_id": 1943000008000004, 
             "enable": true
         }, 
         {
@@ -148,7 +140,7 @@
                                                     "__tuple__": true, 
                                                     "items": [
                                                         "TABLE", 
-                                                        "ECA大厅UI - 设置匹配分数立即结果", 
+                                                        "ECA副本UI - 确认退出游戏立即结果", 
                                                         "local"
                                                     ]
                                                 }
@@ -181,7 +173,7 @@
                                 }
                             ], 
                             "condition_type": "BOOL_COMPARE", 
-                            "element_id": 1942000021000005, 
+                            "element_id": 1943000008000005, 
                             "enable": true
                         }
                     ], 
@@ -208,7 +200,7 @@
                                                                     "__tuple__": true, 
                                                                     "items": [
                                                                         "TABLE", 
-                                                                        "ECA大厅UI - 设置匹配分数立即结果", 
+                                                                        "ECA副本UI - 确认退出游戏立即结果", 
                                                                         "local"
                                                                     ]
                                                                 }
@@ -241,7 +233,7 @@
                                                 }
                                             ], 
                                             "condition_type": "STRING_COMPARE", 
-                                            "element_id": 1942000021000006, 
+                                            "element_id": 1943000008000006, 
                                             "enable": true
                                         }
                                     ], 
@@ -269,14 +261,14 @@
                                                         {
                                                             "arg_type": 100070, 
                                                             "args_list": [
-                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                                             ], 
                                                             "sub_type": 1
                                                         }, 
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "developer_panel.label_developer_result"
+                                                                "dungeon_chat_panel.label_chat_result"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -286,67 +278,22 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        "ECA大厅UI - 设置匹配分数：请求已受理"
+                                                        "ECA副本UI - 确认退出游戏：请求已受理"
                                                     ], 
                                                     "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000021000007, 
+                                            "element_id": 1943000008000007, 
                                             "enable": true
                                         }, 
-                                        1942100018
+                                        1943100003
                                     ], 
                                     "sub_type": 1
                                 }, 
                                 {
                                     "arg_type": 100022, 
                                     "args_list": [
-                                        {
-                                            "action_type": "SET_UI_COMP_ENABLE", 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        {
-                                                            "arg_type": 100025, 
-                                                            "args_list": [], 
-                                                            "sub_type": "TRIGGER_PLAYER"
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100070, 
-                                                            "args_list": [
-                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }, 
-                                                        {
-                                                            "arg_type": 100003, 
-                                                            "args_list": [
-                                                                "developer_panel.button_dev_score"
-                                                            ], 
-                                                            "sub_type": 1
-                                                        }
-                                                    ], 
-                                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                                }, 
-                                                {
-                                                    "arg_type": 100001, 
-                                                    "args_list": [
-                                                        true
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "bp": false, 
-                                            "element_id": 1942000021000008, 
-                                            "enable": true
-                                        }, 
                                         {
                                             "action_type": "SET_UI_COMP_TEXT", 
                                             "args_list": [
@@ -366,14 +313,14 @@
                                                         {
                                                             "arg_type": 100070, 
                                                             "args_list": [
-                                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                                             ], 
                                                             "sub_type": 1
                                                         }, 
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "developer_panel.label_developer_result"
+                                                                "dungeon_chat_panel.label_chat_result"
                                                             ], 
                                                             "sub_type": 1
                                                         }
@@ -383,13 +330,13 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        "ECA大厅UI - 设置匹配分数：同步完成"
+                                                        "ECA副本UI - 确认退出游戏：同步完成"
                                                     ], 
                                                     "sub_type": 1
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000021000009, 
+                                            "element_id": 1943000008000008, 
                                             "enable": true
                                         }, 
                                         {
@@ -402,7 +349,7 @@
                                                             "__tuple__": true, 
                                                             "items": [
                                                                 "TABLE", 
-                                                                "ECA大厅UI - 设置匹配分数立即结果", 
+                                                                "ECA副本UI - 确认退出游戏立即结果", 
                                                                 "local"
                                                             ]
                                                         }
@@ -411,7 +358,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000021000010, 
+                                            "element_id": 1943000008000009, 
                                             "enable": true
                                         }
                                     ], 
@@ -419,7 +366,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000021000011, 
+                            "element_id": 1943000008000010, 
                             "enable": true, 
                             "fake_op": [
                                 2
@@ -431,51 +378,6 @@
                 {
                     "arg_type": 100022, 
                     "args_list": [
-                        {
-                            "action_type": "SET_UI_COMP_ENABLE", 
-                            "args_list": [
-                                {
-                                    "arg_type": 100025, 
-                                    "args_list": [], 
-                                    "sub_type": "TRIGGER_PLAYER"
-                                }, 
-                                {
-                                    "arg_type": 100070, 
-                                    "args_list": [
-                                        {
-                                            "arg_type": 100025, 
-                                            "args_list": [], 
-                                            "sub_type": "TRIGGER_PLAYER"
-                                        }, 
-                                        {
-                                            "arg_type": 100070, 
-                                            "args_list": [
-                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                            ], 
-                                            "sub_type": 1
-                                        }, 
-                                        {
-                                            "arg_type": 100003, 
-                                            "args_list": [
-                                                "developer_panel.button_dev_score"
-                                            ], 
-                                            "sub_type": 1
-                                        }
-                                    ], 
-                                    "sub_type": "GET_UI_COMP_BY_PATH"
-                                }, 
-                                {
-                                    "arg_type": 100001, 
-                                    "args_list": [
-                                        true
-                                    ], 
-                                    "sub_type": 1
-                                }
-                            ], 
-                            "bp": false, 
-                            "element_id": 1942000021000012, 
-                            "enable": true
-                        }, 
                         {
                             "action_type": "SET_UI_COMP_TEXT", 
                             "args_list": [
@@ -495,14 +397,14 @@
                                         {
                                             "arg_type": 100070, 
                                             "args_list": [
-                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                             ], 
                                             "sub_type": 1
                                         }, 
                                         {
                                             "arg_type": 100003, 
                                             "args_list": [
-                                                "developer_panel.label_developer_result"
+                                                "dungeon_chat_panel.label_chat_result"
                                             ], 
                                             "sub_type": 1
                                         }
@@ -512,13 +414,13 @@
                                 {
                                     "arg_type": 100003, 
                                     "args_list": [
-                                        "ECA大厅UI - 设置匹配分数：失败，请查看日志"
+                                        "ECA副本UI - 确认退出游戏：失败，请查看日志"
                                     ], 
                                     "sub_type": 1
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000021000013, 
+                            "element_id": 1943000008000011, 
                             "enable": true
                         }, 
                         {
@@ -531,7 +433,7 @@
                                             "__tuple__": true, 
                                             "items": [
                                                 "TABLE", 
-                                                "ECA大厅UI - 设置匹配分数立即结果", 
+                                                "ECA副本UI - 确认退出游戏立即结果", 
                                                 "local"
                                             ]
                                         }
@@ -540,7 +442,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000021000014, 
+                            "element_id": 1943000008000012, 
                             "enable": true
                         }
                     ], 
@@ -548,7 +450,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000021000015, 
+            "element_id": 1943000008000013, 
             "enable": true, 
             "fake_op": [
                 2
@@ -567,7 +469,7 @@
                         {
                             "arg_type": 100003, 
                             "args_list": [
-                                "eca_lobby_dev_score"
+                                "eca_dungeon_exit_confirm"
                             ], 
                             "sub_type": 1
                         }
@@ -575,7 +477,7 @@
                     "sub_type": "STR_TO_UI_EVENT"
                 }
             ], 
-            "element_id": 1942000021000001, 
+            "element_id": 1943000008000001, 
             "enable": true, 
             "event_type": "TRIGGER_COMPONENT_EVENT"
         }
@@ -583,7 +485,7 @@
     "group_id": 0, 
     "p_trigger_id": null, 
     "sub_trigger": {
-        "1942100018": {
+        "1943100003": {
             "action": [
                 {
                     "action_type": "IF_THEN_ELSE", 
@@ -636,7 +538,7 @@
                                                             "__tuple__": true, 
                                                             "items": [
                                                                 "TABLE", 
-                                                                "ECA大厅UI - 设置匹配分数立即结果", 
+                                                                "ECA副本UI - 确认退出游戏立即结果", 
                                                                 "local"
                                                             ]
                                                         }
@@ -655,7 +557,7 @@
                                         }
                                     ], 
                                     "condition_type": "STRING_COMPARE", 
-                                    "element_id": 1942100018000002, 
+                                    "element_id": 1943100003000002, 
                                     "enable": true
                                 }
                             ], 
@@ -664,51 +566,6 @@
                         {
                             "arg_type": 100022, 
                             "args_list": [
-                                {
-                                    "action_type": "SET_UI_COMP_ENABLE", 
-                                    "args_list": [
-                                        {
-                                            "arg_type": 100025, 
-                                            "args_list": [], 
-                                            "sub_type": "TRIGGER_PLAYER"
-                                        }, 
-                                        {
-                                            "arg_type": 100070, 
-                                            "args_list": [
-                                                {
-                                                    "arg_type": 100025, 
-                                                    "args_list": [], 
-                                                    "sub_type": "TRIGGER_PLAYER"
-                                                }, 
-                                                {
-                                                    "arg_type": 100070, 
-                                                    "args_list": [
-                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }, 
-                                                {
-                                                    "arg_type": 100003, 
-                                                    "args_list": [
-                                                        "developer_panel.button_dev_score"
-                                                    ], 
-                                                    "sub_type": 1
-                                                }
-                                            ], 
-                                            "sub_type": "GET_UI_COMP_BY_PATH"
-                                        }, 
-                                        {
-                                            "arg_type": 100001, 
-                                            "args_list": [
-                                                true
-                                            ], 
-                                            "sub_type": 1
-                                        }
-                                    ], 
-                                    "bp": false, 
-                                    "element_id": 1942100018000003, 
-                                    "enable": true
-                                }, 
                                 {
                                     "action_type": "IF_THEN_ELSE", 
                                     "args_list": [
@@ -759,7 +616,7 @@
                                                         }
                                                     ], 
                                                     "condition_type": "BOOL_COMPARE", 
-                                                    "element_id": 1942100018000004, 
+                                                    "element_id": 1943100003000003, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -787,14 +644,14 @@
                                                                 {
                                                                     "arg_type": 100070, 
                                                                     "args_list": [
-                                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                        "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }, 
                                                                 {
                                                                     "arg_type": 100003, 
                                                                     "args_list": [
-                                                                        "developer_panel.label_developer_result"
+                                                                        "dungeon_chat_panel.label_chat_result"
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }
@@ -804,13 +661,13 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "ECA大厅UI - 设置匹配分数：操作成功"
+                                                                "ECA副本UI - 确认退出游戏：操作成功"
                                                             ], 
                                                             "sub_type": 1
                                                         }
                                                     ], 
                                                     "bp": false, 
-                                                    "element_id": 1942100018000005, 
+                                                    "element_id": 1943100003000004, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -838,14 +695,14 @@
                                                                 {
                                                                     "arg_type": 100070, 
                                                                     "args_list": [
-                                                                        "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                                                        "908f7d63-a40d-42e1-8ed4-b076b01095a2"
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }, 
                                                                 {
                                                                     "arg_type": 100003, 
                                                                     "args_list": [
-                                                                        "developer_panel.label_developer_result"
+                                                                        "dungeon_chat_panel.label_chat_result"
                                                                     ], 
                                                                     "sub_type": 1
                                                                 }
@@ -855,13 +712,13 @@
                                                         {
                                                             "arg_type": 100003, 
                                                             "args_list": [
-                                                                "ECA大厅UI - 设置匹配分数：失败，请查看日志"
+                                                                "ECA副本UI - 确认退出游戏：失败，请查看日志"
                                                             ], 
                                                             "sub_type": 1
                                                         }
                                                     ], 
                                                     "bp": false, 
-                                                    "element_id": 1942100018000006, 
+                                                    "element_id": 1943100003000005, 
                                                     "enable": true
                                                 }
                                             ], 
@@ -869,7 +726,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100018000007, 
+                                    "element_id": 1943100003000006, 
                                     "enable": true, 
                                     "fake_op": [
                                         2
@@ -893,7 +750,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100018000008, 
+                                    "element_id": 1943100003000007, 
                                     "enable": true
                                 }, 
                                 {
@@ -906,7 +763,7 @@
                                         }
                                     ], 
                                     "bp": false, 
-                                    "element_id": 1942100018000009, 
+                                    "element_id": 1943100003000008, 
                                     "enable": true
                                 }
                             ], 
@@ -919,7 +776,7 @@
                         }
                     ], 
                     "bp": false, 
-                    "element_id": 1942100018000010, 
+                    "element_id": 1943100003000009, 
                     "enable": true, 
                     "fake_op": [
                         2
@@ -940,16 +797,16 @@
                             "sub_type": 1
                         }
                     ], 
-                    "element_id": 1942100018000001, 
+                    "element_id": 1943100003000001, 
                     "enable": true, 
                     "event_type": "RECEIVE_CUSTOM_EVENT"
                 }
             ], 
             "group_id": 0, 
             "is_conf": true, 
-            "p_trigger_id": 1942000021, 
-            "trigger_id": 1942100018, 
-            "trigger_name": "ECA大厅UI - 设置匹配分数完成回调", 
+            "p_trigger_id": 1943000008, 
+            "trigger_id": 1943100003, 
+            "trigger_name": "ECA副本UI - 确认退出游戏完成回调", 
             "valid": true, 
             "var_data": [
                 {}, 
@@ -958,20 +815,20 @@
             ]
         }
     }, 
-    "trigger_id": 1942000021, 
-    "trigger_name": "ECA大厅UI - 设置匹配分数", 
+    "trigger_id": 1943000008, 
+    "trigger_name": "ECA副本UI - 确认退出游戏", 
     "valid": true, 
     "var_data": [
         {
             "TABLE": {
-                "ECA大厅UI - 设置匹配分数立即结果": null
+                "ECA副本UI - 确认退出游戏立即结果": null
             }
         }, 
         {
-            "ECA大厅UI - 设置匹配分数立即结果": 0
+            "ECA副本UI - 确认退出游戏立即结果": 0
         }, 
         [
-            "ECA大厅UI - 设置匹配分数立即结果"
+            "ECA副本UI - 确认退出游戏立即结果"
         ]
     ]
 }
