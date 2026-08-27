@@ -861,8 +861,8 @@ py -3 .codex\skills\eca-json-builder\lookup.py CREATE_UNIT
 ---
 ## 实战验证示例
 
-> 完整 13 条实战 JSON 已迁移到 `test-cases/`（每个 TC-NN-*.md 含一条已验证示例）。
-> 推荐方式：用 `gen_trigger.py` + DSL 生成，详见 `SKILL.md`。
+可执行示例位于 `tests/test_*.py`、`tests/regressions/*.json` 和 `tests/fixtures/`。
+新增真实故障案例时按 `SKILL.md` 的“硬化门”执行，并用 `verify_skill.py` 统一验证。
 
 
 ## AI 使用检查清单

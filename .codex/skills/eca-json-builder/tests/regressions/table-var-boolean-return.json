@@ -1,0 +1,29 @@
+{
+  "id": "table-var-preserves-boolean-function-return",
+  "kind": "build_arg",
+  "index": {
+    "ANY_VAR_TO_STR": {
+      "p": ["TABLE_VAR"],
+      "t": ["STRING"],
+      "o": []
+    },
+    "GET_BOOLEAN_TABLE_VAR_1D": {
+      "p": ["TABLE", "STRING"],
+      "t": ["BOOLEAN"],
+      "o": []
+    }
+  },
+  "value": [
+    "ANY_VAR_TO_STR",
+    [
+      "GET_BOOLEAN_TABLE_VAR_1D",
+      {"var": "状态", "type": "TABLE"},
+      "matching"
+    ]
+  ],
+  "expected_type": "STRING",
+  "assertions": [
+    {"pointer": "/args_list/0/arg_type", "equals": 100001},
+    {"pointer": "/args_list/0/sub_type", "equals": "GET_BOOLEAN_TABLE_VAR_1D"}
+  ]
+}
