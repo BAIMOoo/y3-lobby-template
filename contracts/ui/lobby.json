@@ -1,0 +1,58 @@
+{
+  "flow": "lobby",
+  "root": "EcaLobbyExample",
+  "required_nodes": {
+    "header": {"path": "header_panel", "rect": [24, 936, 430, 120]},
+    "status": {"path": "status_panel", "rect": [470, 936, 1004, 120]},
+    "team": {"path": "team_panel", "rect": [24, 426, 520, 494]},
+    "chat": {"path": "chat_panel", "rect": [24, 24, 700, 390]},
+    "actions": {"path": "action_panel", "rect": [1340, 24, 556, 390]},
+    "exit": {"path": "button_exit", "rect": [1746, 1008, 150, 48]},
+    "exit_overlay": {"path": "exit_confirm_overlay", "rect": [0, 0, 1920, 1080]},
+    "exit_panel": {"path": "exit_confirm_overlay.exit_confirm_panel", "rect": [720, 400, 480, 280]},
+    "exit_cancel": {"path": "exit_confirm_overlay.exit_confirm_panel.button_exit_cancel", "rect": [762, 436, 180, 52]},
+    "exit_confirm": {"path": "exit_confirm_overlay.exit_confirm_panel.button_exit_confirm", "rect": [978, 436, 180, 52]},
+    "match": {"path": "action_panel.button_match", "rect": [1358, 294, 174, 42]},
+    "private_dungeon": {"path": "action_panel.button_private_dungeon", "rect": [1544, 294, 332, 42]},
+    "same_level_private_dungeon": {"path": "action_panel.button_same_level_private_dungeon", "rect": [1358, 244, 518, 42]},
+    "team_chat": {"path": "chat_panel.button_team_chat", "rect": [468, 80, 112, 42]},
+    "world_chat": {"path": "chat_panel.button_world_chat", "rect": [592, 80, 114, 42]}
+  },
+  "status_cards": [
+    ["mode", "模式", [488, 994, 150, 42]],
+    ["player", "玩家", [646, 994, 210, 42]],
+    ["bob", "服务", [864, 994, 105, 42]],
+    ["login", "连接", [977, 994, 105, 42]],
+    ["aid", "AID", [1090, 994, 366, 42]],
+    ["team", "队伍", [488, 946, 210, 42]],
+    ["count", "人数", [706, 946, 100, 42]],
+    ["match", "匹配", [814, 946, 150, 42]],
+    ["launch", "启动", [972, 946, 150, 42]]
+  ],
+  "member_rows": {
+    "count": 4,
+    "fields": ["index", "name", "aid", "state", "current"],
+    "management_actions": ["transfer", "kick"]
+  },
+  "forbidden_paths": ["button_developer", "developer_panel"],
+  "parameters": {
+    "create_team_member_limit": 2,
+    "private_dungeon_max_player": 2,
+    "same_level_private_dungeon_max_player": 2
+  },
+  "rules": {
+    "leave": "has_team and not matching and not launching",
+    "dismiss": "has_team and is_captain and not matching and not launching",
+    "manage_member": "target_aid != self_aid and is_captain and not matching and not launching",
+    "private_dungeon": "not has_team or (connected and is_captain and not matching and not launching)",
+    "match": "connected and not launching and (not has_team or is_captain)",
+    "team_chat": "connected and has_team",
+    "world_chat": "connected"
+  },
+  "match_states": [
+    {"when": "launching", "text": "启动中", "enabled": false},
+    {"when": "matching", "text": "取消匹配", "enabled_rule": "match"},
+    {"when": "otherwise", "text": "开始匹配", "enabled_rule": "match"}
+  ],
+  "exit_sequence": ["show_overlay", "cancel_hides_overlay", "confirm_hides_overlay", "confirm_requests_exit"]
+}

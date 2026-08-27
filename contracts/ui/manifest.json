@@ -1,0 +1,20 @@
+{
+  "contract_version": 1,
+  "baseline": {
+    "branch": "main",
+    "implementation": "maps/EntryMap/script/test_ui.lua",
+    "ui_layout_version": 22
+  },
+  "coordinate_system": "1920x1080 bottom-left absolute pixels",
+  "flows": [
+    "lobby.json",
+    "dungeon.json"
+  ],
+  "implementations": {
+    "lua": "maps/EntryMap/script/test_ui.lua",
+    "eca_lobby_ui": "maps/EntryMap/ui/EcaLobbyExample.json",
+    "eca_dungeon_ui": "maps/EntryMap/ui/EcaDungeonExample.json",
+    "eca_lobby_logic": "tools/eca/lobby_ui_entry_map.json",
+    "eca_dungeon_logic": "tools/eca/lobby_ui_dungeon_map.json"
+  }
+}

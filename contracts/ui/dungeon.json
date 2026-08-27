@@ -1,0 +1,22 @@
+{
+  "flow": "dungeon",
+  "root": "EcaDungeonExample",
+  "required_nodes": {
+    "status": {"path": "dungeon_status_panel", "rect": [24, 856, 860, 200]},
+    "chat": {"path": "dungeon_chat_panel", "rect": [24, 24, 700, 390]},
+    "exit": {"path": "button_exit", "rect": [1746, 1008, 150, 48]},
+    "exit_overlay": {"path": "exit_confirm_overlay", "rect": [0, 0, 1920, 1080]},
+    "exit_panel": {"path": "exit_confirm_overlay.exit_confirm_panel", "rect": [720, 400, 480, 280]},
+    "copy_token": {"path": "dungeon_chat_panel.button_copy_token", "rect": [566, 364, 140, 42]},
+    "team_chat": {"path": "dungeon_chat_panel.button_team_chat", "rect": [468, 80, 112, 42]},
+    "world_chat": {"path": "dungeon_chat_panel.button_world_chat", "rect": [592, 80, 114, 42]}
+  },
+  "rules": {
+    "backdrop_visible": false,
+    "copy_token": "token != empty",
+    "team_chat": "connected and has_team",
+    "world_chat": "connected"
+  },
+  "copy_sequence": ["read_token", "copy_token_text_to_clipboard", "write_success_notice"],
+  "exit_sequence": ["show_overlay", "cancel_hides_overlay", "confirm_hides_overlay", "confirm_requests_exit"]
+}
