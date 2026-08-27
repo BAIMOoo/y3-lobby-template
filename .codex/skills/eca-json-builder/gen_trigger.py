@@ -185,7 +185,7 @@ def infer_type_from_value(value, idx_data):
         # functional sub_type — use return type of that function
         ret_types = idx_data[value[0]]["t"]
         for t in ret_types:
-            if t not in ("ACTION", "EVENT", "COND", "BOOLEAN"):
+            if t not in ("ACTION", "EVENT", "COND"):
                 return t
     if isinstance(value, bool):
         return "BOOLEAN"

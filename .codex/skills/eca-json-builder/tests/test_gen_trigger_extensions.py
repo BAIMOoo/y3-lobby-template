@@ -184,6 +184,33 @@ class TriggerExtensionTests(unittest.TestCase):
         self.assertEqual(action["args_list"][2]["sub_type"], "VARIABLE")
         self.assertEqual(action["args_list"][2]["args_list"][0]["items"], ["TABLE", "子表", "local"])
 
+    def test_table_var_argument_preserves_boolean_function_return_type(self):
+        index = {
+            "ANY_VAR_TO_STR": {"p": ["TABLE_VAR"], "t": ["STRING"], "o": []},
+            "GET_BOOLEAN_TABLE_VAR_1D": {
+                "p": ["TABLE", "STRING"],
+                "t": ["BOOLEAN"],
+                "o": [],
+            },
+        }
+        arg = gen_trigger.build_arg(
+            [
+                "ANY_VAR_TO_STR",
+                [
+                    "GET_BOOLEAN_TABLE_VAR_1D",
+                    {"var": "状态", "type": "TABLE"},
+                    "matching",
+                ],
+            ],
+            "STRING",
+            index,
+            gen_trigger.eid_factory(100),
+        )
+
+        boolean_arg = arg["args_list"][0]
+        self.assertEqual(100001, boolean_arg["arg_type"])
+        self.assertEqual("GET_BOOLEAN_TABLE_VAR_1D", boolean_arg["sub_type"])
+
     def test_function_call_table_literal_is_lowered_to_editor_table_actions(self):
         index = {
             "KEYBOARD_KEY_DOWN_EVENT": {"p": ["KEYBOARD_KEY"], "o": []},

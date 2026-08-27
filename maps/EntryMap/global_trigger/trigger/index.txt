@@ -13,6 +13,7 @@
     "ECA大厅UI - 匹配切换.json": 27, 
     "ECA大厅UI - 发送世界聊天.json": 24, 
     "ECA大厅UI - 发送队伍聊天.json": 23, 
+    "ECA大厅UI - 同关卡不同模式.json": 41, 
     "ECA大厅UI - 局内私人副本.json": 25, 
     "ECA大厅UI - 建立连接.json": 29, 
     "ECA大厅UI - 开发面板切换.json": 28, 

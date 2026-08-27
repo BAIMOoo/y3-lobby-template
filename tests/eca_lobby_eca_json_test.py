@@ -480,6 +480,10 @@ class LobbyEcaJsonTests(unittest.TestCase):
     def test_entry_ui_contains_fixed_rows_and_developer_controls(self):
         tree = load_json(ROOT / "ui_tree" / "EcaLobbyExample_Tree.json")
         paths = set(ui_paths(tree))
+        self.assertIn(
+            "EcaLobbyExample.action_panel.button_same_level_private_dungeon",
+            paths,
+        )
         for index in range(1, 5):
             self.assertIn(f"EcaLobbyExample.team_panel.member_row_{index}", paths)
             self.assertIn(
@@ -547,6 +551,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
     def test_cross_map_ui_requests_do_not_register_fake_completion_callbacks(self):
         names = {
             "ECA大厅UI - 局内私人副本",
+            "ECA大厅UI - 同关卡不同模式",
             "ECA大厅UI - 加入口令",
             "ECA副本UI - 返回大厅",
         }
@@ -565,6 +570,36 @@ class LobbyEcaJsonTests(unittest.TestCase):
                 self.assertNotIn("request_id", serialized)
                 self.assertIn("以切图结果为准", serialized)
 
+    def test_same_level_private_dungeon_uses_entry_map_mode_1003(self):
+        trigger = next(
+            item
+            for item in self.entry_ui_dsl["triggers"]
+            if item["name"] == "ECA大厅UI - 同关卡不同模式"
+        )
+        serialized = json.dumps(trigger, ensure_ascii=False)
+        for expected in [
+            '"level_id", "172371058548994502264384971909138463342"',
+            '"engine_level_id", "81ad7554-7e6b-11f1-8f5c-c78cd393ba6e"',
+            '"game_mode", 1003',
+            '"team_game_mode", 1003',
+            '"max_player", 2',
+            "action_panel.button_same_level_private_dungeon",
+            "eca_lobby_same_level_private_dungeon",
+        ]:
+            with self.subTest(expected=expected):
+                self.assertIn(expected, serialized)
+
+        dungeon = load_json(ROOT / "dungeon.json")
+        self.assertEqual(
+            {
+                "can_add_in_time": 120,
+                "enable_private": 1,
+                "enable_public": 0,
+                "max_player_num": 8,
+            },
+            dungeon["172371058548994502264384971909138463342"]["game_modes"]["1003"],
+        )
+
     def test_generated_ui_triggers_keep_editor_ui_type_ids_and_timer_metadata(self):
         generated = []
         for map_name, pattern in [
@@ -577,7 +612,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
                     ROOT / "maps" / map_name / "global_trigger" / "trigger"
                 ).glob(pattern)
             )
-        self.assertEqual(31, len(generated))
+        self.assertEqual(32, len(generated))
         all_nodes = [node for trigger in generated for node in walk_json(trigger)]
         ui_args = [
             node
@@ -596,6 +631,12 @@ class LobbyEcaJsonTests(unittest.TestCase):
             if isinstance(node, dict)
             and node.get("action_type") == "CREATE_UI_COMP_EVENT_EX_EX"
         ]
+        boolean_table_args = [
+            node
+            for node in all_nodes
+            if isinstance(node, dict)
+            and node.get("sub_type") == "GET_BOOLEAN_TABLE_VAR_1D"
+        ]
         timers = [
             node
             for node in all_nodes
@@ -605,9 +646,11 @@ class LobbyEcaJsonTests(unittest.TestCase):
         self.assertTrue(ui_args)
         self.assertTrue(event_args)
         self.assertTrue(event_type_args)
+        self.assertTrue(boolean_table_args)
         self.assertEqual({100070}, {node["arg_type"] for node in ui_args})
         self.assertEqual({100067}, {node["arg_type"] for node in event_args})
         self.assertEqual({100072}, {node["arg_type"] for node in event_type_args})
+        self.assertEqual({100001}, {node["arg_type"] for node in boolean_table_args})
         self.assertEqual(2, len(timers))
         for timer in timers:
             self.assertEqual(
@@ -646,19 +689,29 @@ class LobbyEcaJsonTests(unittest.TestCase):
         )
         entry_trigger_root = ROOT / "maps" / "EntryMap" / "global_trigger" / "trigger"
         child_trigger_root = ROOT / "maps" / "MapName001" / "global_trigger" / "trigger"
-        self.assertEqual(25, len(list(entry_trigger_root.glob("ECA大厅UI - *.json"))))
+        self.assertEqual(26, len(list(entry_trigger_root.glob("ECA大厅UI - *.json"))))
         self.assertEqual(6, len(list(entry_trigger_root.glob("ECA副本UI - *.json"))))
         self.assertEqual([], list(child_trigger_root.glob("ECA副本UI - *.json")))
 
     def test_ui_initializers_use_exact_lobby_runtime_context(self):
         expected = [
             [
-                "ANY_COMPARE",
-                ["GET_CURRENT_LEVEL"],
-                "==",
-                {"type": "MAP", "value": ENTRY_LEVEL_ID},
+                "OR",
+                [
+                    [
+                        "STRING_COMPARE",
+                        ["ANY_VAR_TO_STR", ["GET_GAME_MODE"]],
+                        "==",
+                        "0",
+                    ],
+                    [
+                        "STRING_COMPARE",
+                        ["ANY_VAR_TO_STR", ["GET_GAME_MODE"]],
+                        "==",
+                        "1001",
+                    ],
+                ],
             ],
-            ["GAME_MODE_COMPARE", ["GET_GAME_MODE"], "==", 1001],
         ]
         for dsl, name in [
             (self.entry_ui_dsl, "ECA大厅UI - 初始化"),
@@ -715,7 +768,7 @@ class LobbyEcaJsonTests(unittest.TestCase):
         self.assertEqual((1, 0), (timer_count(lobby_init[2]), timer_count(lobby_init[3])))
         self.assertEqual((0, 1), (timer_count(dungeon_init[2]), timer_count(dungeon_init[3])))
 
-    def test_generated_runtime_context_uses_official_map_and_mode_types(self):
+    def test_generated_runtime_context_only_compares_converted_mode_strings(self):
         generated = [
             load_json(
                 ROOT
@@ -729,20 +782,44 @@ class LobbyEcaJsonTests(unittest.TestCase):
         ]
         for trigger in generated:
             conditions = trigger["action"][0]["args_list"][0]["args_list"]
-            map_compare, mode_compare = conditions
+            self.assertEqual(1, len(conditions))
+            mode_or = conditions[0]
             with self.subTest(trigger=trigger["trigger_name"]):
-                self.assertEqual(
-                    [900002, 100035, 900002],
-                    [arg["arg_type"] for arg in map_compare["args_list"]],
-                )
-                self.assertEqual("GET_CURRENT_LEVEL", map_compare["args_list"][0]["sub_type"])
-                self.assertEqual(ENTRY_LEVEL_ID, map_compare["args_list"][2]["args_list"][0])
-                self.assertEqual(
-                    [100505, 100035, 100505],
-                    [arg["arg_type"] for arg in mode_compare["args_list"]],
-                )
-                self.assertEqual("GET_GAME_MODE", mode_compare["args_list"][0]["sub_type"])
-                self.assertEqual(1001, mode_compare["args_list"][2]["args_list"][0])
+                self.assertEqual("OR", mode_or["condition_type"])
+                mode_compares = mode_or["args_list"][0]["args_list"]
+                self.assertEqual(100021, mode_or["args_list"][0]["arg_type"])
+                self.assertEqual(["0", "1001"], [
+                    item["args_list"][2]["args_list"][0]
+                    for item in mode_compares
+                ])
+                for mode_compare in mode_compares:
+                    self.assertEqual("STRING_COMPARE", mode_compare["condition_type"])
+                    self.assertEqual(
+                        [100003, 100035, 100003],
+                        [arg["arg_type"] for arg in mode_compare["args_list"]],
+                    )
+                    self.assertEqual(
+                        "ANY_VAR_TO_STR",
+                        mode_compare["args_list"][0]["sub_type"],
+                    )
+                    game_mode_arg = mode_compare["args_list"][0]["args_list"][0]
+                    self.assertEqual(100505, game_mode_arg["arg_type"])
+                    self.assertEqual("GET_GAME_MODE", game_mode_arg["sub_type"])
+
+                invalid_zero_compares = [
+                    node
+                    for node in walk_json(trigger)
+                    if isinstance(node, dict)
+                    and node.get("condition_type") == "GAME_MODE_COMPARE"
+                    and any(
+                        arg.get("args_list") == [0]
+                        for arg in node.get("args_list", [])
+                        if isinstance(arg, dict)
+                    )
+                ]
+                self.assertEqual([], invalid_zero_compares)
+                self.assertNotIn("GET_CURRENT_LEVEL", json.dumps(conditions))
+                self.assertNotIn("ANY_COMPARE", json.dumps(conditions))
 
     def test_lua_test_ui_is_preserved_but_disabled_by_default(self):
         for map_name in MAP_NAMES:

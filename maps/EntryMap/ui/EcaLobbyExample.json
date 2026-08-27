@@ -4367,9 +4367,9 @@
                         "__tuple__": true, 
                         "items": [
                             187.9997, 
-                            193.0001, 
+                            154.0001, 
                             33.8129, 
-                            49.4872, 
+                            39.4872, 
                             1, 
                             1
                         ]
@@ -4420,9 +4420,9 @@
                         "__tuple__": true, 
                         "items": [
                             187.9997, 
-                            193.0001, 
+                            154.0001, 
                             33.8129, 
-                            49.4872, 
+                            39.4872, 
                             1, 
                             1
                         ]
@@ -4487,9 +4487,9 @@
                         "__tuple__": true, 
                         "items": [
                             278.0, 
-                            120.9998, 
+                            90.9999, 
                             50.0, 
-                            31.0256, 
+                            23.3333, 
                             1, 
                             1
                         ]
@@ -4544,9 +4544,9 @@
                         "__tuple__": true, 
                         "items": [
                             278.0, 
-                            59.0, 
+                            35.0002, 
                             50.0, 
-                            15.1282, 
+                            8.9744, 
                             1, 
                             1
                         ]
@@ -4560,7 +4560,7 @@
                     "text": {
                         "__tuple__": true, 
                         "items": [
-                            "\u76ee\u6807\u6a21\u5f0f 1002 / 1003", 
+                            "\u8de8\u5173\u5361 1002 / 1003    \u540c\u5173\u5361 EntryMap / 1003", 
                             false
                         ]
                     }, 
@@ -4715,9 +4715,9 @@
                         "__tuple__": true, 
                         "items": [
                             98.0, 
-                            231.0001, 
+                            189.9998, 
                             17.6259, 
-                            59.2308, 
+                            48.7179, 
                             1, 
                             1
                         ]
@@ -4873,6 +4873,142 @@
                     }, 
                     "type": 1, 
                     "uid": "e89e9556-ded4-48d9-bf63-ce747806ce13"
+                }, 
+                {
+                    "adapter_option": [
+                        false, 
+                        false, 
+                        false, 
+                        false, 
+                        72.0, 
+                        272.0, 
+                        204.0, 
+                        18.0
+                    ], 
+                    "children": [], 
+                    "disabled_cap_insets": {
+                        "__tuple__": true, 
+                        "items": [
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
+                        ]
+                    }, 
+                    "disabled_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "disabled_picture": 134217736, 
+                    "disabled_status_added": true, 
+                    "disabled_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u540c\u5173\u5361\u4e0d\u540c\u6a21\u5f0f", 
+                            false
+                        ]
+                    }, 
+                    "event_list": [], 
+                    "font": {
+                        "__tuple__": true, 
+                        "items": [
+                            "MSYH", 
+                            16
+                        ]
+                    }, 
+                    "hover_status_added": true, 
+                    "name": "button_same_level_private_dungeon", 
+                    "normal_cap_insets": {
+                        "__tuple__": true, 
+                        "items": [
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
+                        ]
+                    }, 
+                    "normal_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "normal_picture": 134217733, 
+                    "normal_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u540c\u5173\u5361\u4e0d\u540c\u6a21\u5f0f", 
+                            false
+                        ]
+                    }, 
+                    "pos_data": {
+                        "__tuple__": true, 
+                        "items": [
+                            278.0, 
+                            241.0001, 
+                            50.0, 
+                            61.7949, 
+                            1, 
+                            1
+                        ]
+                    }, 
+                    "prefab_sub_key": null, 
+                    "press_cap_insets": {
+                        "__tuple__": true, 
+                        "items": [
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
+                        ]
+                    }, 
+                    "press_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "press_picture": 134217735, 
+                    "press_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u540c\u5173\u5361\u4e0d\u540c\u6a21\u5f0f", 
+                            false
+                        ]
+                    }, 
+                    "pressed_status_added": true, 
+                    "scene_ui_name": null, 
+                    "size": [
+                        520.0, 
+                        46.0
+                    ], 
+                    "suspend_cap_insets": {
+                        "__tuple__": true, 
+                        "items": [
+                            8.0, 
+                            8.0, 
+                            8.0, 
+                            8.0
+                        ]
+                    }, 
+                    "suspend_font_color": [
+                        247, 
+                        247, 
+                        247, 
+                        255
+                    ], 
+                    "suspend_picture": 134217734, 
+                    "suspend_text": {
+                        "__tuple__": true, 
+                        "items": [
+                            "\u540c\u5173\u5361\u4e0d\u540c\u6a21\u5f0f", 
+                            false
+                        ]
+                    }, 
+                    "type": 1, 
+                    "uid": "a2307d8b-71bb-5181-ad80-ba3edcb0ab3a"
                 }, 
                 {
                     "adapter_option": [
@@ -5083,9 +5219,9 @@
                         "__tuple__": true, 
                         "items": [
                             454.0001, 
-                            193.0001, 
+                            154.0001, 
                             81.6547, 
-                            49.4872, 
+                            39.4872, 
                             1, 
                             1
                         ]

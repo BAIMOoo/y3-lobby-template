@@ -45,6 +45,10 @@ $lobbyModes = $dungeonConfig.$lobbyLevelId.game_modes
 $dungeonModes = $dungeonConfig.$dungeonLevelId.game_modes
 Assert-Equal ([int] $lobbyModes.'1001'.enable_private) 1 'lobby private creation switch'
 Assert-Equal ([int] $lobbyModes.'1001'.max_player_num) 8 'lobby mode player limit'
+Assert-Equal ([int] $lobbyModes.'1003'.enable_private) 1 'same-level private mode creation switch'
+Assert-Equal ([int] $lobbyModes.'1003'.enable_public) 0 'same-level private mode public switch'
+Assert-Equal ([int] $lobbyModes.'1003'.max_player_num) 8 'same-level private mode player limit'
+Assert-Equal ([int] $lobbyModes.'1003'.can_add_in_time) 120 'same-level private mode middle-join window'
 Assert-Equal ([int] $dungeonModes.'1002'.enable_private) 1 'match battle creation switch'
 Assert-Equal ([int] $dungeonModes.'1003'.enable_private) 1 'private mode private switch'
 Assert-Equal ([int] $dungeonModes.'1002'.max_player_num) 8 'match mode player limit'

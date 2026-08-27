@@ -15,23 +15,31 @@
           "IF_THEN_ELSE",
           [
             [
-              "ANY_COMPARE",
+              "OR",
               [
-                "GET_CURRENT_LEVEL"
-              ],
-              "==",
-              {
-                "type": "MAP",
-                "value": "172371058548994502264384971909138463342"
-              }
-            ],
-            [
-              "GAME_MODE_COMPARE",
-              [
-                "GET_GAME_MODE"
-              ],
-              "==",
-              1001
+                [
+                  "STRING_COMPARE",
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_GAME_MODE"
+                    ]
+                  ],
+                  "==",
+                  "0"
+                ],
+                [
+                  "STRING_COMPARE",
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_GAME_MODE"
+                    ]
+                  ],
+                  "==",
+                  "1001"
+                ]
+              ]
             ]
           ],
           [

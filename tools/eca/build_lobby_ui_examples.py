@@ -126,19 +126,15 @@ def set_visible(root: str, path: str, visible, local: bool = False):
     return ["SET_UI_COMP_VISIBLE", player(local), visible, ui(root, path, local)]
 
 
-def typed_literal(type_name: str, value):
-    return {"type": type_name, "value": value}
-
-
 def lobby_context_conditions():
     return [
         [
-            "ANY_COMPARE",
-            ["GET_CURRENT_LEVEL"],
-            "==",
-            typed_literal("MAP", ENTRY_LEVEL_ID),
+            "OR",
+            [
+                ["STRING_COMPARE", as_text(["GET_GAME_MODE"]), "==", "0"],
+                ["STRING_COMPARE", as_text(["GET_GAME_MODE"]), "==", "1001"],
+            ],
         ],
-        ["GAME_MODE_COMPARE", ["GET_GAME_MODE"], "==", 1001],
     ]
 
 
@@ -434,6 +430,7 @@ def entry_dsl():
         ("team_panel.button_dismiss_team", "eca_lobby_dismiss_team"),
         ("action_panel.button_match", "eca_lobby_match"),
         ("action_panel.button_private_dungeon", "eca_lobby_private_dungeon"),
+        ("action_panel.button_same_level_private_dungeon", "eca_lobby_same_level_private_dungeon"),
         ("action_panel.button_join_dungeon", "eca_lobby_join_token"),
         ("chat_panel.button_team_chat", "eca_lobby_team_chat"),
         ("chat_panel.button_world_chat", "eca_lobby_world_chat"),
@@ -699,6 +696,29 @@ def entry_dsl():
         button_path="button_exit",
         result_path="header_panel.label_context",
         function_key="exit",
+    ))
+
+    same_level_state = "同关卡不同模式状态"
+    same_level_params = "同关卡不同模式参数"
+    triggers.append(request_only_trigger(
+        ids,
+        name="ECA大厅UI - 同关卡不同模式",
+        event_name="eca_lobby_same_level_private_dungeon",
+        root=ENTRY_ROOT,
+        button_path="action_panel.button_same_level_private_dungeon",
+        result_path="action_panel.label_action_state",
+        function_key="private_dungeon",
+        args=[table_var(same_level_params)],
+        pre_actions=[
+            call("snapshot", same_level_state),
+            ["SET_VARIABLE", table_var(same_level_params), ["GET_NEW_TABLE"]],
+            ["SET_TABLE_VALUE_1D", table_var(same_level_params), "game_map_id", string_field(result_data(same_level_state), "game_map_id")],
+            ["SET_TABLE_VALUE_1D", table_var(same_level_params), "level_id", ENTRY_LEVEL_ID],
+            ["SET_TABLE_VALUE_1D", table_var(same_level_params), "engine_level_id", LOBBY_LEVEL_UUID],
+            ["SET_TABLE_VALUE_1D", table_var(same_level_params), "game_mode", 1003],
+            ["SET_TABLE_VALUE_1D", table_var(same_level_params), "team_game_mode", 1003],
+            ["SET_TABLE_VALUE_1D", table_var(same_level_params), "max_player", 2],
+        ],
     ))
     return {"map": "EntryMap", "triggers": triggers}
 

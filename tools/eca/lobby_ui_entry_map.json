@@ -15,23 +15,31 @@
           "IF_THEN_ELSE",
           [
             [
-              "ANY_COMPARE",
+              "OR",
               [
-                "GET_CURRENT_LEVEL"
-              ],
-              "==",
-              {
-                "type": "MAP",
-                "value": "172371058548994502264384971909138463342"
-              }
-            ],
-            [
-              "GAME_MODE_COMPARE",
-              [
-                "GET_GAME_MODE"
-              ],
-              "==",
-              1001
+                [
+                  "STRING_COMPARE",
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_GAME_MODE"
+                    ]
+                  ],
+                  "==",
+                  "0"
+                ],
+                [
+                  "STRING_COMPARE",
+                  [
+                    "ANY_VAR_TO_STR",
+                    [
+                      "GET_GAME_MODE"
+                    ]
+                  ],
+                  "==",
+                  "1001"
+                ]
+              ]
             ]
           ],
           [
@@ -142,6 +150,19 @@
               ],
               1,
               "eca_lobby_private_dungeon"
+            ],
+            [
+              "CREATE_UI_COMP_EVENT_EX_EX",
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "GET_CLIENT_ROLE"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "action_panel.button_same_level_private_dungeon"
+              ],
+              1,
+              "eca_lobby_same_level_private_dungeon"
             ],
             [
               "CREATE_UI_COMP_EVENT_EX_EX",
@@ -9210,6 +9231,237 @@
             ]
           ]
         }
+      ]
+    },
+    {
+      "name": "ECA大厅UI - 同关卡不同模式",
+      "id": 1942000026,
+      "event": [
+        [
+          "TRIGGER_COMPONENT_EVENT",
+          [
+            "STR_TO_UI_EVENT",
+            "eca_lobby_same_level_private_dungeon"
+          ]
+        ]
+      ],
+      "condition": [],
+      "action": [
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "c3eb744a-f544-45d2-8e24-a2e279a67662",
+            "action_panel.button_same_level_private_dungeon"
+          ],
+          false
+        ],
+        [
+          "SET_UI_COMP_TEXT",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "c3eb744a-f544-45d2-8e24-a2e279a67662",
+            "action_panel.label_action_state"
+          ],
+          "ECA大厅UI - 同关卡不同模式：提交中"
+        ],
+        {
+          "call_function": {
+            "func_id": "06baf266d22b5844b236f6a8dea1828e",
+            "args": [],
+            "returns": [
+              {
+                "var": "同关卡不同模式状态",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "SET_VARIABLE",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          [
+            "GET_NEW_TABLE"
+          ]
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          "game_map_id",
+          [
+            "GET_STRING_TABLE_VAR_1D",
+            [
+              "GET_TABLE_TABLE_VAR_1D",
+              {
+                "var": "同关卡不同模式状态",
+                "type": "TABLE"
+              },
+              "result_data"
+            ],
+            "game_map_id"
+          ]
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          "level_id",
+          "172371058548994502264384971909138463342"
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          "engine_level_id",
+          "81ad7554-7e6b-11f1-8f5c-c78cd393ba6e"
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          "game_mode",
+          1003
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          "team_game_mode",
+          1003
+        ],
+        [
+          "SET_TABLE_VALUE_1D",
+          {
+            "var": "同关卡不同模式参数",
+            "type": "TABLE"
+          },
+          "max_player",
+          2
+        ],
+        {
+          "call_function": {
+            "func_id": "0d827eca2ea0531c83ce1d8cff4db2f1",
+            "args": [
+              {
+                "var": "同关卡不同模式参数",
+                "type": "TABLE"
+              }
+            ],
+            "returns": [
+              {
+                "var": "ECA大厅UI - 同关卡不同模式立即结果",
+                "type": "TABLE"
+              }
+            ]
+          }
+        },
+        [
+          "SET_UI_COMP_ENABLE",
+          [
+            "TRIGGER_PLAYER"
+          ],
+          [
+            "GET_UI_COMP_BY_PATH",
+            [
+              "TRIGGER_PLAYER"
+            ],
+            "c3eb744a-f544-45d2-8e24-a2e279a67662",
+            "action_panel.button_same_level_private_dungeon"
+          ],
+          true
+        ],
+        [
+          "IF_THEN_ELSE",
+          [
+            [
+              "BOOL_COMPARE",
+              [
+                "GET_BOOLEAN_TABLE_VAR_1D",
+                {
+                  "var": "ECA大厅UI - 同关卡不同模式立即结果",
+                  "type": "TABLE"
+                },
+                "accepted"
+              ],
+              "==",
+              true
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "action_panel.label_action_state"
+              ],
+              "ECA大厅UI - 同关卡不同模式：请求已提交，以切图结果为准"
+            ],
+            [
+              "DUMP_TABLE",
+              {
+                "var": "ECA大厅UI - 同关卡不同模式立即结果",
+                "type": "TABLE"
+              }
+            ]
+          ],
+          [
+            [
+              "SET_UI_COMP_TEXT",
+              [
+                "TRIGGER_PLAYER"
+              ],
+              [
+                "GET_UI_COMP_BY_PATH",
+                [
+                  "TRIGGER_PLAYER"
+                ],
+                "c3eb744a-f544-45d2-8e24-a2e279a67662",
+                "action_panel.label_action_state"
+              ],
+              "ECA大厅UI - 同关卡不同模式：失败，请查看日志"
+            ],
+            [
+              "DUMP_TABLE",
+              {
+                "var": "ECA大厅UI - 同关卡不同模式立即结果",
+                "type": "TABLE"
+              }
+            ]
+          ]
+        ]
       ]
     }
   ]

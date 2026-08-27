@@ -55,6 +55,9 @@ DANGER_BUTTONS = {
 }
 PRIMARY_BUTTONS = {"button_private_dungeon"}
 
+SAME_LEVEL_BUTTON = "button_same_level_private_dungeon"
+SAME_LEVEL_TEXT = "同关卡不同模式"
+
 
 def tuple_value(items):
     return {"__tuple__": True, "items": items}
@@ -175,9 +178,61 @@ def sync_children(ui_name: str, node: dict, parent_path: str) -> None:
     node["children"] = rebuilt
 
 
+def set_position(node: dict, x: float, y: float, x_percent: float, y_percent: float) -> None:
+    node["pos_data"] = tuple_value([x, y, x_percent, y_percent, 1, 1])
+
+
+def ensure_same_level_button(data: dict) -> None:
+    if data.get("name") != "EcaLobbyExample":
+        return
+
+    action_panel = next(
+        child for child in data["children"] if child.get("name") == "action_panel"
+    )
+    children = action_panel["children"]
+    private_button = next(
+        child for child in children if child.get("name") == "button_private_dungeon"
+    )
+    same_level_button = next(
+        (child for child in children if child.get("name") == SAME_LEVEL_BUTTON),
+        None,
+    )
+    if same_level_button is None:
+        same_level_button = copy.deepcopy(private_button)
+        private_index = children.index(private_button)
+        children.insert(private_index + 1, same_level_button)
+
+    same_level_button["name"] = SAME_LEVEL_BUTTON
+    same_level_button["uid"] = stable_uid(
+        data["name"], f"action_panel.{SAME_LEVEL_BUTTON}"
+    )
+    same_level_button["size"] = [520.0, 46.0]
+    set_position(same_level_button, 278.0, 241.0, 50.0, 61.7949)
+    for status in ("normal", "suspend", "press", "disabled"):
+        same_level_button[f"{status}_text"] = tuple_value([SAME_LEVEL_TEXT, False])
+
+    positions = {
+        "label_token": (98.0, 190.0, 17.6259, 48.7179),
+        "image_input_token_bg": (187.9997, 154.0, 33.8129, 39.4872),
+        "input_token": (187.9997, 154.0, 33.8129, 39.4872),
+        "button_join_dungeon": (454.0001, 154.0, 81.6547, 39.4872),
+        "label_action_state": (278.0, 91.0, 50.0, 23.3333),
+        "label_action_target": (278.0, 35.0, 50.0, 8.9744),
+    }
+    for child in children:
+        position = positions.get(child.get("name"))
+        if position is not None:
+            set_position(child, *position)
+        if child.get("name") == "label_action_target":
+            child["text"] = tuple_value(
+                ["跨关卡 1002 / 1003    同关卡 EntryMap / 1003", False]
+            )
+
+
 def sync_file(path: Path) -> None:
     data = json.loads(path.read_text(encoding="utf-8"))
     ui_name = data["name"]
+    ensure_same_level_button(data)
     sync_children(ui_name, data, ui_name)
     data["children"] = [
         child for child in data["children"] if child.get("name") != "image_backdrop"

@@ -9,53 +9,78 @@
                         {
                             "args_list": [
                                 {
-                                    "arg_type": 900002, 
-                                    "args_list": [], 
-                                    "sub_type": "GET_CURRENT_LEVEL"
-                                }, 
-                                {
-                                    "arg_type": 100035, 
+                                    "arg_type": 100021, 
                                     "args_list": [
-                                        "=="
-                                    ], 
-                                    "sub_type": 1
-                                }, 
-                                {
-                                    "arg_type": 900002, 
-                                    "args_list": [
-                                        "172371058548994502264384971909138463342"
+                                        {
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100505, 
+                                                            "args_list": [], 
+                                                            "sub_type": "GET_GAME_MODE"
+                                                        }
+                                                    ], 
+                                                    "sub_type": "ANY_VAR_TO_STR"
+                                                }, 
+                                                {
+                                                    "arg_type": 100035, 
+                                                    "args_list": [
+                                                        "=="
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "0"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "condition_type": "STRING_COMPARE", 
+                                            "element_id": 1942000001000002, 
+                                            "enable": true
+                                        }, 
+                                        {
+                                            "args_list": [
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        {
+                                                            "arg_type": 100505, 
+                                                            "args_list": [], 
+                                                            "sub_type": "GET_GAME_MODE"
+                                                        }
+                                                    ], 
+                                                    "sub_type": "ANY_VAR_TO_STR"
+                                                }, 
+                                                {
+                                                    "arg_type": 100035, 
+                                                    "args_list": [
+                                                        "=="
+                                                    ], 
+                                                    "sub_type": 1
+                                                }, 
+                                                {
+                                                    "arg_type": 100003, 
+                                                    "args_list": [
+                                                        "1001"
+                                                    ], 
+                                                    "sub_type": 1
+                                                }
+                                            ], 
+                                            "condition_type": "STRING_COMPARE", 
+                                            "element_id": 1942000001000003, 
+                                            "enable": true
+                                        }
                                     ], 
                                     "sub_type": 1
                                 }
                             ], 
-                            "condition_type": "ANY_COMPARE", 
-                            "element_id": 1942000001000002, 
-                            "enable": true
-                        }, 
-                        {
-                            "args_list": [
-                                {
-                                    "arg_type": 100505, 
-                                    "args_list": [], 
-                                    "sub_type": "GET_GAME_MODE"
-                                }, 
-                                {
-                                    "arg_type": 100035, 
-                                    "args_list": [
-                                        "=="
-                                    ], 
-                                    "sub_type": 1
-                                }, 
-                                {
-                                    "arg_type": 100505, 
-                                    "args_list": [
-                                        1001
-                                    ], 
-                                    "sub_type": 1
-                                }
-                            ], 
-                            "condition_type": "GAME_MODE_COMPARE", 
-                            "element_id": 1942000001000003, 
+                            "condition_type": "OR", 
+                            "element_id": 1942000001000004, 
                             "enable": true
                         }
                     ], 
@@ -106,7 +131,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000004, 
+                            "element_id": 1942000001000005, 
                             "enable": true
                         }, 
                         {
@@ -151,7 +176,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000005, 
+                            "element_id": 1942000001000006, 
                             "enable": true
                         }, 
                         {
@@ -198,7 +223,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000006, 
+                            "element_id": 1942000001000007, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -253,7 +278,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000007, 
+                            "element_id": 1942000001000008, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -308,7 +333,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000008, 
+                            "element_id": 1942000001000009, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -363,7 +388,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000009, 
+                            "element_id": 1942000001000010, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -418,7 +443,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000010, 
+                            "element_id": 1942000001000011, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -473,7 +498,62 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000011, 
+                            "element_id": 1942000001000012, 
+                            "enable": true, 
+                            "op_arg": [
+                                null, 
+                                null
+                            ], 
+                            "op_arg_enable": [
+                                false, 
+                                false
+                            ]
+                        }, 
+                        {
+                            "action_type": "CREATE_UI_COMP_EVENT_EX_EX", 
+                            "args_list": [
+                                {
+                                    "arg_type": 100070, 
+                                    "args_list": [
+                                        {
+                                            "arg_type": 100025, 
+                                            "args_list": [], 
+                                            "sub_type": "GET_CLIENT_ROLE"
+                                        }, 
+                                        {
+                                            "arg_type": 100070, 
+                                            "args_list": [
+                                                "c3eb744a-f544-45d2-8e24-a2e279a67662"
+                                            ], 
+                                            "sub_type": 1
+                                        }, 
+                                        {
+                                            "arg_type": 100003, 
+                                            "args_list": [
+                                                "action_panel.button_same_level_private_dungeon"
+                                            ], 
+                                            "sub_type": 1
+                                        }
+                                    ], 
+                                    "sub_type": "GET_UI_COMP_BY_PATH"
+                                }, 
+                                {
+                                    "arg_type": 100072, 
+                                    "args_list": [
+                                        1
+                                    ], 
+                                    "sub_type": 1
+                                }, 
+                                {
+                                    "arg_type": 100003, 
+                                    "args_list": [
+                                        "eca_lobby_same_level_private_dungeon"
+                                    ], 
+                                    "sub_type": 1
+                                }
+                            ], 
+                            "bp": false, 
+                            "element_id": 1942000001000013, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -528,7 +608,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000012, 
+                            "element_id": 1942000001000014, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -583,7 +663,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000013, 
+                            "element_id": 1942000001000015, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -638,7 +718,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000014, 
+                            "element_id": 1942000001000016, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -693,7 +773,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000015, 
+                            "element_id": 1942000001000017, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -748,7 +828,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000016, 
+                            "element_id": 1942000001000018, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -803,7 +883,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000017, 
+                            "element_id": 1942000001000019, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -858,7 +938,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000018, 
+                            "element_id": 1942000001000020, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -913,7 +993,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000019, 
+                            "element_id": 1942000001000021, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -968,7 +1048,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000020, 
+                            "element_id": 1942000001000022, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1023,7 +1103,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000021, 
+                            "element_id": 1942000001000023, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1078,7 +1158,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000022, 
+                            "element_id": 1942000001000024, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1133,7 +1213,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000023, 
+                            "element_id": 1942000001000025, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1188,7 +1268,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000024, 
+                            "element_id": 1942000001000026, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1243,7 +1323,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000025, 
+                            "element_id": 1942000001000027, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1298,7 +1378,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000026, 
+                            "element_id": 1942000001000028, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1353,7 +1433,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000027, 
+                            "element_id": 1942000001000029, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1408,7 +1488,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000028, 
+                            "element_id": 1942000001000030, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1463,7 +1543,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000029, 
+                            "element_id": 1942000001000031, 
                             "enable": true, 
                             "op_arg": [
                                 null, 
@@ -1523,7 +1603,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000030, 
+                                            "element_id": 1942000001000032, 
                                             "enable": true
                                         }, 
                                         {
@@ -1555,7 +1635,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000031, 
+                                            "element_id": 1942000001000033, 
                                             "enable": true
                                         }, 
                                         {
@@ -1587,7 +1667,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000032, 
+                                            "element_id": 1942000001000034, 
                                             "enable": true
                                         }, 
                                         {
@@ -1619,7 +1699,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000033, 
+                                            "element_id": 1942000001000035, 
                                             "enable": true
                                         }, 
                                         {
@@ -1655,7 +1735,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000034, 
+                                            "element_id": 1942000001000036, 
                                             "enable": true
                                         }, 
                                         {
@@ -1695,7 +1775,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000035, 
+                                            "element_id": 1942000001000037, 
                                             "enable": true
                                         }, 
                                         {
@@ -1735,7 +1815,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000036, 
+                                            "element_id": 1942000001000038, 
                                             "enable": true
                                         }, 
                                         {
@@ -1775,7 +1855,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000037, 
+                                            "element_id": 1942000001000039, 
                                             "enable": true
                                         }, 
                                         {
@@ -1815,7 +1895,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000038, 
+                                            "element_id": 1942000001000040, 
                                             "enable": true
                                         }, 
                                         {
@@ -1859,7 +1939,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000039, 
+                                            "element_id": 1942000001000041, 
                                             "enable": true
                                         }, 
                                         {
@@ -1903,7 +1983,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000040, 
+                                            "element_id": 1942000001000042, 
                                             "enable": true
                                         }, 
                                         {
@@ -1947,7 +2027,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000041, 
+                                            "element_id": 1942000001000043, 
                                             "enable": true
                                         }, 
                                         {
@@ -1991,7 +2071,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000042, 
+                                            "element_id": 1942000001000044, 
                                             "enable": true
                                         }, 
                                         {
@@ -2035,7 +2115,7 @@
                                             "call_rt_arg_idxes": [
                                                 0
                                             ], 
-                                            "element_id": 1942000001000043, 
+                                            "element_id": 1942000001000045, 
                                             "enable": true
                                         }, 
                                         {
@@ -2119,7 +2199,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000044, 
+                                            "element_id": 1942000001000046, 
                                             "enable": true
                                         }, 
                                         {
@@ -2203,7 +2283,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000045, 
+                                            "element_id": 1942000001000047, 
                                             "enable": true
                                         }, 
                                         {
@@ -2281,7 +2361,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000046, 
+                                            "element_id": 1942000001000048, 
                                             "enable": true
                                         }, 
                                         {
@@ -2365,7 +2445,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000047, 
+                                            "element_id": 1942000001000049, 
                                             "enable": true
                                         }, 
                                         {
@@ -2404,13 +2484,52 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        null
+                                                        {
+                                                            "arg_type": 100001, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100011, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100011, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "__tuple__": true, 
+                                                                                    "items": [
+                                                                                        "TABLE", 
+                                                                                        "刷新状态快照", 
+                                                                                        "local"
+                                                                                    ]
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "VARIABLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "result_data"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "matching"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                        }
                                                     ], 
                                                     "sub_type": "ANY_VAR_TO_STR"
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000048, 
+                                            "element_id": 1942000001000050, 
                                             "enable": true
                                         }, 
                                         {
@@ -2449,13 +2568,52 @@
                                                 {
                                                     "arg_type": 100003, 
                                                     "args_list": [
-                                                        null
+                                                        {
+                                                            "arg_type": 100001, 
+                                                            "args_list": [
+                                                                {
+                                                                    "arg_type": 100011, 
+                                                                    "args_list": [
+                                                                        {
+                                                                            "arg_type": 100011, 
+                                                                            "args_list": [
+                                                                                {
+                                                                                    "__tuple__": true, 
+                                                                                    "items": [
+                                                                                        "TABLE", 
+                                                                                        "刷新状态快照", 
+                                                                                        "local"
+                                                                                    ]
+                                                                                }
+                                                                            ], 
+                                                                            "sub_type": "VARIABLE"
+                                                                        }, 
+                                                                        {
+                                                                            "arg_type": 100003, 
+                                                                            "args_list": [
+                                                                                "result_data"
+                                                                            ], 
+                                                                            "sub_type": 1
+                                                                        }
+                                                                    ], 
+                                                                    "sub_type": "GET_TABLE_TABLE_VAR_1D"
+                                                                }, 
+                                                                {
+                                                                    "arg_type": 100003, 
+                                                                    "args_list": [
+                                                                        "launching"
+                                                                    ], 
+                                                                    "sub_type": 1
+                                                                }
+                                                            ], 
+                                                            "sub_type": "GET_BOOLEAN_TABLE_VAR_1D"
+                                                        }
                                                     ], 
                                                     "sub_type": "ANY_VAR_TO_STR"
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000049, 
+                                            "element_id": 1942000001000051, 
                                             "enable": true
                                         }, 
                                         {
@@ -2572,7 +2730,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000050, 
+                                            "element_id": 1942000001000052, 
                                             "enable": true
                                         }, 
                                         {
@@ -2683,7 +2841,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000051, 
+                                            "element_id": 1942000001000053, 
                                             "enable": true
                                         }, 
                                         {
@@ -2761,7 +2919,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000052, 
+                                            "element_id": 1942000001000054, 
                                             "enable": true
                                         }, 
                                         {
@@ -3115,7 +3273,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000053, 
+                                            "element_id": 1942000001000055, 
                                             "enable": true
                                         }, 
                                         {
@@ -3193,7 +3351,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000054, 
+                                            "element_id": 1942000001000056, 
                                             "enable": true
                                         }, 
                                         {
@@ -3547,7 +3705,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000055, 
+                                            "element_id": 1942000001000057, 
                                             "enable": true
                                         }, 
                                         {
@@ -3625,7 +3783,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000056, 
+                                            "element_id": 1942000001000058, 
                                             "enable": true
                                         }, 
                                         {
@@ -3979,7 +4137,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000057, 
+                                            "element_id": 1942000001000059, 
                                             "enable": true
                                         }, 
                                         {
@@ -4057,7 +4215,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000058, 
+                                            "element_id": 1942000001000060, 
                                             "enable": true
                                         }, 
                                         {
@@ -4411,7 +4569,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000059, 
+                                            "element_id": 1942000001000061, 
                                             "enable": true
                                         }, 
                                         {
@@ -5575,7 +5733,7 @@
                                                 }
                                             ], 
                                             "bp": false, 
-                                            "element_id": 1942000001000060, 
+                                            "element_id": 1942000001000062, 
                                             "enable": true
                                         }
                                     ], 
@@ -5583,7 +5741,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000061, 
+                            "element_id": 1942000001000063, 
                             "enable": true, 
                             "local_var": {
                                 "__tuple__": true, 
@@ -5641,7 +5799,7 @@
                                 }
                             ], 
                             "bp": false, 
-                            "element_id": 1942000001000062, 
+                            "element_id": 1942000001000064, 
                             "enable": true
                         }
                     ], 
@@ -5649,7 +5807,7 @@
                 }
             ], 
             "bp": false, 
-            "element_id": 1942000001000063, 
+            "element_id": 1942000001000065, 
             "enable": true, 
             "fake_op": [
                 2
@@ -5671,7 +5829,7 @@
     "p_trigger_id": null, 
     "trigger_id": 1942000001, 
     "trigger_name": "ECA大厅UI - 初始化", 
-    "valid": false, 
+    "valid": true, 
     "var_data": [
         {
             "TABLE": {

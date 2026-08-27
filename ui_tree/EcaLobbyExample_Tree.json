@@ -345,6 +345,11 @@
           "type": 1
         },
         {
+          "name": "button_same_level_private_dungeon",
+          "uid": "a2307d8b-71bb-5181-ad80-ba3edcb0ab3a",
+          "type": 1
+        },
+        {
           "name": "button_match",
           "uid": "e79b9aef-5301-4be0-8feb-935fa1d8e53e",
           "type": 1
