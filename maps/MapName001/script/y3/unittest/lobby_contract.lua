@@ -312,7 +312,7 @@ _G.y3 = {
     const = {
         CustomEventName = {},
     },
-    ctimer = {
+    ltimer = {
         wait = function(delay, callback)
             timeout_callbacks[#timeout_callbacks + 1] = callback
             local timer = {
@@ -333,6 +333,9 @@ _G.y3 = {
     player = {
         get_local = function()
             return {
+                get_id = function()
+                    return 1
+                end,
                 get_platform_id = function()
                     return 10086
                 end,
@@ -794,7 +797,7 @@ local private_dungeon_log_output = table.concat(captured_logs, '\n')
 assert_contains(private_dungeon_log_output, '当前关卡口令', '游戏关卡准备就绪后记录当前关卡口令')
 assert_contains(private_dungeon_log_output, 'token=current-dungeon-token', '当前关卡口令日志保留完整口令')
 assert_contains(private_dungeon_log_output, '加入口令请求', '提交加入口令时记录诊断日志')
-assert_contains(private_dungeon_log_output, 'token=' .. join_log_token, '加入口令日志保留完整输入口令')
+assert_contains(private_dungeon_log_output, 'token=<redacted>', '加入口令日志脱敏输入口令')
 setmetatable(_G, global_metatable)
 rawset(_G, 'GameAPI', raw_game_api)
 client._reset_for_test()

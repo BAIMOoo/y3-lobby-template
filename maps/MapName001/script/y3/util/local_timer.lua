@@ -1,7 +1,7 @@
---本地计时器
+--逻辑帧计时器
 --
---支持异步创建或回调（只要你自己保证不会引发其他不同步的问题）
---如果是同步执行的，那么会确保同步回调
+--由同步计时器 y3.timer 每逻辑帧驱动，与 y3.timer 使用相同的逻辑时间。
+--所有会影响同步游戏状态的创建与回调都必须在各玩家间保持一致。
 ---@class LocalTimer
 ---@field private include_name? string
 ---@field package id integer

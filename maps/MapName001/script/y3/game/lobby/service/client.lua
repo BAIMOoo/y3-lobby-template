@@ -197,7 +197,7 @@ function M:do_disconnect()
     if self._closing then
         return true
     end
-    y3.ctimer.wait(0, function()
+    y3.ltimer.wait_frame(1, function()
         if IsValid(self) then
             self:start()
         end
