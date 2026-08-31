@@ -34,10 +34,10 @@ function M:__init(ip, port, options)
     log.debug('Network 初始化：', self)
 
     ---@private
-    self.update_timer = y3.ltimer.loop(self.options.update_interval, function ()
+    self.update_timer = y3.ctimer.loop(self.options.update_interval, function ()
         self:update()
     end)
-    y3.ltimer.wait_frame(1, function ()
+    y3.ctimer.wait(0, function ()
         self:update()
     end)
     self.retry_timer = y3.ltimer.loop(self.options.retry_interval, function (t)

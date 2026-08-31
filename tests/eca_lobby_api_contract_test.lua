@@ -369,7 +369,7 @@ local unconnected_completions = {}
 local unconnected_listener = y3.lobby.on_complete(function(payload)
     unconnected_completions[#unconnected_completions + 1] = payload
 end)
-y3.ltimer = {
+y3.ctimer = {
     wait_frame = function(_, callback)
         unconnected_frame_callbacks[#unconnected_frame_callbacks + 1] = callback
         return { remove = function() end }
@@ -533,7 +533,7 @@ local private_dungeon_requests = {}
 local join_private_dungeon_requests = {}
 local exit_game_calls = 0
 
-y3.ltimer = {
+y3.ctimer = {
     wait = function(delay, callback)
         timeout_callbacks[#timeout_callbacks + 1] = callback
         local timer = {

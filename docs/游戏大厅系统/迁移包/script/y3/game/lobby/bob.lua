@@ -317,6 +317,9 @@ end
 _G['_SVN_VERSION_INJECTION_STATUS'] = 'pending'
 log.info('[LobbyVersionDiag] lua injection submitted',
     'lua_globals=', tostring(_G),
+    'player=', tostring(local_player),
+    'player_id=', tostring(local_player:get_id()),
+    'aid=', tostring(local_player:get_platform_id()),
     'local=', tostring(_G['_SVN_VERSION']),
     'injection=', tostring(_G['_SVN_VERSION_INJECTION_STATUS']))
 ---@diagnostic disable-next-line: redundant-parameter, undefined-field
@@ -360,16 +363,6 @@ end
 ---检查客户端是否需要更新
 ---@param callback fun(need_update: boolean)
 function M:check_update(callback)
-    local completed = false
-    local function finish(need_update)
-        if completed then
-            return false
-        end
-        completed = true
-        callback(need_update)
-        return true
-    end
-
     local local_version = _G['_SVN_VERSION']
     local injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
     log_version_observation('check-start', self, local_version, injection_status)
@@ -378,7 +371,7 @@ function M:check_update(callback)
             'local=', tostring(local_version),
             'local_type=', type(local_version),
             'injection=', tostring(injection_status))
-        finish(false)
+        callback(false)
         return
     end
     local dungeon_info = GameAPI.get_dungeon_info()
@@ -389,7 +382,7 @@ function M:check_update(callback)
             'local=', tostring(local_version),
             'local_type=', type(local_version),
             'injection=', tostring(injection_status))
-        finish(false)
+        callback(false)
         return
     end
 
@@ -398,10 +391,16 @@ function M:check_update(callback)
         'local=', tostring(local_version),
         'local_type=', type(local_version),
         'injection=', tostring(injection_status))
+    local timeout = y3.ctimer.wait(5, function(timer, count)
+        log.error('【BOB】【版本检查】result=remote-timeout',
+            'local=', tostring(local_version),
+            'local_type=', type(local_version),
+            'injection=', tostring(injection_status))
+        error('【BOB】请求远端版本号超时！')
+    end)
+
     y3.game:request_url('https://up5.update.netease.com/pl/patchmd5_windows64_produp5_release.txt', nil, function(body)
-        if completed then
-            return
-        end
+        timeout:remove()
         local_version = _G['_SVN_VERSION']
         injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
         log_version_observation('remote-response', self, local_version, injection_status)
@@ -411,7 +410,7 @@ function M:check_update(callback)
                 'local=', tostring(local_version),
                 'local_type=', type(local_version),
                 'injection=', tostring(injection_status))
-            finish(false)
+            callback(false)
             return
         end
         local decode_ok, data = pcall(y3.json.decode, body)
@@ -420,8 +419,7 @@ function M:check_update(callback)
                 'error=', tostring(data),
                 'local=', tostring(local_version),
                 'injection=', tostring(injection_status))
-            finish(false)
-            return
+            error(data)
         end
         local read_ok, remote_version = pcall(function()
             return data['2.0']['@metadata@']['@displayversion@']
@@ -431,8 +429,7 @@ function M:check_update(callback)
                 'error=', tostring(remote_version),
                 'local=', tostring(local_version),
                 'injection=', tostring(injection_status))
-            finish(false)
-            return
+            error(remote_version)
         end
 
         local need_update = local_version ~= remote_version
@@ -457,8 +454,8 @@ function M:check_update(callback)
             'remote=', tostring(remote_version),
             'remote_type=', type(remote_version),
             'injection=', tostring(injection_status))
-        if result == 'local-version-missing' and y3.ltimer and y3.ltimer.wait then
-            y3.ltimer.wait(1, function()
+        if result == 'local-version-missing' and y3.ctimer and y3.ctimer.wait then
+            y3.ctimer.wait(1, function()
                 log_version_observation(
                     'post-missing-1s',
                     self,
@@ -467,8 +464,8 @@ function M:check_update(callback)
                 )
             end)
         end
-        finish(need_update)
-    end, { timeout = 5 })
+        callback(need_update)
+    end)
 end
 
 ---@private
@@ -571,7 +568,7 @@ function M:refresh_player_info(done)
             xpcall(callback, log.error, result, err)
         end
     end
-    timeout = y3.ltimer.wait(3, function()
+    timeout = y3.ctimer.wait(3, function()
         -- 保留占位接收器，避免迟到回包被下一次刷新请求错误消费。
         finish(nil, 'timeout')
         if self.client and not self._exiting then
@@ -651,7 +648,7 @@ function M:cleanup_before_exit(done, step_timeout)
 
     local function arm_timeout(stage, callback)
         cancel_timer()
-        cleanup.timer = y3.ltimer.wait(step_timeout, function()
+        cleanup.timer = y3.ctimer.wait(step_timeout, function()
             cleanup.timer = nil
             record_error(stage .. '-timeout')
             callback()
@@ -1538,7 +1535,7 @@ function M:notify_player_info(data)
         log.debug('【BOB】正在启动游戏')
         self._is_launching = true
         self:event_notify('启动状态变化', self._is_launching)
-        y3.ltimer.wait(10, function()
+        y3.ctimer.wait(10, function()
             log.warn('【BOB】未能在10秒内启动游戏！')
             self._is_launching = false
             self:event_notify('启动状态变化', self._is_launching)
