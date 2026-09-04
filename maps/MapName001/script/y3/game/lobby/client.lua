@@ -268,8 +268,8 @@ function M.connect(game_play_id, finish, in_game, endpoint_env)
         return done(true, 'ok', reason or 'connection is ready', state.snapshot())
     end
 
-    if y3.ctimer and y3.ctimer.wait then
-        local ok, timer = pcall(y3.ctimer.wait, 10, function()
+    if y3.ltimer and y3.ltimer.wait then
+        local ok, timer = pcall(y3.ltimer.wait, 10, function()
             done(false, 'timeout', 'connection timeout')
         end)
         if ok then

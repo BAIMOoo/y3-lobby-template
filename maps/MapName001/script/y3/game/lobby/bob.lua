@@ -48,6 +48,7 @@ local CHANNEL_OP_JOIN = 2
 local WORLD_CHANNEL_TYPE = 5
 local WORLD_CHANNEL_ID = 10000
 local EXIT_CLEANUP_STEP_TIMEOUT = 2
+local VERSION_INJECTION_MAX_WAIT_FRAMES = 150
 
 Extends('LobbyBob', 'CustomEvent')
 Extends('LobbyBob', 'GCHost')
@@ -314,6 +315,7 @@ function M:request_with_token(id, sender, receiver, token, token_getter)
     sender()
 end
 
+_G['_SVN_VERSION'] = nil
 _G['_SVN_VERSION_INJECTION_STATUS'] = 'pending'
 log.info('[LobbyVersionDiag] lua injection submitted',
     'lua_globals=', tostring(_G),
@@ -360,6 +362,29 @@ end
 ---检查客户端是否需要更新
 ---@param callback fun(need_update: boolean)
 function M:check_update(callback)
+    local completed = false
+    local injection_wait_timer
+    local function cancel_injection_wait()
+        if injection_wait_timer then
+            injection_wait_timer:remove()
+            injection_wait_timer = nil
+        end
+    end
+    local function finish(need_update)
+        if completed then
+            return false
+        end
+        if not IsValid(self) then
+            completed = true
+            cancel_injection_wait()
+            return false
+        end
+        completed = true
+        cancel_injection_wait()
+        callback(need_update)
+        return true
+    end
+
     local local_version = _G['_SVN_VERSION']
     local injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
     log_version_observation('check-start', self, local_version, injection_status)
@@ -368,7 +393,7 @@ function M:check_update(callback)
             'local=', tostring(local_version),
             'local_type=', type(local_version),
             'injection=', tostring(injection_status))
-        callback(false)
+        finish(false)
         return
     end
     local dungeon_info = GameAPI.get_dungeon_info()
@@ -379,7 +404,7 @@ function M:check_update(callback)
             'local=', tostring(local_version),
             'local_type=', type(local_version),
             'injection=', tostring(injection_status))
-        callback(false)
+        finish(false)
         return
     end
 
@@ -388,54 +413,57 @@ function M:check_update(callback)
         'local=', tostring(local_version),
         'local_type=', type(local_version),
         'injection=', tostring(injection_status))
-    local timeout = y3.ctimer.wait(5, function(timer, count)
-        log.error('【BOB】【版本检查】result=remote-timeout',
-            'local=', tostring(local_version),
-            'local_type=', type(local_version),
-            'injection=', tostring(injection_status))
-        error('【BOB】请求远端版本号超时！')
-    end)
 
-    y3.game:request_url('https://up5.update.netease.com/pl/patchmd5_windows64_produp5_release.txt', nil, function(body)
-        timeout:remove()
-        local_version = _G['_SVN_VERSION']
-        injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
-        log_version_observation('remote-response', self, local_version, injection_status)
-        if not body then
-            log.warn('【BOB】【版本检查】result=remote-request-empty',
-                'policy=allow',
-                'local=', tostring(local_version),
-                'local_type=', type(local_version),
-                'injection=', tostring(injection_status))
-            callback(false)
+    local remote_version
+    local injection_waited_frames = 0
+    local compare_versions
+    compare_versions = function()
+        if completed then
             return
         end
-        local decode_ok, data = pcall(y3.json.decode, body)
-        if not decode_ok then
-            log.error('【BOB】【版本检查】result=remote-parse-failed',
-                'error=', tostring(data),
-                'local=', tostring(local_version),
-                'injection=', tostring(injection_status))
-            error(data)
+        if not IsValid(self) then
+            finish(false)
+            return
         end
-        local read_ok, remote_version = pcall(function()
-            return data['2.0']['@metadata@']['@displayversion@']
-        end)
-        if not read_ok then
-            log.error('【BOB】【版本检查】result=remote-version-read-failed',
-                'error=', tostring(remote_version),
+        local_version = _G['_SVN_VERSION']
+        injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
+        if injection_status == 'pending' then
+            if injection_waited_frames < VERSION_INJECTION_MAX_WAIT_FRAMES
+                and y3.ctimer
+                and y3.ctimer.wait_frame then
+                injection_waited_frames = injection_waited_frames + 1
+                injection_wait_timer = y3.ctimer.wait_frame(1, function()
+                    injection_wait_timer = nil
+                    compare_versions()
+                end)
+                return
+            end
+            log.warn('【BOB】【版本检查】result=local-version-injection-timeout',
+                'policy=allow',
+                'waited_frames=', tostring(injection_waited_frames))
+            finish(false)
+            return
+        end
+        if local_version == nil or tostring(local_version) == '' then
+            log.warn('【BOB】【版本检查】result=local-version-unavailable',
+                'policy=allow',
+                'waited_frames=', tostring(injection_waited_frames),
+                'injection=', tostring(injection_status))
+            finish(false)
+            return
+        end
+        if remote_version == nil or tostring(remote_version) == '' then
+            log.warn('【BOB】【版本检查】result=remote-version-missing',
+                'policy=allow',
                 'local=', tostring(local_version),
                 'injection=', tostring(injection_status))
-            error(remote_version)
+            finish(false)
+            return
         end
 
         local need_update = local_version ~= remote_version
         local result
-        if local_version == nil or tostring(local_version) == '' then
-            result = 'local-version-missing'
-        elseif remote_version == nil or tostring(remote_version) == '' then
-            result = 'remote-version-missing'
-        elseif need_update and tostring(local_version) == tostring(remote_version) then
+        if need_update and tostring(local_version) == tostring(remote_version) then
             result = 'version-type-mismatch'
         elseif need_update then
             result = 'client-version-mismatch'
@@ -450,19 +478,54 @@ function M:check_update(callback)
             'local_type=', type(local_version),
             'remote=', tostring(remote_version),
             'remote_type=', type(remote_version),
-            'injection=', tostring(injection_status))
-        if result == 'local-version-missing' and y3.ctimer and y3.ctimer.wait then
-            y3.ctimer.wait(1, function()
-                log_version_observation(
-                    'post-missing-1s',
-                    self,
-                    _G['_SVN_VERSION'],
-                    _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
-                )
-            end)
+            'injection=', tostring(injection_status),
+            'waited_frames=', tostring(injection_waited_frames))
+        finish(need_update)
+    end
+
+    y3.game:request_url('https://up5.update.netease.com/pl/patchmd5_windows64_produp5_release.txt', nil, function(body)
+        if completed then
+            return
         end
-        callback(need_update)
-    end)
+        if not IsValid(self) then
+            finish(false)
+            return
+        end
+        local_version = _G['_SVN_VERSION']
+        injection_status = _G['_SVN_VERSION_INJECTION_STATUS'] or 'unknown'
+        log_version_observation('remote-response', self, local_version, injection_status)
+        if not body then
+            log.warn('【BOB】【版本检查】result=remote-request-empty',
+                'policy=allow',
+                'local=', tostring(local_version),
+                'local_type=', type(local_version),
+                'injection=', tostring(injection_status))
+            finish(false)
+            return
+        end
+        local decode_ok, data = pcall(y3.json.decode, body)
+        if not decode_ok then
+            log.error('【BOB】【版本检查】result=remote-parse-failed',
+                'error=', tostring(data),
+                'local=', tostring(local_version),
+                'injection=', tostring(injection_status))
+            finish(false)
+            return
+        end
+        local read_ok, decoded_remote_version = pcall(function()
+            return data['2.0']['@metadata@']['@displayversion@']
+        end)
+        if not read_ok then
+            log.error('【BOB】【版本检查】result=remote-version-read-failed',
+                'error=', tostring(decoded_remote_version),
+                'local=', tostring(local_version),
+                'injection=', tostring(injection_status))
+            finish(false)
+            return
+        end
+        remote_version = decoded_remote_version
+        compare_versions()
+    end, { timeout = 5 })
 end
 
 ---@private
@@ -565,7 +628,7 @@ function M:refresh_player_info(done)
             xpcall(callback, log.error, result, err)
         end
     end
-    timeout = y3.ctimer.wait(3, function()
+    timeout = y3.ltimer.wait(3, function()
         -- 保留占位接收器，避免迟到回包被下一次刷新请求错误消费。
         finish(nil, 'timeout')
         if self.client and not self._exiting then
@@ -645,7 +708,7 @@ function M:cleanup_before_exit(done, step_timeout)
 
     local function arm_timeout(stage, callback)
         cancel_timer()
-        cleanup.timer = y3.ctimer.wait(step_timeout, function()
+        cleanup.timer = y3.ltimer.wait(step_timeout, function()
             cleanup.timer = nil
             record_error(stage .. '-timeout')
             callback()
@@ -1532,7 +1595,7 @@ function M:notify_player_info(data)
         log.debug('【BOB】正在启动游戏')
         self._is_launching = true
         self:event_notify('启动状态变化', self._is_launching)
-        y3.ctimer.wait(10, function()
+        y3.ltimer.wait(10, function()
             log.warn('【BOB】未能在10秒内启动游戏！')
             self._is_launching = false
             self:event_notify('启动状态变化', self._is_launching)
